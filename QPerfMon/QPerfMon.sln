@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 10.00
+# Visual Studio 2008
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QPerfMon", "QPerfMon\QPerfMon.csproj", "{35050925-C588-469E-9FDE-C53CE4690EDF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "C2DPushGraph", "C2DPushGraph\C2DPushGraph.csproj", "{290BF7F1-91BB-4AE0-A89B-9320EC1B2619}"
+EndProject
+Global
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 3
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://tfs05.codeplex.com/
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = C2DPushGraph\\C2DPushGraph.csproj
+		SccProjectName1 = C2DPushGraph
+		SccLocalPath1 = C2DPushGraph
+		SccProjectUniqueName2 = QPerfMon\\QPerfMon.csproj
+		SccProjectName2 = QPerfMon
+		SccLocalPath2 = QPerfMon
+	EndGlobalSection
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{35050925-C588-469E-9FDE-C53CE4690EDF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{35050925-C588-469E-9FDE-C53CE4690EDF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{35050925-C588-469E-9FDE-C53CE4690EDF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{35050925-C588-469E-9FDE-C53CE4690EDF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{290BF7F1-91BB-4AE0-A89B-9320EC1B2619}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{290BF7F1-91BB-4AE0-A89B-9320EC1B2619}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{290BF7F1-91BB-4AE0-A89B-9320EC1B2619}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{290BF7F1-91BB-4AE0-A89B-9320EC1B2619}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
