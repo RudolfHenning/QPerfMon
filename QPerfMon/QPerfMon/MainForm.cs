@@ -31,15 +31,15 @@ namespace QPerfMon
         {
             InitializeComponent();
         }
+
         public MainForm(string[] args)
         {
             initializing = true;
-            InitializeComponent();
-            
+            InitializeComponent();            
 
             List<string> counters = CommandLineUtils.GetDefault(args);
             if (counters.Count == 0)
-                counters.Add(@".\Processor\% Processor Time\_Total");
+                counters.Add(@".\Processor\% Processor Time\_Total\1");
 
             ctrlMutex = new System.Threading.Mutex();
             lineColors.Add(Color.LightBlue);
@@ -53,6 +53,8 @@ namespace QPerfMon
 
             try
             {
+                if (CommandLineUtils.IsCommand(args, "-h", "/h", "-?", "/?"))
+                    ShowCommandLineHelp("");
                 initialMaxValue = int.Parse(CommandLineUtils.GetCommand(args, initialMaxValue.ToString(), new string[] { "-max:", "/max:" }));
                 defaultLineThickness = uint.Parse(CommandLineUtils.GetCommand(args, defaultLineThickness.ToString(), new string[] { "-lt:", "/lt:" }));
                 displayTitle = CommandLineUtils.GetCommand(args, "", new string[] { "-title:", "/title:" });
@@ -62,7 +64,9 @@ namespace QPerfMon
                 {
                     string[] parts = arg.Split('\\');
                     if (parts.Length < 4)
-                        throw new Exception("Invalid performance counter specified!\r\n" + arg);
+                    {
+                        ShowCommandLineHelp("Invalid parameter (performance counter) specified!\r\n" + arg + "\r\n\r\n");
+                    }
                     else
                     {
                         string key;
@@ -86,7 +90,6 @@ namespace QPerfMon
 
                         int colorIndex = lvwCounters.Items.Count % lineColors.Count;
                         ListViewItem lvi = new ListViewItem(key);
-                        //lvi.SubItems.Add(lineColors[colorIndex].Name);
                         lvi.UseItemStyleForSubItems = false;
                         ListViewItem.ListViewSubItem sub = new ListViewItem.ListViewSubItem();
                         sub.Text = "###";
@@ -106,6 +109,26 @@ namespace QPerfMon
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
+        } 
+        #endregion
+
+        #region ShowCommandLineHelp
+        private void ShowCommandLineHelp(string warning)
+        {
+            MessageBox.Show(warning + "The following command line parameters are supported\r\n" +
+                "QPerfMon.exe <Machine\\Category\\Counter\\Instance\\[Scale]> [-max:X] [-lt:Y] [-title:Z]\r\n" +
+                "Where\r\n" +
+                "\tPerformance counter:\r\n" +
+                "\t\tMachine: name of the machine\r\n" +
+                "\t\tCategory: performance category\r\n" +
+                "\t\tCounter: name of performance counter\r\n" +
+                "\t\tInstance: instance of performance counter\r\n\t\t\t(blank for none)\r\n" +
+                "\t\tScale: scale of performance counter\r\n\t\t\t(default=1)\r\n" +
+                "\tmax: Initial maximum Y axis value of graph grid\r\n" +
+                "\tlt: default line thickness (default=1)\r\n" +
+                "\ttitle: give a title to the window\r\n" +
+                "\r\nExample QPerfMon.exe \".\\Processor\\% Processor Time\\_Total\\1\" -max:100 -title:Test",
+                "Command line parameters", MessageBoxButtons.OK, warning.Length == 0 ? MessageBoxIcon.Information : MessageBoxIcon.Exclamation);
         } 
         #endregion
 
