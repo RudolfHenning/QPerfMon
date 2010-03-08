@@ -32,22 +32,29 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.c2DPushGraphControl = new HenIT.Windows.Controls.C2DPushGraph.Graphing.C2DPushGraph();
-            this.lvwCounters = new ListViewR();
+            this.contextMenuStripGraph = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.pauseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.contextMenuStripLvw = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.visibleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.formattingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.frequencyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.halfSecondsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.secondToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.twoSecondsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.fiveSecondsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.tenSecondsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.thirtySecondsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.lvwCounters = new QPerfMon.ListViewR();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
             this.columnHeaderScale = new System.Windows.Forms.ColumnHeader();
             this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
-            this.contextMenuStripLvw = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.visibleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.formattingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.contextMenuStripGraph = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.pauseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
-            this.contextMenuStripLvw.SuspendLayout();
             this.contextMenuStripGraph.SuspendLayout();
+            this.contextMenuStripLvw.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -92,6 +99,110 @@
             this.c2DPushGraphControl.Text = "c2DPushGraph1";
             this.c2DPushGraphControl.TextColor = System.Drawing.Color.Yellow;
             // 
+            // contextMenuStripGraph
+            // 
+            this.contextMenuStripGraph.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.frequencyToolStripMenuItem,
+            this.pauseToolStripMenuItem});
+            this.contextMenuStripGraph.Name = "contextMenuStripGraph";
+            this.contextMenuStripGraph.Size = new System.Drawing.Size(153, 70);
+            // 
+            // pauseToolStripMenuItem
+            // 
+            this.pauseToolStripMenuItem.CheckOnClick = true;
+            this.pauseToolStripMenuItem.Name = "pauseToolStripMenuItem";
+            this.pauseToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.pauseToolStripMenuItem.Text = "Pause";
+            this.pauseToolStripMenuItem.CheckedChanged += new System.EventHandler(this.pauseToolStripMenuItem_CheckedChanged);
+            // 
+            // contextMenuStripLvw
+            // 
+            this.contextMenuStripLvw.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.visibleToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.formattingToolStripMenuItem});
+            this.contextMenuStripLvw.Name = "contextMenuStrip1";
+            this.contextMenuStripLvw.Size = new System.Drawing.Size(140, 54);
+            // 
+            // visibleToolStripMenuItem
+            // 
+            this.visibleToolStripMenuItem.Checked = true;
+            this.visibleToolStripMenuItem.CheckOnClick = true;
+            this.visibleToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.visibleToolStripMenuItem.Name = "visibleToolStripMenuItem";
+            this.visibleToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.visibleToolStripMenuItem.Text = "Visible";
+            this.visibleToolStripMenuItem.CheckedChanged += new System.EventHandler(this.visibleToolStripMenuItem_CheckedChanged);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(136, 6);
+            // 
+            // formattingToolStripMenuItem
+            // 
+            this.formattingToolStripMenuItem.Name = "formattingToolStripMenuItem";
+            this.formattingToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
+            this.formattingToolStripMenuItem.Text = "Formatting";
+            this.formattingToolStripMenuItem.Click += new System.EventHandler(this.formattingToolStripMenuItem_Click);
+            // 
+            // frequencyToolStripMenuItem
+            // 
+            this.frequencyToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.halfSecondsToolStripMenuItem,
+            this.secondToolStripMenuItem,
+            this.twoSecondsToolStripMenuItem,
+            this.fiveSecondsToolStripMenuItem,
+            this.tenSecondsToolStripMenuItem,
+            this.thirtySecondsToolStripMenuItem});
+            this.frequencyToolStripMenuItem.Name = "frequencyToolStripMenuItem";
+            this.frequencyToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.frequencyToolStripMenuItem.Text = "Frequency";
+            // 
+            // halfSecondsToolStripMenuItem
+            // 
+            this.halfSecondsToolStripMenuItem.Name = "halfSecondsToolStripMenuItem";
+            this.halfSecondsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.halfSecondsToolStripMenuItem.Text = "0.5 Seconds";
+            this.halfSecondsToolStripMenuItem.Click += new System.EventHandler(this.halfSecondsToolStripMenuItem_Click);
+            // 
+            // secondToolStripMenuItem
+            // 
+            this.secondToolStripMenuItem.Checked = true;
+            this.secondToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.secondToolStripMenuItem.Name = "secondToolStripMenuItem";
+            this.secondToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.secondToolStripMenuItem.Text = "1 Second";
+            this.secondToolStripMenuItem.Click += new System.EventHandler(this.secondToolStripMenuItem_Click);
+            // 
+            // twoSecondsToolStripMenuItem
+            // 
+            this.twoSecondsToolStripMenuItem.Name = "twoSecondsToolStripMenuItem";
+            this.twoSecondsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.twoSecondsToolStripMenuItem.Text = "2 Seconds";
+            this.twoSecondsToolStripMenuItem.Click += new System.EventHandler(this.twoSecondsToolStripMenuItem_Click);
+            // 
+            // fiveSecondsToolStripMenuItem
+            // 
+            this.fiveSecondsToolStripMenuItem.Name = "fiveSecondsToolStripMenuItem";
+            this.fiveSecondsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.fiveSecondsToolStripMenuItem.Text = "5 Seconds";
+            this.fiveSecondsToolStripMenuItem.Click += new System.EventHandler(this.fiveSecondsToolStripMenuItem_Click);
+            // 
+            // tenSecondsToolStripMenuItem
+            // 
+            this.tenSecondsToolStripMenuItem.Name = "tenSecondsToolStripMenuItem";
+            this.tenSecondsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.tenSecondsToolStripMenuItem.Text = "10 Seconds";
+            this.tenSecondsToolStripMenuItem.Click += new System.EventHandler(this.tenSecondsToolStripMenuItem_Click);
+            // 
+            // thirtySecondsToolStripMenuItem
+            // 
+            this.thirtySecondsToolStripMenuItem.Name = "thirtySecondsToolStripMenuItem";
+            this.thirtySecondsToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.thirtySecondsToolStripMenuItem.Text = "30 Seconds";
+            this.thirtySecondsToolStripMenuItem.Click += new System.EventHandler(this.thirtySecondsToolStripMenuItem_Click);
+            // 
             // lvwCounters
             // 
             this.lvwCounters.CheckBoxes = true;
@@ -131,52 +242,6 @@
             this.columnHeader3.Text = "Last value";
             this.columnHeader3.Width = 65;
             // 
-            // contextMenuStripLvw
-            // 
-            this.contextMenuStripLvw.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.visibleToolStripMenuItem,
-            this.toolStripSeparator1,
-            this.formattingToolStripMenuItem});
-            this.contextMenuStripLvw.Name = "contextMenuStrip1";
-            this.contextMenuStripLvw.Size = new System.Drawing.Size(140, 54);
-            // 
-            // visibleToolStripMenuItem
-            // 
-            this.visibleToolStripMenuItem.Checked = true;
-            this.visibleToolStripMenuItem.CheckOnClick = true;
-            this.visibleToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.visibleToolStripMenuItem.Name = "visibleToolStripMenuItem";
-            this.visibleToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
-            this.visibleToolStripMenuItem.Text = "Visible";
-            this.visibleToolStripMenuItem.CheckedChanged += new System.EventHandler(this.visibleToolStripMenuItem_CheckedChanged);
-            // 
-            // formattingToolStripMenuItem
-            // 
-            this.formattingToolStripMenuItem.Name = "formattingToolStripMenuItem";
-            this.formattingToolStripMenuItem.Size = new System.Drawing.Size(139, 22);
-            this.formattingToolStripMenuItem.Text = "Formatting";
-            this.formattingToolStripMenuItem.Click += new System.EventHandler(this.formattingToolStripMenuItem_Click);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(136, 6);
-            // 
-            // contextMenuStripGraph
-            // 
-            this.contextMenuStripGraph.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.pauseToolStripMenuItem});
-            this.contextMenuStripGraph.Name = "contextMenuStripGraph";
-            this.contextMenuStripGraph.Size = new System.Drawing.Size(111, 26);
-            // 
-            // pauseToolStripMenuItem
-            // 
-            this.pauseToolStripMenuItem.CheckOnClick = true;
-            this.pauseToolStripMenuItem.Name = "pauseToolStripMenuItem";
-            this.pauseToolStripMenuItem.Size = new System.Drawing.Size(110, 22);
-            this.pauseToolStripMenuItem.Text = "Pause";
-            this.pauseToolStripMenuItem.CheckedChanged += new System.EventHandler(this.pauseToolStripMenuItem_CheckedChanged);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -192,8 +257,8 @@
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.ResumeLayout(false);
-            this.contextMenuStripLvw.ResumeLayout(false);
             this.contextMenuStripGraph.ResumeLayout(false);
+            this.contextMenuStripLvw.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -202,7 +267,6 @@
 
         private HenIT.Windows.Controls.C2DPushGraph.Graphing.C2DPushGraph c2DPushGraphControl;
         private System.Windows.Forms.SplitContainer splitContainer1;
-        private System.Windows.Forms.ListView lvwCounters;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.ColumnHeader columnHeader3;
@@ -213,6 +277,14 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ContextMenuStrip contextMenuStripGraph;
         private System.Windows.Forms.ToolStripMenuItem pauseToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem frequencyToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem halfSecondsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem secondToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem twoSecondsToolStripMenuItem;
+        private ListViewR lvwCounters;
+        private System.Windows.Forms.ToolStripMenuItem fiveSecondsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem tenSecondsToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem thirtySecondsToolStripMenuItem;
     }
 }
 

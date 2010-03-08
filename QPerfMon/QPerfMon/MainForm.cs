@@ -226,6 +226,28 @@ namespace QPerfMon
                 ctrlMutex.ReleaseMutex();
             }
         }
+        private void SetPollingFrequency(ToolStripMenuItem tsmi)
+        {
+            halfSecondsToolStripMenuItem.Checked = (halfSecondsToolStripMenuItem == tsmi);
+            secondToolStripMenuItem.Checked = (secondToolStripMenuItem == tsmi);
+            twoSecondsToolStripMenuItem.Checked = (twoSecondsToolStripMenuItem == tsmi);
+            fiveSecondsToolStripMenuItem.Checked = (fiveSecondsToolStripMenuItem == tsmi);
+            tenSecondsToolStripMenuItem.Checked = (tenSecondsToolStripMenuItem == tsmi);
+            thirtySecondsToolStripMenuItem.Checked = (thirtySecondsToolStripMenuItem == tsmi);
+
+            long period = 1000;
+            if (halfSecondsToolStripMenuItem.Checked)
+                period = 500;
+            else if (twoSecondsToolStripMenuItem.Checked)
+                period = 2000;
+            else if (fiveSecondsToolStripMenuItem.Checked)
+                period = 5000;
+            else if (tenSecondsToolStripMenuItem.Checked)
+                period = 10000;
+            else if (thirtySecondsToolStripMenuItem.Checked)
+                period = 30000;
+            timer.Change(0, period);
+        }
         #endregion
 
         #region Context menu events
@@ -261,6 +283,31 @@ namespace QPerfMon
         {
             paused = pauseToolStripMenuItem.Checked;
         }
+        private void halfSecondsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetPollingFrequency(halfSecondsToolStripMenuItem);
+        }
+        private void secondToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetPollingFrequency(secondToolStripMenuItem);
+        }
+        private void twoSecondsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetPollingFrequency(twoSecondsToolStripMenuItem);
+        }
+        private void fiveSecondsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetPollingFrequency(fiveSecondsToolStripMenuItem);
+        }
+        private void tenSecondsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetPollingFrequency(tenSecondsToolStripMenuItem);
+        }
+        private void thirtySecondsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetPollingFrequency(thirtySecondsToolStripMenuItem);
+        }
         #endregion
+        
     }
 }
