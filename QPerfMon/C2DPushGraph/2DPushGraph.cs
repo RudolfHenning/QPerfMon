@@ -731,28 +731,26 @@ namespace HenIT.Windows.Controls.C2DPushGraph
                                 ? maxSize.Width
                                 : minSize.Width) + 6;
 
-                SolidBrush textBrush = new SolidBrush(m_TextColor);
+                using (SolidBrush textBrush = new SolidBrush(m_TextColor))
+                {
 
+                    /* Draw the labels (max: Top) (min: Bottom) */
 
-                /* Draw the labels (max: Top) (min: Bottom) */
+                    g.DrawString(m_MaxLabel, Font, textBrush,
+                                  textWidth / 2 - (maxSize.Width / 2),
+                                  2);
 
-                g.DrawString(m_MaxLabel, Font, textBrush,
-                              textWidth / 2 - (maxSize.Width / 2),
-                              2);
-
-                g.DrawString(m_MinLabel, Font, textBrush,
-                              textWidth / 2 - (minSize.Width / 2),
-                              Height - minSize.Height - 2);
-
-                textBrush.Dispose();
-
+                    g.DrawString(m_MinLabel, Font, textBrush,
+                                  textWidth / 2 - (minSize.Width / 2),
+                                  Height - minSize.Height - 2);
+                }
 
                 /* Draw the bordering line */
 
-                Pen borderPen = new Pen(m_GridColor, 1);
-                g.DrawLine(borderPen, textWidth + 6, 0, textWidth + 6, Height);
-
-                borderPen.Dispose();
+                using (Pen borderPen = new Pen(m_GridColor, 1))
+                {
+                    g.DrawLine(borderPen, textWidth + 6, 0, textWidth + 6, Height);
+                }
 
                 /* Update the offset so we don't draw the graph over the labels */
                 m_OffsetX = textWidth + 6;
@@ -787,35 +785,34 @@ namespace HenIT.Windows.Controls.C2DPushGraph
 
             protected void DrawGrid(ref Graphics g)
             {
-                Pen gridPen = new Pen(m_GridColor, 1);
-                int gridSize;
-
-                if (m_AutoGridSize)
+                using (Pen gridPen = new Pen(m_GridColor, 1))
                 {
-                    gridSize = Height / 10;
+                    int gridSize;
 
-                }
-                else
-                {
-                    gridSize = m_GridSize;
-                }
-
-                for (int n = Height - 1; n >= 0; n -= gridSize)
-                {
-                    g.DrawLine(gridPen, m_OffsetX, n, Width, n);
-                }
-
-                for (int n = m_OffsetX + m_MoveOffset; n < Width; n += gridSize)
-                {
-                    if (n < m_OffsetX)
+                    if (m_AutoGridSize)
                     {
-                        continue;
+                        gridSize = Height / 10;
+                    }
+                    else
+                    {
+                        gridSize = m_GridSize;
                     }
 
-                    g.DrawLine(gridPen, n, 0, n, Height);
-                }
+                    for (int n = Height - 1; n >= 0; n -= gridSize)
+                    {
+                        g.DrawLine(gridPen, m_OffsetX, n, Width, n);
+                    }
 
-                gridPen.Dispose();
+                    for (int n = m_OffsetX + m_MoveOffset; n < Width; n += gridSize)
+                    {
+                        if (n < m_OffsetX)
+                        {
+                            continue;
+                        }
+
+                        g.DrawLine(gridPen, n, 0, n, Height);
+                    }
+                } //using (Pen gridPen
             }
 
             // ===================================================================
@@ -886,7 +883,8 @@ namespace HenIT.Windows.Controls.C2DPushGraph
                     {
                         //TODO: This may not be nescessary, so look into it.
                         /* No push points to draw */
-                        return;
+                        continue;
+                        //return;
                     }
 
                     //draw all 'lines' except the 'selected' one that is drawn last
@@ -894,7 +892,7 @@ namespace HenIT.Windows.Controls.C2DPushGraph
                         DrawLine(ref g, line);
                 }
                 //now draw selected line last
-                if (selectedLine != null)
+                if (selectedLine != null && selectedLine.m_MagnitudeList.Count > 0)
                 {
                     DrawLine(ref g, selectedLine);
                 }
@@ -908,64 +906,80 @@ namespace HenIT.Windows.Controls.C2DPushGraph
                     return;
                 /* Now prepare to draw the line or bar */
 
-                Pen linePen = new Pen(line.m_Color, line.m_Thickness);
-
-                Point lastPoint = new Point();
-                lastPoint.X = m_OffsetX;
-                lastPoint.Y = Height - (int)(((line.m_MagnitudeList[0] * line.scale) *
-                   Height) / (m_MaxPeek - m_MinPeek));
-
-                for (int n = 0; n < line.m_MagnitudeList.Count; ++n)
+                using (Pen linePen = new Pen(line.m_Color, line.m_Thickness))
                 {
-                    if (line.m_bShowAsBar)
+
+                    Point lastPoint = new Point();
+                    lastPoint.X = m_OffsetX;
+                    lastPoint.Y = Height - (int)(((line.m_MagnitudeList[0] * line.scale) *
+                       Height) / (m_MaxPeek - m_MinPeek));
+
+                    for (int n = 0; n < line.m_MagnitudeList.Count; ++n)
                     {
-                        /* The line is set to be shown as a bar graph, so
-                        first we get the bars rectangle, then draw the bar */
+                        if (line.m_bShowAsBar)
+                        {
+                            /* The line is set to be shown as a bar graph, so
+                            first we get the bars rectangle, then draw the bar */
 
-                        Rectangle barRect = new Rectangle();
+                            Rectangle barRect = new Rectangle();
 
-                        // Weird hack because BarRect.Location.* causes error
-                        Point p = barRect.Location;
-                        p.X = m_OffsetX + (n * m_LineInterval) + 1;
-                        p.Y = Height - (int)( ((line.m_MagnitudeList[n] * line.scale) * Height) /
-                                            (m_MaxPeek - m_MinPeek));
-                        barRect.Location = p;
+                            // Weird hack because BarRect.Location.* causes error
+                            Point p = barRect.Location;
+                            p.X = m_OffsetX + (n * m_LineInterval) + 1;
+                            p.Y = Height - (int)(((line.m_MagnitudeList[n] * line.scale) * Height) /
+                                                (m_MaxPeek - m_MinPeek));
+                            barRect.Location = p;
 
-                        barRect.Width = m_LineInterval - 1;
-                        barRect.Height = Height;
+                            barRect.Width = m_LineInterval - 1;
+                            barRect.Height = Height;
 
-                        DrawBar(barRect, line, ref g);
+                            DrawBar(barRect, line, ref g);
+                        }
+                        else
+                        {
+                            /* Draw a line */
+
+                            int newX = m_OffsetX + (n * m_LineInterval);
+                            int newY = Height - (int)(((line.m_MagnitudeList[n] * line.scale) * Height) /
+                                                (m_MaxPeek - m_MinPeek));
+
+                            //lines at the top are not visible. Shift it down a little
+                            if (newY < 1)
+                                newY = 1;
+
+                            g.DrawLine(linePen, lastPoint.X, lastPoint.Y, newX, newY);
+
+                            lastPoint.X = newX;
+                            lastPoint.Y = newY;
+                        }
                     }
-                    else
-                    {
-                        /* Draw a line */
 
-                        int newX = m_OffsetX + (n * m_LineInterval);
-                        int newY = Height - (int)(((line.m_MagnitudeList[n] * line.scale) * Height) /
-                                            (m_MaxPeek - m_MinPeek));
+                    //playing with the idea to display the last value label
+                    //double lastVal = line.m_MagnitudeList[line.m_MagnitudeList.Count - 1];
+                    //string lastValStr = lastVal.ToString("0");
+                    //int textWidth = lastValStr.Length;
+                    //SizeF lastValSize = g.MeasureString(lastValStr, Font);
+                    //using (SolidBrush textBrush = new SolidBrush(m_TextColor)) //line.m_Color
+                    //{
+                    //    int newY = Height - (int)(((lastVal * line.scale) * Height) /
+                    //                            (m_MaxPeek - m_MinPeek));
 
-                        //lines at the top are not visible. Shift it down a little
-                        if (newY < 1)
-                            newY = 1;
+                    //    g.DrawString(lastValStr, Font, textBrush,
+                    //                  m_OffsetX,
+                    //                  newY);
+                    //}
 
-                        g.DrawLine(linePen, lastPoint.X, lastPoint.Y, newX, newY);
-
-                        lastPoint.X = newX;
-                        lastPoint.Y = newY;
-                    }
-                }
-
-                linePen.Dispose();
-
+                } //using (Pen linePen
             }
             
             // ===================================================================
 
             private void DrawBar(Rectangle rect, Line line, ref Graphics g)
             {
-                SolidBrush barBrush = new SolidBrush(line.m_Color);
-                g.FillRectangle(barBrush, rect);
-                barBrush.Dispose();
+                using (SolidBrush barBrush = new SolidBrush(line.m_Color))
+                {
+                    g.FillRectangle(barBrush, rect);
+                }
             }
 
             // ===================================================================
@@ -1260,6 +1274,7 @@ namespace HenIT.Windows.Controls.C2DPushGraph
                 UpdateGraph();
             }
 
+            //use to to automatically set the 'Max' value of the graph from available values
             private void Checkm_MaxPeek()
             {
                 double globalMaxDataPoint = 0;
