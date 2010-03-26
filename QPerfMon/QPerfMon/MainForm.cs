@@ -85,22 +85,30 @@ namespace QPerfMon
                             scale = parts[4];
                             pcMonInstance.Scale = double.Parse(parts[4]);
                         }
-                        pcMonInstance.PCInstance = new PerformanceCounter(pcMonInstance.Category, pcMonInstance.Counter, pcMonInstance.Instance, pcMonInstance.Machine);
-                        pcMonInstances.Add(pcMonInstance);
 
-                        int colorIndex = lvwCounters.Items.Count % lineColors.Count;
-                        ListViewItem lvi = new ListViewItem(key);
-                        lvi.UseItemStyleForSubItems = false;
-                        ListViewItem.ListViewSubItem sub = new ListViewItem.ListViewSubItem();
-                        sub.Text = "###";
-                        sub.ForeColor = lineColors[colorIndex];
-                        sub.BackColor = lineColors[colorIndex];
-                        lvi.SubItems.Add(sub);
-                        lvi.SubItems.Add(scale);
-                        lvi.SubItems.Add("");
-                        lvi.Checked = true;
-                        lvi.Tag = pcMonInstance;
-                        lvwCounters.Items.Add(lvi);
+                        try
+                        {
+                            pcMonInstance.PCInstance = new PerformanceCounter(pcMonInstance.Category, pcMonInstance.Counter, pcMonInstance.Instance, pcMonInstance.Machine);
+                            pcMonInstances.Add(pcMonInstance);
+
+                            int colorIndex = lvwCounters.Items.Count % lineColors.Count;
+                            ListViewItem lvi = new ListViewItem(key);
+                            lvi.UseItemStyleForSubItems = false;
+                            ListViewItem.ListViewSubItem sub = new ListViewItem.ListViewSubItem();
+                            sub.Text = "###";
+                            sub.ForeColor = lineColors[colorIndex];
+                            sub.BackColor = lineColors[colorIndex];
+                            lvi.SubItems.Add(sub);
+                            lvi.SubItems.Add(scale);
+                            lvi.SubItems.Add("");
+                            lvi.Checked = true;
+                            lvi.Tag = pcMonInstance;
+                            lvwCounters.Items.Add(lvi);
+                        }
+                        catch (Exception innerex)
+                        {
+                            MessageBox.Show(innerex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
                 }
             }
@@ -212,12 +220,22 @@ namespace QPerfMon
                         int[] newvalues = new int[lvwCounters.Items.Count];
                         for (int i = 0; i < pcMonInstances.Count; i++)
                         {
-                            PCMonInstance pcMonInstance = pcMonInstances[i];
-                            float pcValue = (pcMonInstance.PCInstance.NextValue());
-                            string pcValueStr = pcValue.ToString("0.00");
-                            if (lvwCounters.Items[i].SubItems[3].Text != pcValueStr)
-                                lvwCounters.Items[i].SubItems[3].Text = pcValueStr;
-                            c2DPushGraphControl.Push(pcValue, pcMonInstance.Name);
+                            try
+                            {
+                                PCMonInstance pcMonInstance = pcMonInstances[i];
+                                float pcValue = (pcMonInstance.PCInstance.NextValue());
+                                string pcValueStr = pcValue.ToString("0.00");
+                                if (lvwCounters.Items[i].SubItems[3].Text != pcValueStr)
+                                    lvwCounters.Items[i].SubItems[3].Text = pcValueStr;
+                                c2DPushGraphControl.Push(pcValue, pcMonInstance.Name);
+                                lvwCounters.ForeColor = SystemColors.WindowText;
+                            }
+                            catch //basically ignore exception and add 0 value
+                            {
+                                c2DPushGraphControl.Push(0, pcMonInstances[i].Name);
+                                lvwCounters.Items[i].ForeColor = Color.Red;
+                                lvwCounters.Items[i].Checked = false;
+                            }
                         }
 
                         c2DPushGraphControl.UpdateGraph();
