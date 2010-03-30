@@ -88,7 +88,7 @@ namespace QPerfMon
 
                         try
                         {
-                            pcMonInstance.PCInstance = new PerformanceCounter(pcMonInstance.Category, pcMonInstance.Counter, pcMonInstance.Instance, pcMonInstance.Machine);
+                            //pcMonInstance.PCInstance = new PerformanceCounter(pcMonInstance.Category, pcMonInstance.Counter, pcMonInstance.Instance, pcMonInstance.Machine);
                             pcMonInstances.Add(pcMonInstance);
 
                             int colorIndex = lvwCounters.Items.Count % lineColors.Count;
@@ -192,6 +192,21 @@ namespace QPerfMon
             }
             else
                 c2DPushGraphControl.SetSelectedLine("");
+
+            if (lvwCounters.SelectedItems.Count == 1)
+            {
+                visibleToolStripMenuItem.Enabled = true;
+                formattingToolStripMenuItem.Enabled = true;
+                toolStripSeparator1.Visible = lvwCounters.SelectedItems[0].ForeColor == Color.Red;
+                lastErrorToolStripMenuItem1.Visible = lvwCounters.SelectedItems[0].ForeColor == Color.Red;
+            }
+            else
+            {
+                visibleToolStripMenuItem.Enabled = false;
+                formattingToolStripMenuItem.Enabled = false;
+                toolStripSeparator1.Visible = false;
+                lastErrorToolStripMenuItem1.Visible = false;
+            }
         }
         private void lvwCounters_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
@@ -220,21 +235,31 @@ namespace QPerfMon
                         int[] newvalues = new int[lvwCounters.Items.Count];
                         for (int i = 0; i < pcMonInstances.Count; i++)
                         {
+                            PCMonInstance pcMonInstance = pcMonInstances[i];
                             try
                             {
-                                PCMonInstance pcMonInstance = pcMonInstances[i];
+                                //lazy load but does not work for performance counters that gets 
+                                //created after this application was started.
+                                if (pcMonInstance.PCInstance == null) 
+                                {
+                                    pcMonInstance.PCInstance = new PerformanceCounter(pcMonInstance.Category, pcMonInstance.Counter, pcMonInstance.Instance, pcMonInstance.Machine);
+                                }
+
                                 float pcValue = (pcMonInstance.PCInstance.NextValue());
                                 string pcValueStr = pcValue.ToString("0.00");
                                 if (lvwCounters.Items[i].SubItems[3].Text != pcValueStr)
                                     lvwCounters.Items[i].SubItems[3].Text = pcValueStr;
                                 c2DPushGraphControl.Push(pcValue, pcMonInstance.Name);
-                                lvwCounters.ForeColor = SystemColors.WindowText;
+                                lvwCounters.Items[i].ForeColor = SystemColors.WindowText;
+                                pcMonInstance.LastError = "";
                             }
-                            catch //basically ignore exception and add 0 value
+                            catch (Exception ex) //basically ignore exception and add 0 value
                             {
                                 c2DPushGraphControl.Push(0, pcMonInstances[i].Name);
                                 lvwCounters.Items[i].ForeColor = Color.Red;
                                 lvwCounters.Items[i].Checked = false;
+                                lvwCounters.Items[i].SubItems[3].Text = "Err";
+                                pcMonInstance.LastError = ex.Message;
                             }
                         }
 
@@ -297,6 +322,17 @@ namespace QPerfMon
                 }
             }
         }
+        private void lastErrorToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (lvwCounters.SelectedItems.Count == 1)
+            {
+                PCMonInstance pcMonInstance = (PCMonInstance)lvwCounters.SelectedItems[0].Tag;
+                if (pcMonInstance.LastError.Length > 0)
+                {
+                    MessageBox.Show(pcMonInstance.LastError, "Error details", MessageBoxButtons.OK, MessageBoxIcon.Error); 
+                }
+            }
+        }
         private void pauseToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
             paused = pauseToolStripMenuItem.Checked;
@@ -326,6 +362,6 @@ namespace QPerfMon
             SetPollingFrequency(thirtySecondsToolStripMenuItem);
         }
         #endregion
-        
+                
     }
 }

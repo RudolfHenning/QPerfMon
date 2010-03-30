@@ -11,6 +11,7 @@ namespace QPerfMon
         {
             Name = name;
             Scale = 1;
+            LastError = "";
         }
         public string Name { get; set; }
         public string Machine { get; set; }
@@ -19,5 +20,6 @@ namespace QPerfMon
         public string Instance { get; set; }
         public double Scale { get; set; }
         public PerformanceCounter PCInstance { get; set; }
+        public string LastError { get; set; }
     }
 }
