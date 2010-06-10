@@ -44,12 +44,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddCounter.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddCounter.Designer.cs">
+      <DependentUpon>AddCounter.cs</DependentUpon>
+    </Compile>
     <Compile Include="CommandLineUtils.cs" />
     <Compile Include="Formatting.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Formatting.Designer.cs">
       <DependentUpon>Formatting.cs</DependentUpon>
+    </Compile>
+    <Compile Include="InputBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InputBox.Designer.cs">
+      <DependentUpon>InputBox.cs</DependentUpon>
     </Compile>
     <Compile Include="ListViewR.cs">
       <SubType>Component</SubType>
@@ -63,8 +75,14 @@
     <Compile Include="PCMonInstance.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="AddCounter.resx">
+      <DependentUpon>AddCounter.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Formatting.resx">
       <DependentUpon>Formatting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="InputBox.resx">
+      <DependentUpon>InputBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
@@ -87,6 +105,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="QPerfMonFile.cs" />
+    <Compile Include="SerializeUtils.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\C2DPushGraph\C2DPushGraph.csproj">

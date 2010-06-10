@@ -5,21 +5,69 @@ using System.Diagnostics;
 
 namespace QPerfMon
 {
+    [Serializable]
     public class PCMonInstance
     {
+        public PCMonInstance()
+        {
+            Scale = 1;
+            LastError = "";
+        }
         public PCMonInstance(string name)
         {
             Name = name;
             Scale = 1;
             LastError = "";
         }
-        public string Name { get; set; }
-        public string Machine { get; set; }
-        public string Category { get; set; }
-        public string Counter { get; set; }
-        public string Instance { get; set; }
-        public double Scale { get; set; }
-        public PerformanceCounter PCInstance { get; set; }
-        public string LastError { get; set; }
+        private string name;
+        public string Name 
+        {
+            get { return name; }
+            set { name = value; }
+        }
+        private string machine;
+        public string Machine
+        {
+            get { return machine; }
+            set { machine = value; }
+        }
+        private string category;
+        public string Category
+        {
+            get { return category; }
+            set { category = value; }
+        }
+        private string counter;
+        public string Counter
+        {
+            get { return counter; }
+            set { counter = value; }
+        }
+        private string instance;
+        public string Instance
+        {
+            get { return instance; }
+            set { instance = value; }
+        }
+        private double scale;
+        public double Scale 
+        {
+            get { return scale; }
+            set { scale = value; }
+        }
+     
+        private PerformanceCounter pcInstance = null;
+        public PerformanceCounter PCInstance 
+        {
+            get { return pcInstance; }
+            set { pcInstance = value; }
+        }
+      
+        private string lastError;
+        public string LastError
+        {
+            get { return lastError; }
+            set { lastError = value; }
+        }
     }
 }

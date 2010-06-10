@@ -622,6 +622,14 @@ namespace HenIT.Windows.Controls.C2DPushGraph
                 get { return m_bShowGrid; }
             }
 
+            /// <summary>
+            /// Get the number of lines
+            /// </summary>
+            public int LineCount
+            {
+                get { return m_Lines.Count; }
+            }
+
             // ===================================================================
 
             protected override void OnSizeChanged(EventArgs e)
@@ -1094,10 +1102,11 @@ namespace HenIT.Windows.Controls.C2DPushGraph
             {
                 if (LineExists(nameID))
                 {
-                    return null;
+                    return GetLineHandle(nameID);// null;
                 }
 
                 Line line = new Line(nameID);
+                line.m_NumID = m_Lines.Count;
                 line.m_Color = clr;
                 line.Scale = scale;
 
@@ -1176,6 +1185,11 @@ namespace HenIT.Windows.Controls.C2DPushGraph
                 }
 
                 return m_Lines.Remove(line);
+            }
+
+            public void ClearAllLines()
+            {
+                m_Lines.Clear();
             }
 
             // ===================================================================       

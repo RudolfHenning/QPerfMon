@@ -31,7 +31,6 @@
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this.c2DPushGraphControl = new HenIT.Windows.Controls.C2DPushGraph.Graphing.C2DPushGraph();
             this.contextMenuStripGraph = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.frequencyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.halfSecondsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -43,14 +42,25 @@
             this.pauseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStripLvw = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.visibleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.formattingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.lastErrorToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.setTitleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.loadSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveCurrentSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.saveFileDialogQPerf = new System.Windows.Forms.SaveFileDialog();
+            this.openFileDialogQPerf = new System.Windows.Forms.OpenFileDialog();
+            this.c2DPushGraphControl = new HenIT.Windows.Controls.C2DPushGraph.Graphing.C2DPushGraph();
             this.lvwCounters = new QPerfMon.ListViewR();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
             this.columnHeaderScale = new System.Windows.Forms.ColumnHeader();
             this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
+            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -76,37 +86,15 @@
             this.splitContainer1.SplitterDistance = 329;
             this.splitContainer1.TabIndex = 1;
             // 
-            // c2DPushGraphControl
-            // 
-            this.c2DPushGraphControl.AutoAdjustPeek = true;
-            this.c2DPushGraphControl.AutoGridSize = true;
-            this.c2DPushGraphControl.BackColor = System.Drawing.Color.Black;
-            this.c2DPushGraphControl.ContextMenuStrip = this.contextMenuStripGraph;
-            this.c2DPushGraphControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.c2DPushGraphControl.GridColor = System.Drawing.Color.DarkGreen;
-            this.c2DPushGraphControl.GridSize = ((ushort)(20));
-            this.c2DPushGraphControl.HighQuality = true;
-            this.c2DPushGraphControl.LineInterval = ((ushort)(5));
-            this.c2DPushGraphControl.Location = new System.Drawing.Point(0, 0);
-            this.c2DPushGraphControl.MaxLabel = "100";
-            this.c2DPushGraphControl.MaxPeekMagnitude = 100;
-            this.c2DPushGraphControl.MinLabel = "0";
-            this.c2DPushGraphControl.MinPeekMagnitude = 0;
-            this.c2DPushGraphControl.Name = "c2DPushGraphControl";
-            this.c2DPushGraphControl.ShowGrid = true;
-            this.c2DPushGraphControl.ShowLabels = true;
-            this.c2DPushGraphControl.Size = new System.Drawing.Size(586, 329);
-            this.c2DPushGraphControl.TabIndex = 0;
-            this.c2DPushGraphControl.Text = "c2DPushGraph1";
-            this.c2DPushGraphControl.TextColor = System.Drawing.Color.Yellow;
-            // 
             // contextMenuStripGraph
             // 
             this.contextMenuStripGraph.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.frequencyToolStripMenuItem,
-            this.pauseToolStripMenuItem});
+            this.pauseToolStripMenuItem,
+            this.toolStripMenuItem2,
+            this.setTitleToolStripMenuItem});
             this.contextMenuStripGraph.Name = "contextMenuStripGraph";
-            this.contextMenuStripGraph.Size = new System.Drawing.Size(136, 48);
+            this.contextMenuStripGraph.Size = new System.Drawing.Size(136, 76);
             // 
             // frequencyToolStripMenuItem
             // 
@@ -179,9 +167,15 @@
             this.visibleToolStripMenuItem,
             this.formattingToolStripMenuItem,
             this.toolStripSeparator1,
-            this.lastErrorToolStripMenuItem1});
+            this.lastErrorToolStripMenuItem1,
+            this.toolStripMenuItem1,
+            this.addToolStripMenuItem,
+            this.removeToolStripMenuItem,
+            this.toolStripMenuItem3,
+            this.loadSetToolStripMenuItem,
+            this.saveCurrentSetToolStripMenuItem});
             this.contextMenuStripLvw.Name = "contextMenuStrip1";
-            this.contextMenuStripLvw.Size = new System.Drawing.Size(153, 98);
+            this.contextMenuStripLvw.Size = new System.Drawing.Size(251, 198);
             // 
             // visibleToolStripMenuItem
             // 
@@ -189,29 +183,108 @@
             this.visibleToolStripMenuItem.CheckOnClick = true;
             this.visibleToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
             this.visibleToolStripMenuItem.Name = "visibleToolStripMenuItem";
-            this.visibleToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.visibleToolStripMenuItem.Size = new System.Drawing.Size(250, 22);
             this.visibleToolStripMenuItem.Text = "Visible";
             this.visibleToolStripMenuItem.CheckedChanged += new System.EventHandler(this.visibleToolStripMenuItem_CheckedChanged);
-            // 
-            // toolStripSeparator1
-            // 
-            this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(149, 6);
             // 
             // formattingToolStripMenuItem
             // 
             this.formattingToolStripMenuItem.Name = "formattingToolStripMenuItem";
-            this.formattingToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.formattingToolStripMenuItem.Size = new System.Drawing.Size(250, 22);
             this.formattingToolStripMenuItem.Text = "Formatting";
             this.formattingToolStripMenuItem.Click += new System.EventHandler(this.formattingToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(247, 6);
             // 
             // lastErrorToolStripMenuItem1
             // 
             this.lastErrorToolStripMenuItem1.Name = "lastErrorToolStripMenuItem1";
-            this.lastErrorToolStripMenuItem1.Size = new System.Drawing.Size(152, 22);
+            this.lastErrorToolStripMenuItem1.Size = new System.Drawing.Size(250, 22);
             this.lastErrorToolStripMenuItem1.Text = "Last Error";
             this.lastErrorToolStripMenuItem1.Visible = false;
             this.lastErrorToolStripMenuItem1.Click += new System.EventHandler(this.lastErrorToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(247, 6);
+            // 
+            // addToolStripMenuItem
+            // 
+            this.addToolStripMenuItem.Name = "addToolStripMenuItem";
+            this.addToolStripMenuItem.Size = new System.Drawing.Size(250, 22);
+            this.addToolStripMenuItem.Text = "Add performance counter";
+            this.addToolStripMenuItem.Click += new System.EventHandler(this.addToolStripMenuItem_Click);
+            // 
+            // removeToolStripMenuItem
+            // 
+            this.removeToolStripMenuItem.Enabled = false;
+            this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
+            this.removeToolStripMenuItem.Size = new System.Drawing.Size(250, 22);
+            this.removeToolStripMenuItem.Text = "Remove performance counter";
+            this.removeToolStripMenuItem.Click += new System.EventHandler(this.removeToolStripMenuItem_Click);
+            // 
+            // setTitleToolStripMenuItem
+            // 
+            this.setTitleToolStripMenuItem.Name = "setTitleToolStripMenuItem";
+            this.setTitleToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.setTitleToolStripMenuItem.Text = "Set Title";
+            this.setTitleToolStripMenuItem.Click += new System.EventHandler(this.setTitleToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(132, 6);
+            // 
+            // loadSetToolStripMenuItem
+            // 
+            this.loadSetToolStripMenuItem.Name = "loadSetToolStripMenuItem";
+            this.loadSetToolStripMenuItem.Size = new System.Drawing.Size(250, 22);
+            this.loadSetToolStripMenuItem.Text = "Load set";
+            this.loadSetToolStripMenuItem.Click += new System.EventHandler(this.loadSetToolStripMenuItem_Click);
+            // 
+            // saveCurrentSetToolStripMenuItem
+            // 
+            this.saveCurrentSetToolStripMenuItem.Name = "saveCurrentSetToolStripMenuItem";
+            this.saveCurrentSetToolStripMenuItem.Size = new System.Drawing.Size(250, 22);
+            this.saveCurrentSetToolStripMenuItem.Text = "Save current set";
+            this.saveCurrentSetToolStripMenuItem.Click += new System.EventHandler(this.saveCurrentSetToolStripMenuItem_Click);
+            // 
+            // saveFileDialogQPerf
+            // 
+            this.saveFileDialogQPerf.DefaultExt = "qpmset";
+            this.saveFileDialogQPerf.Filter = "Quick Perfmon Files|*.qpmset";
+            // 
+            // openFileDialogQPerf
+            // 
+            this.openFileDialogQPerf.Filter = "Quick Perfmon Files|*.qpmset";
+            // 
+            // c2DPushGraphControl
+            // 
+            this.c2DPushGraphControl.AutoAdjustPeek = true;
+            this.c2DPushGraphControl.AutoGridSize = true;
+            this.c2DPushGraphControl.BackColor = System.Drawing.Color.Black;
+            this.c2DPushGraphControl.ContextMenuStrip = this.contextMenuStripGraph;
+            this.c2DPushGraphControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.c2DPushGraphControl.GridColor = System.Drawing.Color.DarkGreen;
+            this.c2DPushGraphControl.GridSize = ((ushort)(20));
+            this.c2DPushGraphControl.HighQuality = true;
+            this.c2DPushGraphControl.LineInterval = ((ushort)(5));
+            this.c2DPushGraphControl.Location = new System.Drawing.Point(0, 0);
+            this.c2DPushGraphControl.MaxLabel = "100";
+            this.c2DPushGraphControl.MaxPeekMagnitude = 100;
+            this.c2DPushGraphControl.MinLabel = "0";
+            this.c2DPushGraphControl.MinPeekMagnitude = 0;
+            this.c2DPushGraphControl.Name = "c2DPushGraphControl";
+            this.c2DPushGraphControl.ShowGrid = true;
+            this.c2DPushGraphControl.ShowLabels = true;
+            this.c2DPushGraphControl.Size = new System.Drawing.Size(586, 329);
+            this.c2DPushGraphControl.TabIndex = 0;
+            this.c2DPushGraphControl.Text = "c2DPushGraph1";
+            this.c2DPushGraphControl.TextColor = System.Drawing.Color.Yellow;
             // 
             // lvwCounters
             // 
@@ -251,6 +324,11 @@
             // 
             this.columnHeader3.Text = "Last value";
             this.columnHeader3.Width = 65;
+            // 
+            // toolStripMenuItem3
+            // 
+            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(247, 6);
             // 
             // MainForm
             // 
@@ -296,6 +374,16 @@
         private System.Windows.Forms.ToolStripMenuItem tenSecondsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem thirtySecondsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem lastErrorToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem addToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem removeToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem setTitleToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem loadSetToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem saveCurrentSetToolStripMenuItem;
+        private System.Windows.Forms.SaveFileDialog saveFileDialogQPerf;
+        private System.Windows.Forms.OpenFileDialog openFileDialogQPerf;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
     }
 }
 
