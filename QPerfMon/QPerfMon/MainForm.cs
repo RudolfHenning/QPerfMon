@@ -379,7 +379,10 @@ namespace QPerfMon
                     foreach (PCMonInstance pcmi in pcMonInstances)
                     {
                         string key = pcmi.Name;
-                        key += "\\" + pcmi.Scale;
+                        if (pcmi.Scale < 1)
+                            key += "\\" + pcmi.Scale.ToString("0.########");
+                        else
+                            key += "\\" + pcmi.Scale.ToString("0");
                         qPerfMonFile.CounterDefinitionList.Add(key);
                     }
                     SerializationUtils.SerializeXMLToFile(saveFileDialogQPerf.FileName, qPerfMonFile);
