@@ -228,12 +228,15 @@ namespace QPerfMon
                                 }
 
                                 c2DPushGraphControl.UpdateGraph();
-                                lvwCounters.EndUpdate();
                             }
                             catch (Exception ex)
                             {
                                 paused = true;
                                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+                            finally
+                            {
+                                lvwCounters.EndUpdate();
                             }
                         });
                 }
@@ -483,6 +486,7 @@ namespace QPerfMon
                 }
                 c2DPushGraphControl.MaxLabel = qPerfMonFile.InitialMaxValue.ToString();
                 c2DPushGraphControl.MaxPeekMagnitude = qPerfMonFile.InitialMaxValue;
+                initialMaxValue = qPerfMonFile.InitialMaxValue;
 
                 foreach (string counterDefinition in qPerfMonFile.CounterDefinitionList)
                 {
@@ -548,6 +552,34 @@ namespace QPerfMon
             c2DPushGraphControl.UpdateGraph();
         } 
         #endregion
+
+        private void maximuminitialToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetInitialGraphMax setInitialGraphMax = new SetInitialGraphMax();
+            setInitialGraphMax.InitialMaximum = initialMaxValue;
+            if (setInitialGraphMax.ShowDialog() == DialogResult.OK)
+            {
+                initialMaxValue = setInitialGraphMax.InitialMaximum;
+                c2DPushGraphControl.MaxPeekMagnitudePreAutoScale = setInitialGraphMax.InitialMaximum;
+
+                if (initialMaxValue > c2DPushGraphControl.GetCurrentMaxOnGraph())
+                {
+                    c2DPushGraphControl.MaxPeekMagnitude = setInitialGraphMax.InitialMaximum;
+                    c2DPushGraphControl.MaxLabel = setInitialGraphMax.InitialMaximum.ToString();                    
+                }
+                
+                c2DPushGraphControl.UpdateGraph();
+            }
+        }
+
+        private void MainForm_ResizeEnd(object sender, EventArgs e)
+        {
+            try
+            {
+                lvwCounters.EndUpdate();
+            }
+            catch { }
+        }
                
     }
 }

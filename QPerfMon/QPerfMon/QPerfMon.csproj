@@ -92,6 +92,9 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="SetInitialGraphMax.resx">
+      <DependentUpon>SetInitialGraphMax.cs</DependentUpon>
+    </EmbeddedResource>
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
@@ -107,6 +110,12 @@
     </Compile>
     <Compile Include="QPerfMonFile.cs" />
     <Compile Include="SerializeUtils.cs" />
+    <Compile Include="SetInitialGraphMax.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SetInitialGraphMax.Designer.cs">
+      <DependentUpon>SetInitialGraphMax.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\C2DPushGraph\C2DPushGraph.csproj">

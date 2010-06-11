@@ -136,6 +136,11 @@ namespace QPerfMon
                 DialogResult = DialogResult.OK;
                 Close();
             }
+        }
+
+        private void AddCounter_Load(object sender, EventArgs e)
+        {
+
         }        
     }
 }

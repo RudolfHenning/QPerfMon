@@ -40,6 +40,8 @@
             this.tenSecondsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.thirtySecondsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.pauseToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.setTitleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.contextMenuStripLvw = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.visibleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.formattingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -48,19 +50,18 @@
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.setTitleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.loadSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveCurrentSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveFileDialogQPerf = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialogQPerf = new System.Windows.Forms.OpenFileDialog();
+            this.maximuminitialToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.c2DPushGraphControl = new HenIT.Windows.Controls.C2DPushGraph.Graphing.C2DPushGraph();
             this.lvwCounters = new QPerfMon.ListViewR();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
             this.columnHeaderScale = new System.Windows.Forms.ColumnHeader();
             this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
-            this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -92,9 +93,10 @@
             this.frequencyToolStripMenuItem,
             this.pauseToolStripMenuItem,
             this.toolStripMenuItem2,
-            this.setTitleToolStripMenuItem});
+            this.setTitleToolStripMenuItem,
+            this.maximuminitialToolStripMenuItem});
             this.contextMenuStripGraph.Name = "contextMenuStripGraph";
-            this.contextMenuStripGraph.Size = new System.Drawing.Size(136, 76);
+            this.contextMenuStripGraph.Size = new System.Drawing.Size(176, 98);
             // 
             // frequencyToolStripMenuItem
             // 
@@ -106,7 +108,7 @@
             this.tenSecondsToolStripMenuItem,
             this.thirtySecondsToolStripMenuItem});
             this.frequencyToolStripMenuItem.Name = "frequencyToolStripMenuItem";
-            this.frequencyToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.frequencyToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.frequencyToolStripMenuItem.Text = "Frequency";
             // 
             // halfSecondsToolStripMenuItem
@@ -157,9 +159,21 @@
             // 
             this.pauseToolStripMenuItem.CheckOnClick = true;
             this.pauseToolStripMenuItem.Name = "pauseToolStripMenuItem";
-            this.pauseToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
+            this.pauseToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
             this.pauseToolStripMenuItem.Text = "Pause";
             this.pauseToolStripMenuItem.CheckedChanged += new System.EventHandler(this.pauseToolStripMenuItem_CheckedChanged);
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(172, 6);
+            // 
+            // setTitleToolStripMenuItem
+            // 
+            this.setTitleToolStripMenuItem.Name = "setTitleToolStripMenuItem";
+            this.setTitleToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.setTitleToolStripMenuItem.Text = "Set Title";
+            this.setTitleToolStripMenuItem.Click += new System.EventHandler(this.setTitleToolStripMenuItem_Click);
             // 
             // contextMenuStripLvw
             // 
@@ -175,7 +189,7 @@
             this.loadSetToolStripMenuItem,
             this.saveCurrentSetToolStripMenuItem});
             this.contextMenuStripLvw.Name = "contextMenuStrip1";
-            this.contextMenuStripLvw.Size = new System.Drawing.Size(251, 198);
+            this.contextMenuStripLvw.Size = new System.Drawing.Size(251, 176);
             // 
             // visibleToolStripMenuItem
             // 
@@ -227,17 +241,10 @@
             this.removeToolStripMenuItem.Text = "Remove performance counter";
             this.removeToolStripMenuItem.Click += new System.EventHandler(this.removeToolStripMenuItem_Click);
             // 
-            // setTitleToolStripMenuItem
+            // toolStripMenuItem3
             // 
-            this.setTitleToolStripMenuItem.Name = "setTitleToolStripMenuItem";
-            this.setTitleToolStripMenuItem.Size = new System.Drawing.Size(135, 22);
-            this.setTitleToolStripMenuItem.Text = "Set Title";
-            this.setTitleToolStripMenuItem.Click += new System.EventHandler(this.setTitleToolStripMenuItem_Click);
-            // 
-            // toolStripMenuItem2
-            // 
-            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
-            this.toolStripMenuItem2.Size = new System.Drawing.Size(132, 6);
+            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
+            this.toolStripMenuItem3.Size = new System.Drawing.Size(247, 6);
             // 
             // loadSetToolStripMenuItem
             // 
@@ -261,6 +268,13 @@
             // openFileDialogQPerf
             // 
             this.openFileDialogQPerf.Filter = "Quick Perfmon Files|*.qpmset";
+            // 
+            // maximuminitialToolStripMenuItem
+            // 
+            this.maximuminitialToolStripMenuItem.Name = "maximuminitialToolStripMenuItem";
+            this.maximuminitialToolStripMenuItem.Size = new System.Drawing.Size(175, 22);
+            this.maximuminitialToolStripMenuItem.Text = "Maximum (initial)";
+            this.maximuminitialToolStripMenuItem.Click += new System.EventHandler(this.maximuminitialToolStripMenuItem_Click);
             // 
             // c2DPushGraphControl
             // 
@@ -325,11 +339,6 @@
             this.columnHeader3.Text = "Last value";
             this.columnHeader3.Width = 65;
             // 
-            // toolStripMenuItem3
-            // 
-            this.toolStripMenuItem3.Name = "toolStripMenuItem3";
-            this.toolStripMenuItem3.Size = new System.Drawing.Size(247, 6);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -342,6 +351,7 @@
             this.Text = "Quick performance counter viewer";
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.ResizeEnd += new System.EventHandler(this.MainForm_ResizeEnd);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
             this.splitContainer1.ResumeLayout(false);
@@ -384,6 +394,7 @@
         private System.Windows.Forms.SaveFileDialog saveFileDialogQPerf;
         private System.Windows.Forms.OpenFileDialog openFileDialogQPerf;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
+        private System.Windows.Forms.ToolStripMenuItem maximuminitialToolStripMenuItem;
     }
 }
 

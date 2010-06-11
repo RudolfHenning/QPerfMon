@@ -513,6 +513,16 @@ namespace HenIT.Windows.Controls.C2DPushGraph
                 get { return m_MaxPeek; }
             }
 
+            public double MaxPeekMagnitudePreAutoScale
+            {
+                set
+                {
+                    m_MaxPeekPreAutoScale = value;
+                    RefreshLabels();
+                }
+                get { return m_MaxPeekPreAutoScale; }
+            }
+
             // ===================================================================
 
             /// <summary> 
@@ -1286,6 +1296,23 @@ namespace HenIT.Windows.Controls.C2DPushGraph
 
                 Refresh();
                 UpdateGraph();
+            }
+
+            public double GetCurrentMaxOnGraph()
+            {
+                double globalMaxDataPoint = 0;
+                foreach (Line line in m_Lines)
+                {
+                    if (line.m_bVisible)
+                    {
+                        foreach (int datapoint in line.m_MagnitudeList)
+                        {
+                            if (datapoint * line.Scale > globalMaxDataPoint)
+                                globalMaxDataPoint = datapoint * line.Scale;
+                        }
+                    }
+                }
+                return globalMaxDataPoint;
             }
 
             //use to to automatically set the 'Max' value of the graph from available values

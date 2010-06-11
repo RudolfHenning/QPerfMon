@@ -57,14 +57,14 @@
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.txtComputer.Location = new System.Drawing.Point(99, 10);
             this.txtComputer.Name = "txtComputer";
-            this.txtComputer.Size = new System.Drawing.Size(157, 20);
+            this.txtComputer.Size = new System.Drawing.Size(200, 20);
             this.txtComputer.TabIndex = 1;
             this.txtComputer.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtComputer_KeyUp);
             // 
             // cmdLoadCategories
             // 
             this.cmdLoadCategories.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdLoadCategories.Location = new System.Drawing.Point(262, 8);
+            this.cmdLoadCategories.Location = new System.Drawing.Point(305, 8);
             this.cmdLoadCategories.Name = "cmdLoadCategories";
             this.cmdLoadCategories.Size = new System.Drawing.Size(60, 23);
             this.cmdLoadCategories.TabIndex = 2;
@@ -89,7 +89,7 @@
             this.cboCategory.FormattingEnabled = true;
             this.cboCategory.Location = new System.Drawing.Point(99, 47);
             this.cboCategory.Name = "cboCategory";
-            this.cboCategory.Size = new System.Drawing.Size(157, 21);
+            this.cboCategory.Size = new System.Drawing.Size(265, 21);
             this.cboCategory.Sorted = true;
             this.cboCategory.TabIndex = 4;
             this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
@@ -102,7 +102,7 @@
             this.cboCounter.FormattingEnabled = true;
             this.cboCounter.Location = new System.Drawing.Point(99, 74);
             this.cboCounter.Name = "cboCounter";
-            this.cboCounter.Size = new System.Drawing.Size(157, 21);
+            this.cboCounter.Size = new System.Drawing.Size(265, 21);
             this.cboCounter.Sorted = true;
             this.cboCounter.TabIndex = 6;
             // 
@@ -123,7 +123,7 @@
             this.cboInstance.FormattingEnabled = true;
             this.cboInstance.Location = new System.Drawing.Point(99, 101);
             this.cboInstance.Name = "cboInstance";
-            this.cboInstance.Size = new System.Drawing.Size(157, 21);
+            this.cboInstance.Size = new System.Drawing.Size(265, 21);
             this.cboInstance.Sorted = true;
             this.cboInstance.TabIndex = 8;
             // 
@@ -139,7 +139,7 @@
             // cmdOK
             // 
             this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdOK.Location = new System.Drawing.Point(166, 139);
+            this.cmdOK.Location = new System.Drawing.Point(209, 139);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
             this.cmdOK.TabIndex = 9;
@@ -151,7 +151,7 @@
             // 
             this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(247, 139);
+            this.cmdCancel.Location = new System.Drawing.Point(290, 139);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
             this.cmdCancel.TabIndex = 10;
@@ -163,7 +163,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(333, 174);
+            this.ClientSize = new System.Drawing.Size(376, 174);
             this.Controls.Add(this.cmdCancel);
             this.Controls.Add(this.cmdOK);
             this.Controls.Add(this.cboInstance);
@@ -182,6 +182,7 @@
             this.Name = "AddCounter";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Add Performance Counter";
+            this.Load += new System.EventHandler(this.AddCounter_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 
