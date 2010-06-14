@@ -69,5 +69,8 @@ namespace QPerfMon
             get { return lastError; }
             set { lastError = value; }
         }
+
+        public float LastValue { get; set; }
+        public bool Selected { get; set; }
     }
 }

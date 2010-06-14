@@ -122,12 +122,29 @@ namespace QPerfMon
         {
             timer.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
         }
+        private void MainForm_ResizeEnd(object sender, EventArgs e)
+        {
+            try
+            {
+                lvwCounters.EndUpdate();
+            }
+            catch { }
+        }
+        private void MainForm_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.F9)
+            {
+                LoadListView();
+            }
+        }
         #endregion
 
         #region Listview events
         private void lvwCounters_Resize(object sender, EventArgs e)
         {
-            lvwCounters.Columns[0].Width = lvwCounters.ClientSize.Width - lvwCounters.Columns[1].Width - lvwCounters.Columns[2].Width - lvwCounters.Columns[3].Width;
+            int rest = lvwCounters.Columns[1].Width + lvwCounters.Columns[2].Width + lvwCounters.Columns[3].Width;
+            if (lvwCounters.ClientSize.Width > rest)
+                lvwCounters.Columns[0].Width = lvwCounters.ClientSize.Width - rest;
         }
         private void lvwCounters_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -135,21 +152,29 @@ namespace QPerfMon
             {
                 foreach (ListViewItem lvi in lvwCounters.Items)
                 {
+                    PCMonInstance pcmi = (PCMonInstance)lvi.Tag;
+                    pcmi.Selected = lvi.Selected;
                     if (lvi.Selected)
+                    {
                         c2DPushGraphControl.GetLineHandle(lvi.Text).Thickness = defaultLineThickness + 2;
+                    }
                     else
+                    {
                         c2DPushGraphControl.GetLineHandle(lvi.Text).Thickness = defaultLineThickness;
+                    }
                 }
                 //push only the first selected one to top
                 if (lvwCounters.SelectedItems.Count > 0)
                 {
                     c2DPushGraphControl.SetSelectedLine(lvwCounters.SelectedItems[0].Text);
                     removeToolStripMenuItem.Enabled = (lvwCounters.Items.Count > 1) && (lvwCounters.Items.Count > lvwCounters.SelectedItems.Count);
+                    moveSelectionToNewWindowToolStripMenuItem.Enabled = (lvwCounters.Items.Count > lvwCounters.SelectedItems.Count);
                 }
                 else
                 {
                     c2DPushGraphControl.SetSelectedLine("");
                     removeToolStripMenuItem.Enabled = false;
+                    moveSelectionToNewWindowToolStripMenuItem.Enabled = false;
                 }
 
                 if (lvwCounters.SelectedItems.Count == 1)
@@ -179,7 +204,13 @@ namespace QPerfMon
                     e.Item.Checked = true;
             }
         }
+        #endregion
 
+        #region Splitter events
+        private void splitContainer1_SplitterMoved(object sender, SplitterEventArgs e)
+        {
+            LoadListView(false);
+        }
         #endregion
 
         #region Timer event
@@ -210,11 +241,13 @@ namespace QPerfMon
                                         }
 
                                         float pcValue = (pcMonInstance.PCInstance.NextValue());
+                                        pcMonInstance.LastValue = pcValue;
                                         string pcValueStr = pcValue.ToString("0.00");
                                         if (lvwCounters.Items[i].SubItems[3].Text != pcValueStr)
                                             lvwCounters.Items[i].SubItems[3].Text = pcValueStr;
                                         c2DPushGraphControl.Push(pcValue, pcMonInstance.Name);
-                                        lvwCounters.Items[i].ForeColor = SystemColors.WindowText;
+                                        if (lvwCounters.Items[i].ForeColor != SystemColors.WindowText)
+                                            lvwCounters.Items[i].ForeColor = SystemColors.WindowText;
                                         pcMonInstance.LastError = "";
                                     }
                                     catch (Exception ex) //basically ignore exception and add 0 value
@@ -339,34 +372,30 @@ namespace QPerfMon
             {
                 if (MessageBox.Show("Are you sure you want to remove this performance counter(s)?", "Remove", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
                 {
-                    foreach (ListViewItem lvi in lvwCounters.SelectedItems)
-                    {
-                        lvi.Checked = false;
-                    }
-                    Application.DoEvents();
-
-                    bool oldPause = paused;
-                    paused = true;
-                    initializing = true;
                     try
                     {
                         foreach (ListViewItem lvi in lvwCounters.SelectedItems)
                         {
-                            lvi.Checked = false;
                             PCMonInstance removeItem = (PCMonInstance)lvi.Tag;
                             c2DPushGraphControl.RemoveLine(removeItem.Name);
                             pcMonInstances.Remove(removeItem);
-                            lvwCounters.Items.Remove(lvi);
                         }
+                        LoadListView();
                     }
                     catch (Exception ex)
                     {
                         MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-                    initializing = false;
-                    paused = oldPause;
                     c2DPushGraphControl.UpdateGraph();
                 }
+            }
+        }
+        private void loadSetToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (openFileDialogQPerf.ShowDialog() == DialogResult.OK)
+            {
+                QPerfMonFile qPerfMonFile = SerializationUtils.DeserializeXMLFile<QPerfMonFile>(openFileDialogQPerf.FileName);
+                LoadCounters(qPerfMonFile);
             }
         }
         private void saveCurrentSetToolStripMenuItem_Click(object sender, EventArgs e)
@@ -396,14 +425,6 @@ namespace QPerfMon
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-        private void loadSetToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (openFileDialogQPerf.ShowDialog() == DialogResult.OK)
-            {
-                QPerfMonFile qPerfMonFile = SerializationUtils.DeserializeXMLFile<QPerfMonFile>(openFileDialogQPerf.FileName);
-                LoadCounters(qPerfMonFile);
-            }
-        }
         private void lastErrorToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (lvwCounters.SelectedItems.Count == 1)
@@ -415,10 +436,46 @@ namespace QPerfMon
                 }
             }
         }
-        private void pauseToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        private void moveSelectionToNewWindowToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            paused = pauseToolStripMenuItem.Checked;
+            StringBuilder parameters = new StringBuilder();
+            foreach (ListViewItem lvi in lvwCounters.SelectedItems)
+            {
+                lvi.Checked = false;
+                PCMonInstance pcmi = (PCMonInstance)lvi.Tag;
+                string key = pcmi.Name;
+                if (pcmi.Scale < 1)
+                    key += "\\" + pcmi.Scale.ToString("0.########");
+                else
+                    key += "\\" + pcmi.Scale.ToString("0");
+                parameters.Append("\"");
+                parameters.Append(key);
+                parameters.Append("\" ");
+            }
+            parameters.Append(String.Format(" -max:{0}", initialMaxValue));
+            parameters.Append(" \"-title:New window\"");
+
+            ProcessStartInfo psi = new ProcessStartInfo(System.Reflection.Assembly.GetExecutingAssembly().Location, parameters.ToString());
+            Process.Start(psi);
+
+            try
+            {
+                foreach (ListViewItem lvi in lvwCounters.SelectedItems)
+                {
+                    PCMonInstance removeItem = (PCMonInstance)lvi.Tag;
+                    c2DPushGraphControl.RemoveLine(removeItem.Name);
+                    pcMonInstances.Remove(removeItem);
+                }
+                LoadListView();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            Application.DoEvents();
+            c2DPushGraphControl.UpdateGraph();
         }
+        
         private void halfSecondsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SetPollingFrequency(halfSecondsToolStripMenuItem);
@@ -443,6 +500,10 @@ namespace QPerfMon
         {
             SetPollingFrequency(thirtySecondsToolStripMenuItem);
         }
+        private void pauseToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            paused = pauseToolStripMenuItem.Checked;
+        }
         private void setTitleToolStripMenuItem_Click(object sender, EventArgs e)
         {
             InputBox inputBox = new InputBox();
@@ -460,6 +521,24 @@ namespace QPerfMon
             else
             {
                 this.Text = defaultTitle;
+            }
+        }
+        private void maximuminitialToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetInitialGraphMax setInitialGraphMax = new SetInitialGraphMax();
+            setInitialGraphMax.InitialMaximum = initialMaxValue;
+            if (setInitialGraphMax.ShowDialog() == DialogResult.OK)
+            {
+                initialMaxValue = setInitialGraphMax.InitialMaximum;
+                c2DPushGraphControl.MaxPeekMagnitudePreAutoScale = setInitialGraphMax.InitialMaximum;
+
+                if (initialMaxValue > c2DPushGraphControl.GetCurrentMaxOnGraph())
+                {
+                    c2DPushGraphControl.MaxPeekMagnitude = setInitialGraphMax.InitialMaximum;
+                    c2DPushGraphControl.MaxLabel = setInitialGraphMax.InitialMaximum.ToString();
+                }
+
+                c2DPushGraphControl.UpdateGraph();
             }
         }
         #endregion        
@@ -509,29 +588,10 @@ namespace QPerfMon
                             scale = parts[4];
                             pcMonInstance.Scale = double.Parse(parts[4]);
                         }
+                        pcMonInstance.Selected = false;
+                        pcMonInstances.Add(pcMonInstance);
 
-                        try
-                        {
-                            pcMonInstances.Add(pcMonInstance);
-
-                            int colorIndex = lvwCounters.Items.Count % lineColors.Count;
-                            ListViewItem lvi = new ListViewItem(key);
-                            lvi.UseItemStyleForSubItems = false;
-                            ListViewItem.ListViewSubItem sub = new ListViewItem.ListViewSubItem();
-                            sub.Text = "###";
-                            sub.ForeColor = lineColors[colorIndex];
-                            sub.BackColor = lineColors[colorIndex];
-                            lvi.SubItems.Add(sub);
-                            lvi.SubItems.Add(scale);
-                            lvi.SubItems.Add("");
-                            lvi.Checked = true;
-                            lvi.Tag = pcMonInstance;
-                            lvwCounters.Items.Add(lvi);
-                        }
-                        catch (Exception innerex)
-                        {
-                            MessageBox.Show(innerex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
+                        LoadListView(true);
                     }
                 }
                 C2DPushGraph.LineHandle m_LineHandle;
@@ -550,36 +610,51 @@ namespace QPerfMon
             initializing = false;
             paused = oldPause;
             c2DPushGraphControl.UpdateGraph();
-        } 
-        #endregion
-
-        private void maximuminitialToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            SetInitialGraphMax setInitialGraphMax = new SetInitialGraphMax();
-            setInitialGraphMax.InitialMaximum = initialMaxValue;
-            if (setInitialGraphMax.ShowDialog() == DialogResult.OK)
-            {
-                initialMaxValue = setInitialGraphMax.InitialMaximum;
-                c2DPushGraphControl.MaxPeekMagnitudePreAutoScale = setInitialGraphMax.InitialMaximum;
-
-                if (initialMaxValue > c2DPushGraphControl.GetCurrentMaxOnGraph())
-                {
-                    c2DPushGraphControl.MaxPeekMagnitude = setInitialGraphMax.InitialMaximum;
-                    c2DPushGraphControl.MaxLabel = setInitialGraphMax.InitialMaximum.ToString();                    
-                }
-                
-                c2DPushGraphControl.UpdateGraph();
-            }
         }
-
-        private void MainForm_ResizeEnd(object sender, EventArgs e)
+        private void LoadListView()
         {
+            LoadListView(false);
+        }
+        private void LoadListView(bool withInitializing)
+        {
+            bool oldPause = paused;
+            paused = true;
+            initializing = true;
             try
             {
-                lvwCounters.EndUpdate();
+                lvwCounters.Items.Clear();
+                foreach (PCMonInstance pcMonInstance in pcMonInstances)
+                {
+                    int colorIndex = lvwCounters.Items.Count % lineColors.Count;
+                    string scale = "1";
+                    if (pcMonInstance.Scale < 1)
+                        scale = pcMonInstance.Scale.ToString("0.########");
+                    else
+                        scale = pcMonInstance.Scale.ToString("0");
+
+                    ListViewItem lvi = new ListViewItem(pcMonInstance.Name);
+                    lvi.UseItemStyleForSubItems = false;
+                    ListViewItem.ListViewSubItem sub = new ListViewItem.ListViewSubItem();
+                    sub.Text = "###";
+                    sub.ForeColor = lineColors[colorIndex];
+                    sub.BackColor = lineColors[colorIndex];
+                    lvi.SubItems.Add(sub);
+                    lvi.SubItems.Add(scale);
+                    lvi.SubItems.Add(pcMonInstance.LastValue.ToString("0.00"));
+                    lvi.Checked = true;
+                    lvi.Tag = pcMonInstance;
+                    lvi.Selected = pcMonInstance.Selected;
+                    lvwCounters.Items.Add(lvi);
+                }
             }
-            catch { }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            initializing = withInitializing;
+            paused = oldPause;
         }
-               
+        #endregion
+              
     }
 }
