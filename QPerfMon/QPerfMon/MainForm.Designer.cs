@@ -58,16 +58,20 @@
             this.moveSelectionToNewWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveFileDialogQPerf = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialogQPerf = new System.Windows.Forms.OpenFileDialog();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabelSelection = new System.Windows.Forms.ToolStripStatusLabel();
             this.lvwCounters = new QPerfMon.ListViewR();
             this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
             this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
             this.columnHeaderScale = new System.Windows.Forms.ColumnHeader();
             this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
             this.contextMenuStripGraph.SuspendLayout();
             this.contextMenuStripLvw.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // splitContainer1
@@ -84,8 +88,8 @@
             // splitContainer1.Panel2
             // 
             this.splitContainer1.Panel2.Controls.Add(this.lvwCounters);
-            this.splitContainer1.Size = new System.Drawing.Size(586, 444);
-            this.splitContainer1.SplitterDistance = 329;
+            this.splitContainer1.Size = new System.Drawing.Size(586, 422);
+            this.splitContainer1.SplitterDistance = 312;
             this.splitContainer1.TabIndex = 1;
             this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer1_SplitterMoved);
             // 
@@ -109,10 +113,11 @@
             this.c2DPushGraphControl.Name = "c2DPushGraphControl";
             this.c2DPushGraphControl.ShowGrid = true;
             this.c2DPushGraphControl.ShowLabels = true;
-            this.c2DPushGraphControl.Size = new System.Drawing.Size(586, 329);
+            this.c2DPushGraphControl.Size = new System.Drawing.Size(586, 312);
             this.c2DPushGraphControl.TabIndex = 0;
             this.c2DPushGraphControl.Text = "c2DPushGraph1";
             this.c2DPushGraphControl.TextColor = System.Drawing.Color.Yellow;
+            this.c2DPushGraphControl.DoubleClick += new System.EventHandler(this.c2DPushGraphControl_DoubleClick);
             // 
             // contextMenuStripGraph
             // 
@@ -312,6 +317,24 @@
             // 
             this.openFileDialogQPerf.Filter = "Quick Perfmon Files|*.qpmset";
             // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripStatusLabelSelection});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 422);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(586, 22);
+            this.statusStrip1.TabIndex = 2;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripStatusLabelSelection
+            // 
+            this.toolStripStatusLabelSelection.AutoSize = false;
+            this.toolStripStatusLabelSelection.Name = "toolStripStatusLabelSelection";
+            this.toolStripStatusLabelSelection.Size = new System.Drawing.Size(571, 17);
+            this.toolStripStatusLabelSelection.Spring = true;
+            this.toolStripStatusLabelSelection.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // lvwCounters
             // 
             this.lvwCounters.CheckBoxes = true;
@@ -325,7 +348,7 @@
             this.lvwCounters.HideSelection = false;
             this.lvwCounters.Location = new System.Drawing.Point(0, 0);
             this.lvwCounters.Name = "lvwCounters";
-            this.lvwCounters.Size = new System.Drawing.Size(586, 111);
+            this.lvwCounters.Size = new System.Drawing.Size(586, 106);
             this.lvwCounters.TabIndex = 0;
             this.lvwCounters.UseCompatibleStateImageBehavior = false;
             this.lvwCounters.View = System.Windows.Forms.View.Details;
@@ -357,6 +380,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(586, 444);
             this.Controls.Add(this.splitContainer1);
+            this.Controls.Add(this.statusStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.KeyPreview = true;
             this.MinimumSize = new System.Drawing.Size(400, 300);
@@ -371,7 +395,10 @@
             this.splitContainer1.ResumeLayout(false);
             this.contextMenuStripGraph.ResumeLayout(false);
             this.contextMenuStripLvw.ResumeLayout(false);
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -410,6 +437,9 @@
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem3;
         private System.Windows.Forms.ToolStripMenuItem maximuminitialToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem moveSelectionToNewWindowToolStripMenuItem;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelSelection;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
 

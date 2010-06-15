@@ -113,28 +113,28 @@ namespace QPerfMon
             }
             else
             {
+                try
+                {
+                    string key = txtComputer.Text + "\\" + cboCategory.Text + "\\" + cboCounter.Text + "\\";
+                    if (cboInstance.Text.Length > 0)
+                    {
+                        if (cboInstance.Text.Contains("\\"))
+                            key += "\"" + cboInstance.Text + "\"";
+                        else
+                            key += cboInstance.Text;
+                    }
+                    key += "\\1";
+                    SelectedPCMonInstance = new PCMonInstance(key);
+                    SelectedPCMonInstance.Scale = 1;
+                    SelectedPCMonInstance.CreatePCInstance();
 
-                string key = txtComputer.Text + "\\" + cboCategory.Text + "\\" + cboCounter.Text + "\\";
-                if (cboInstance.Text.Length > 0)
-                    key += cboInstance.Text;
-                SelectedPCMonInstance = new PCMonInstance(key);
-                SelectedPCMonInstance.Machine = txtComputer.Text;
-                SelectedPCMonInstance.Category = cboCategory.Text;
-                SelectedPCMonInstance.Counter = cboCounter.Text;
-                
-                if (cboInstance.Text.Length > 0)
-                    SelectedPCMonInstance.Instance = cboInstance.Text;
-
-                SelectedPCMonInstance.Scale = 1;
-
-                SelectedPCMonInstance.PCInstance = new PerformanceCounter(
-                        SelectedPCMonInstance.Category, 
-                        SelectedPCMonInstance.Counter,  
-                        SelectedPCMonInstance.Instance, 
-                        SelectedPCMonInstance.Machine);   
-
-                DialogResult = DialogResult.OK;
-                Close();
+                    DialogResult = DialogResult.OK;
+                    Close();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
         }
 
