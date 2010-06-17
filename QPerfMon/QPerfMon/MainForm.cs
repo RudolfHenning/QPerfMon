@@ -25,6 +25,9 @@ namespace QPerfMon
         private bool initializing = false;
         private bool paused = false;
         private QPerfMonFile initialPerfMonFile;
+
+        private bool loggingEnabled = false;
+        private string loggingOutputFilePath;
         #endregion
 
         #region Constructors
@@ -116,6 +119,7 @@ namespace QPerfMon
             timerCallback = new System.Threading.TimerCallback(onTimerTick);
             timer = new System.Threading.Timer(timerCallback, null, 0, 1000);
             lvwCounters_Resize(null, null);
+            IsLoggingSetUp();
             initializing = false;
         }
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
@@ -271,6 +275,7 @@ namespace QPerfMon
                                         if (lvwCounters.Items[i].ForeColor != SystemColors.WindowText)
                                             lvwCounters.Items[i].ForeColor = SystemColors.WindowText;
                                         pcMonInstance.LastError = "";
+                                        
                                     }
                                     catch (Exception ex) //basically ignore exception and add 0 value
                                     {
@@ -281,7 +286,7 @@ namespace QPerfMon
                                         pcMonInstance.LastError = ex.Message;
                                     }
                                 }
-
+                                LogToFile();
                                 c2DPushGraphControl.UpdateGraph();
                             }
                             catch (Exception ex)
@@ -305,6 +310,7 @@ namespace QPerfMon
             fiveSecondsToolStripMenuItem.Checked = (fiveSecondsToolStripMenuItem == tsmi);
             tenSecondsToolStripMenuItem.Checked = (tenSecondsToolStripMenuItem == tsmi);
             thirtySecondsToolStripMenuItem.Checked = (thirtySecondsToolStripMenuItem == tsmi);
+            sixtySecondsToolStripMenuItem.Checked = (sixtySecondsToolStripMenuItem == tsmi);
 
             long period = 1000;
             if (halfSecondsToolStripMenuItem.Checked)
@@ -317,6 +323,8 @@ namespace QPerfMon
                 period = 10000;
             else if (thirtySecondsToolStripMenuItem.Checked)
                 period = 30000;
+            else if (sixtySecondsToolStripMenuItem.Checked)
+                period = 60000;
             timer.Change(0, period);
         }
         #endregion
@@ -355,6 +363,7 @@ namespace QPerfMon
             AddCounter addCounter = new AddCounter();
             if (addCounter.ShowDialog() == DialogResult.OK)
             {
+                StartStopLogging(true);
                 bool oldPause = paused;
                 paused = true;
                 initializing = true;
@@ -396,6 +405,7 @@ namespace QPerfMon
                 {
                     try
                     {
+                        StartStopLogging(true);
                         foreach (ListViewItem lvi in lvwCounters.SelectedItems)
                         {
                             PCMonInstance removeItem = (PCMonInstance)lvi.Tag;
@@ -419,6 +429,7 @@ namespace QPerfMon
             {
                 if (openFileDialogQPerf.ShowDialog() == DialogResult.OK)
                 {
+                    StartStopLogging(true);
                     saveFileDialogQPerf.FileName = openFileDialogQPerf.FileName;
                     QPerfMonFile qPerfMonFile = SerializationUtils.DeserializeXMLFile<QPerfMonFile>(openFileDialogQPerf.FileName);
                     LoadCounters(qPerfMonFile);
@@ -484,13 +495,14 @@ namespace QPerfMon
                 parameters.Append("\" ");
             }
             parameters.Append(String.Format(" -max:{0}", initialMaxValue));
-            parameters.Append(" \"-title:New window\"");
-
-            ProcessStartInfo psi = new ProcessStartInfo(System.Reflection.Assembly.GetExecutingAssembly().Location, parameters.ToString());
-            Process.Start(psi);
+            parameters.Append(" \"-title:New window\"");            
 
             try
             {
+                StartStopLogging(true);
+                ProcessStartInfo psi = new ProcessStartInfo(System.Reflection.Assembly.GetExecutingAssembly().Location, parameters.ToString());
+                Process.Start(psi);
+
                 foreach (ListViewItem lvi in lvwCounters.SelectedItems)
                 {
                     PCMonInstance removeItem = (PCMonInstance)lvi.Tag;
@@ -530,6 +542,10 @@ namespace QPerfMon
         private void thirtySecondsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SetPollingFrequency(thirtySecondsToolStripMenuItem);
+        }
+        private void sixtySecondsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            SetPollingFrequency(sixtySecondsToolStripMenuItem);
         }
         private void pauseToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
@@ -571,6 +587,25 @@ namespace QPerfMon
 
                 c2DPushGraphControl.UpdateGraph();
             }
+        }
+        private void logDataToFileToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            LogToFileOptions logToFileOptions = new LogToFileOptions();
+            logToFileOptions.LoggingDirectory = Properties.Settings.Default.LoggingDirectory;
+            logToFileOptions.LoggingFileName = Properties.Settings.Default.LoggingFileName;
+            logToFileOptions.LoggingAppendDateTime = Properties.Settings.Default.LoggingAppendDateTime;
+            if (logToFileOptions.ShowDialog() == DialogResult.OK)
+            {
+                Properties.Settings.Default.LoggingDirectory = logToFileOptions.LoggingDirectory;
+                Properties.Settings.Default.LoggingFileName = logToFileOptions.LoggingFileName;
+                Properties.Settings.Default.LoggingAppendDateTime = logToFileOptions.LoggingAppendDateTime;
+                Properties.Settings.Default.Save();
+                IsLoggingSetUp();
+            }
+        }
+        private void startLoggingToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StartStopLogging(false);
         }
         #endregion        
 
@@ -698,5 +733,91 @@ namespace QPerfMon
             }
         }
         #endregion              
+
+        #region Logging to File
+        private void IsLoggingSetUp()
+        {
+            bool isSetUp = false;
+            if ((Properties.Settings.Default.LoggingDirectory.Length > 0)
+                && (Properties.Settings.Default.LoggingFileName.Length > 0)
+                && pcMonInstances.Count > 0)
+            {
+                if (System.IO.Directory.Exists(Properties.Settings.Default.LoggingDirectory))
+                    isSetUp = true;
+            }
+            startLoggingToolStripMenuItem.Enabled = isSetUp;
+        }
+        private void StartStopLogging(bool forceStop)
+        {
+            if (forceStop)
+                loggingEnabled = true;
+            if (loggingEnabled)
+            {
+                loggingEnabled = false;
+                startLoggingToolStripMenuItem.Text = "Start logging";
+            }
+            else
+            {
+                string filename = Properties.Settings.Default.LoggingFileName;
+                if (Properties.Settings.Default.LoggingAppendDateTime)
+                    filename += DateTime.Now.ToString("yyyyMMddHHmmss");
+                filename += ".csv";
+                loggingOutputFilePath = System.IO.Path.Combine(Properties.Settings.Default.LoggingDirectory, filename);
+                try
+                {
+                    if (System.IO.File.Exists(loggingOutputFilePath))
+                    {
+                        if (MessageBox.Show(string.Format("The file '{0}' already exists! Should it be overwritten?", loggingOutputFilePath), "File exists", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                            return;
+                        else
+                        {
+                            System.IO.File.Delete(loggingOutputFilePath);
+                        }
+                    }
+
+                    StringBuilder header = new StringBuilder();
+                    header.Append("Time");
+                    foreach (PCMonInstance pcmi in pcMonInstances)
+                    {
+                        header.Append("," + pcmi.Name.Replace(",", ""));
+                    }
+                    header.Append("\r\n");
+                    System.IO.File.WriteAllText(loggingOutputFilePath, header.ToString());
+                    loggingEnabled = true;
+                    startLoggingToolStripMenuItem.Text = "Stop logging";
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+        private void LogToFile()
+        {
+            if (loggingEnabled)
+            {
+                try
+                {
+                    if (System.IO.File.Exists(loggingOutputFilePath))
+                    {
+                        StringBuilder lineTest = new StringBuilder();
+                        lineTest.Append(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
+                        foreach (PCMonInstance pcmi in pcMonInstances)
+                        {
+                            lineTest.Append("," + pcmi.LastValue.ToString("0.00"));
+                        }
+                        lineTest.Append("\r\n");
+                        System.IO.File.AppendAllText(loggingOutputFilePath, lineTest.ToString());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    StartStopLogging(true);
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        } 
+        #endregion
+
     }
 }

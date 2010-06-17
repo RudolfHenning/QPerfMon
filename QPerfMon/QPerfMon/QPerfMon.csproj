@@ -66,6 +66,12 @@
     <Compile Include="ListViewR.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="LogToFileOptions.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="LogToFileOptions.Designer.cs">
+      <DependentUpon>LogToFileOptions.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -84,6 +90,9 @@
     <EmbeddedResource Include="InputBox.resx">
       <DependentUpon>InputBox.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="LogToFileOptions.resx">
+      <DependentUpon>LogToFileOptions.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
@@ -99,6 +108,7 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Include="app.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
