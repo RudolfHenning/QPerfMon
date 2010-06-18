@@ -16,13 +16,31 @@ namespace QPerfMon
             InitializeComponent();
         }
 
+        #region Properties
         public string LoggingDirectory { get; set; }
         public string LoggingFileName { get; set; }
         public bool LoggingAppendDateTime { get; set; }
+        public long LoggingMinimumDiskSpaceLimitMB { get; set; }
+        public long LoggingCreateNewFileEveryMB { get; set; }
+        public int LoggingSampleRate { get; set; }
+        #endregion
 
+        #region Form events
+        private void LogToFileOptions_Load(object sender, EventArgs e)
+        {
+            txtLoggingDirectory.Text = LoggingDirectory;
+            txtLoggingFileName.Text = LoggingFileName;
+            chkLoggingAppendDateTime.Checked = LoggingAppendDateTime;
+            numericUpDownMinimumDiskSpaceLimitMB.Value = LoggingMinimumDiskSpaceLimitMB;
+            numericUpDownCreateNewFileEveryMB.Value = LoggingCreateNewFileEveryMB;
+            numericUpDownSampleRate.Value = LoggingSampleRate;
+        } 
+        #endregion
+
+        #region Button events
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            if (! Directory.Exists(txtLoggingDirectory.Text))
+            if (!Directory.Exists(txtLoggingDirectory.Text))
             {
                 MessageBox.Show("No or invalid directory specified!", "Directory", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 txtLoggingDirectory.Focus();
@@ -37,11 +55,13 @@ namespace QPerfMon
                 LoggingDirectory = txtLoggingDirectory.Text;
                 LoggingFileName = txtLoggingFileName.Text;
                 LoggingAppendDateTime = chkLoggingAppendDateTime.Checked;
+                LoggingMinimumDiskSpaceLimitMB = (long)numericUpDownMinimumDiskSpaceLimitMB.Value;
+                LoggingCreateNewFileEveryMB = (long)numericUpDownCreateNewFileEveryMB.Value;
+                LoggingSampleRate = (int)numericUpDownSampleRate.Value;
                 DialogResult = DialogResult.OK;
                 Close();
             }
         }
-
         private void cmdSelectColor_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog fbd = new FolderBrowserDialog();
@@ -50,15 +70,8 @@ namespace QPerfMon
             {
                 txtLoggingDirectory.Text = fbd.SelectedPath;
             }
-        }
-
-        private void LogToFileOptions_Load(object sender, EventArgs e)
-        {
-            txtLoggingDirectory.Text = LoggingDirectory;
-            txtLoggingFileName.Text = LoggingFileName;
-            chkLoggingAppendDateTime.Checked = LoggingAppendDateTime;
-        }
-
+        } 
+        #endregion
 
     }
 }

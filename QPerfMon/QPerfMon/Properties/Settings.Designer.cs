@@ -58,5 +58,65 @@ namespace QPerfMon.Properties {
                 this["LoggingAppendDateTime"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("50")]
+        public long LoggingMinimumDiskSpaceLimitMB {
+            get {
+                return ((long)(this["LoggingMinimumDiskSpaceLimitMB"]));
+            }
+            set {
+                this["LoggingMinimumDiskSpaceLimitMB"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("50")]
+        public long LoggingCreateNewFileEveryMB {
+            get {
+                return ((long)(this["LoggingCreateNewFileEveryMB"]));
+            }
+            set {
+                this["LoggingCreateNewFileEveryMB"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1000")]
+        public int LoggingCreateNewFileMaxCounter {
+            get {
+                return ((int)(this["LoggingCreateNewFileMaxCounter"]));
+            }
+            set {
+                this["LoggingCreateNewFileMaxCounter"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("1")]
+        public int LoggingSampleRate {
+            get {
+                return ((int)(this["LoggingSampleRate"]));
+            }
+            set {
+                this["LoggingSampleRate"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool NewVersion {
+            get {
+                return ((bool)(this["NewVersion"]));
+            }
+            set {
+                this["NewVersion"] = value;
+            }
+        }
     }
 }

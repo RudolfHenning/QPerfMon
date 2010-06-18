@@ -12,6 +12,13 @@ namespace QPerfMon
         [STAThread]
         static void Main(string[] args)
         {
+            if (Properties.Settings.Default.NewVersion)
+            {
+                Properties.Settings.Default.Upgrade();
+                Properties.Settings.Default.NewVersion = false;
+                Properties.Settings.Default.Save();
+            }
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             try

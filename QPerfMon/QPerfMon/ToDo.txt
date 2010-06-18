@@ -1,0 +1,9 @@
+﻿To Do
+ Control logging options from command line paramters
+ 
+Done
+ Logging
+  Sample rate: Only capture every x updates of the graph - Done
+  Automatically stop capturing data if hdd free space reach X MB (size * 1048576) - Done
+  Create new file if current file reach Y KB (file size * 1024) - Done
+ 

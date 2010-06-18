@@ -28,6 +28,9 @@ namespace QPerfMon
 
         private bool loggingEnabled = false;
         private string loggingOutputFilePath;
+        private string loggingOutputFilePathBase;
+        private int loggingOutputFileNewFileCounter;
+        private int loggingSampleRateCounter = 1;
         #endregion
 
         #region Constructors
@@ -183,21 +186,21 @@ namespace QPerfMon
                         c2DPushGraphControl.SetSelectedLine(lvwCounters.SelectedItems[0].Text);
                         removeToolStripMenuItem.Enabled = (lvwCounters.Items.Count > 1) && (lvwCounters.Items.Count > lvwCounters.SelectedItems.Count);
                         moveSelectionToNewWindowToolStripMenuItem.Enabled = (lvwCounters.Items.Count > lvwCounters.SelectedItems.Count);
-                        if (lvwCounters.SelectedItems.Count > 1)
-                        {
-                            toolStripStatusLabelSelection.Text = string.Format("{0} counter(s), {1} selected", lvwCounters.Items.Count, lvwCounters.SelectedItems.Count);
-                        }
-                        else
-                        {
-                            toolStripStatusLabelSelection.Text = string.Format("{0} counter(s), Selected: {1}", lvwCounters.Items.Count, lvwCounters.SelectedItems[0].Text);
-                        }
+                        //if (lvwCounters.SelectedItems.Count > 1)
+                        //{
+                        //    toolStripStatusLabelSelection.Text = string.Format("{0} counter(s), {1} selected", lvwCounters.Items.Count, lvwCounters.SelectedItems.Count);
+                        //}
+                        //else
+                        //{
+                        //    toolStripStatusLabelSelection.Text = string.Format("{0} counter(s), Selected: {1}", lvwCounters.Items.Count, lvwCounters.SelectedItems[0].Text);
+                        //}
                     }
                     else
                     {
                         c2DPushGraphControl.SetSelectedLine("");
                         removeToolStripMenuItem.Enabled = false;
                         moveSelectionToNewWindowToolStripMenuItem.Enabled = false;
-                        toolStripStatusLabelSelection.Text = string.Format("{0} counter(s)", lvwCounters.Items.Count);
+                        //toolStripStatusLabelSelection.Text = string.Format("{0} counter(s)", lvwCounters.Items.Count);
                     }
 
                     if (lvwCounters.SelectedItems.Count == 1)
@@ -590,15 +593,32 @@ namespace QPerfMon
         }
         private void logDataToFileToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (loggingEnabled)
+            {
+                if (MessageBox.Show("Logging is active! Do you want to stop logging and change logging settings?", "Logging active", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                {
+                    return;
+                }
+                else
+                {
+                    StartStopLogging(true);
+                }
+            }
             LogToFileOptions logToFileOptions = new LogToFileOptions();
             logToFileOptions.LoggingDirectory = Properties.Settings.Default.LoggingDirectory;
             logToFileOptions.LoggingFileName = Properties.Settings.Default.LoggingFileName;
             logToFileOptions.LoggingAppendDateTime = Properties.Settings.Default.LoggingAppendDateTime;
+            logToFileOptions.LoggingMinimumDiskSpaceLimitMB = Properties.Settings.Default.LoggingMinimumDiskSpaceLimitMB;
+            logToFileOptions.LoggingCreateNewFileEveryMB = Properties.Settings.Default.LoggingCreateNewFileEveryMB;
+            logToFileOptions.LoggingSampleRate = Properties.Settings.Default.LoggingSampleRate;
             if (logToFileOptions.ShowDialog() == DialogResult.OK)
             {
                 Properties.Settings.Default.LoggingDirectory = logToFileOptions.LoggingDirectory;
                 Properties.Settings.Default.LoggingFileName = logToFileOptions.LoggingFileName;
                 Properties.Settings.Default.LoggingAppendDateTime = logToFileOptions.LoggingAppendDateTime;
+                Properties.Settings.Default.LoggingMinimumDiskSpaceLimitMB = logToFileOptions.LoggingMinimumDiskSpaceLimitMB;
+                Properties.Settings.Default.LoggingCreateNewFileEveryMB = logToFileOptions.LoggingCreateNewFileEveryMB;
+                Properties.Settings.Default.LoggingSampleRate = logToFileOptions.LoggingSampleRate;
                 Properties.Settings.Default.Save();
                 IsLoggingSetUp();
             }
@@ -712,18 +732,28 @@ namespace QPerfMon
         {
             try
             {
+                StringBuilder footerText = new StringBuilder();
+                if (loggingEnabled)
+                {
+
+                    footerText.Append("* ");
+                }
+                
                 if (lvwCounters.SelectedItems.Count == 0)
                 {
-                    toolStripStatusLabelSelection.Text = string.Format("{0} counter(s)", lvwCounters.Items.Count);
+                    
+                    footerText.Append(string.Format("{0} counter(s)", lvwCounters.Items.Count));
                 }
                 else if (lvwCounters.SelectedItems.Count == 1)
                 {
-                    toolStripStatusLabelSelection.Text = string.Format("{0} counter(s), Selected: {1}", lvwCounters.Items.Count, lvwCounters.SelectedItems[0].Text);
+                    footerText.Append(string.Format("{0} counter(s), Selected: {1}", lvwCounters.Items.Count, lvwCounters.SelectedItems[0].Text));
                 }
                 else
                 {
-                    toolStripStatusLabelSelection.Text = string.Format("{0} counter(s), {1} selected", lvwCounters.Items.Count, lvwCounters.SelectedItems.Count);
+                    footerText.Append(string.Format("{0} counter(s), {1} selected", lvwCounters.Items.Count, lvwCounters.SelectedItems.Count));
                 }
+                toolStripStatusLabelSelection.Text = footerText.ToString();
+                
                 toolStripStatusLabelSelection.ToolTipText = toolStripStatusLabelSelection.Text;
                 toolTip1.SetToolTip(statusStrip1, toolStripStatusLabelSelection.Text);
             }
@@ -763,33 +793,49 @@ namespace QPerfMon
                     filename += DateTime.Now.ToString("yyyyMMddHHmmss");
                 filename += ".csv";
                 loggingOutputFilePath = System.IO.Path.Combine(Properties.Settings.Default.LoggingDirectory, filename);
-                try
+                loggingOutputFilePathBase = loggingOutputFilePath;
+                loggingOutputFileNewFileCounter = 0;
+                loggingSampleRateCounter = 1;
+                CreateNewLoggingFile();
+            }
+            UpdateStatusBarText();
+        }
+        private void CreateNewLoggingFile()
+        {
+            try
+            {
+                if (System.IO.File.Exists(loggingOutputFilePath))
                 {
-                    if (System.IO.File.Exists(loggingOutputFilePath))
+                    if (MessageBox.Show(string.Format("The file '{0}' already exists! Should it be overwritten?", loggingOutputFilePath), "File exists", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                        return;
+                    else
                     {
-                        if (MessageBox.Show(string.Format("The file '{0}' already exists! Should it be overwritten?", loggingOutputFilePath), "File exists", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                            return;
-                        else
-                        {
-                            System.IO.File.Delete(loggingOutputFilePath);
-                        }
+                        System.IO.File.Delete(loggingOutputFilePath);
                     }
+                }
 
-                    StringBuilder header = new StringBuilder();
-                    header.Append("Time");
-                    foreach (PCMonInstance pcmi in pcMonInstances)
-                    {
-                        header.Append("," + pcmi.Name.Replace(",", ""));
-                    }
-                    header.Append("\r\n");
-                    System.IO.File.WriteAllText(loggingOutputFilePath, header.ToString());
-                    loggingEnabled = true;
-                    startLoggingToolStripMenuItem.Text = "Stop logging";
-                }
-                catch (Exception ex)
+                StringBuilder header = new StringBuilder();
+                header.Append("Time");
+                foreach (PCMonInstance pcmi in pcMonInstances)
                 {
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    header.Append("," + pcmi.Name.Replace(",", ""));
                 }
+                header.Append("\r\n");
+                System.IO.File.WriteAllText(loggingOutputFilePath, header.ToString());
+                loggingEnabled = true;
+                startLoggingToolStripMenuItem.Text = "Stop logging";
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+        private void CreateNewLoggingFileName()
+        {
+            while (System.IO.File.Exists(loggingOutputFilePath) && loggingOutputFileNewFileCounter < Properties.Settings.Default.LoggingCreateNewFileMaxCounter)
+            {
+                loggingOutputFileNewFileCounter++;
+                loggingOutputFilePath = loggingOutputFilePathBase.Replace(".csv", "-" + loggingOutputFileNewFileCounter.ToString() + ".csv");
             }
         }
         private void LogToFile()
@@ -798,8 +844,39 @@ namespace QPerfMon
             {
                 try
                 {
-                    if (System.IO.File.Exists(loggingOutputFilePath))
+                    loggingSampleRateCounter++;
+                    if (loggingSampleRateCounter > Properties.Settings.Default.LoggingSampleRate)
                     {
+                        loggingSampleRateCounter = 1;
+
+                        //Checking disk space
+                        if (!loggingOutputFilePath.StartsWith("\\") && loggingOutputFilePath.Length > 0)
+                        {
+                            System.IO.DriveInfo di = new System.IO.DriveInfo(loggingOutputFilePath.Substring(0, 1));
+                            long availableMB = (di.AvailableFreeSpace / 1048576);
+                            if (availableMB < Properties.Settings.Default.LoggingMinimumDiskSpaceLimitMB)
+                            {
+                                StartStopLogging(true);
+                                MessageBox.Show("Disk space running low! Logging stopped to avoid system crash.", "Low disk space", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                return;
+                            }
+                        }
+                        //if something or someone deletes the file... nasty of them!
+                        if (!System.IO.File.Exists(loggingOutputFilePath))
+                        {
+                            CreateNewLoggingFile();
+                        }
+                        //Check if new file must be created
+                        if (Properties.Settings.Default.LoggingCreateNewFileEveryMB > 0)
+                        {
+                            System.IO.FileInfo fi = new System.IO.FileInfo(loggingOutputFilePath);
+                            if ((fi.Length / 1048576) >= Properties.Settings.Default.LoggingCreateNewFileEveryMB)
+                            {
+                                CreateNewLoggingFileName();
+                                CreateNewLoggingFile();
+                            }
+                        }
+
                         StringBuilder lineTest = new StringBuilder();
                         lineTest.Append(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                         foreach (PCMonInstance pcmi in pcMonInstances)
