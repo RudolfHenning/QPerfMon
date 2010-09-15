@@ -929,7 +929,10 @@ namespace HenIT.Windows.Controls.C2DPushGraph
 
                     Point lastPoint = new Point();
                     lastPoint.X = m_OffsetX;
-                    lastPoint.Y = Height - (int)(((line.m_MagnitudeList[0] * line.scale) *
+                    double scaledHeight = line.m_MagnitudeList[0] * line.scale;
+                    if (scaledHeight >= int.MaxValue)
+                        scaledHeight = 0;
+                    lastPoint.Y = Height - (int)((scaledHeight *
                        Height) / (m_MaxPeek - m_MinPeek));
 
                     for (int n = 0; n < line.m_MagnitudeList.Count; ++n)
@@ -944,7 +947,10 @@ namespace HenIT.Windows.Controls.C2DPushGraph
                             // Weird hack because BarRect.Location.* causes error
                             Point p = barRect.Location;
                             p.X = m_OffsetX + (n * m_LineInterval) + 1;
-                            p.Y = Height - (int)(((line.m_MagnitudeList[n] * line.scale) * Height) /
+                            scaledHeight = line.m_MagnitudeList[n] * line.scale;
+                            if (scaledHeight >= int.MaxValue)
+                                scaledHeight = 0;
+                            p.Y = Height - (int)((scaledHeight * Height) /
                                                 (m_MaxPeek - m_MinPeek));
                             barRect.Location = p;
 
@@ -958,7 +964,10 @@ namespace HenIT.Windows.Controls.C2DPushGraph
                             /* Draw a line */
 
                             int newX = m_OffsetX + (n * m_LineInterval);
-                            int newY = Height - (int)(((line.m_MagnitudeList[n] * line.scale) * Height) /
+                            scaledHeight = line.m_MagnitudeList[n] * line.scale;
+                            if (scaledHeight >= int.MaxValue)
+                                scaledHeight = 0;
+                            int newY = Height - (int)((scaledHeight * Height) /
                                                 (m_MaxPeek - m_MinPeek));
 
                             //lines at the top are not visible. Shift it down a little
