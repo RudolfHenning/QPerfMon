@@ -611,6 +611,7 @@ namespace QPerfMon
             logToFileOptions.LoggingMinimumDiskSpaceLimitMB = Properties.Settings.Default.LoggingMinimumDiskSpaceLimitMB;
             logToFileOptions.LoggingCreateNewFileEveryMB = Properties.Settings.Default.LoggingCreateNewFileEveryMB;
             logToFileOptions.LoggingSampleRate = Properties.Settings.Default.LoggingSampleRate;
+            logToFileOptions.LoggingDecimalDigits = Properties.Settings.Default.LoggingDecimalDigits;
             if (logToFileOptions.ShowDialog() == DialogResult.OK)
             {
                 Properties.Settings.Default.LoggingDirectory = logToFileOptions.LoggingDirectory;
@@ -619,6 +620,7 @@ namespace QPerfMon
                 Properties.Settings.Default.LoggingMinimumDiskSpaceLimitMB = logToFileOptions.LoggingMinimumDiskSpaceLimitMB;
                 Properties.Settings.Default.LoggingCreateNewFileEveryMB = logToFileOptions.LoggingCreateNewFileEveryMB;
                 Properties.Settings.Default.LoggingSampleRate = logToFileOptions.LoggingSampleRate;
+                Properties.Settings.Default.LoggingDecimalDigits = logToFileOptions.LoggingDecimalDigits;
                 Properties.Settings.Default.Save();
                 IsLoggingSetUp();
             }
@@ -844,6 +846,7 @@ namespace QPerfMon
             {
                 try
                 {
+                    string loggingDecimalDigits = "0." + new string('0', Properties.Settings.Default.LoggingDecimalDigits);
                     loggingSampleRateCounter++;
                     if (loggingSampleRateCounter > Properties.Settings.Default.LoggingSampleRate)
                     {
@@ -881,7 +884,7 @@ namespace QPerfMon
                         lineTest.Append(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                         foreach (PCMonInstance pcmi in pcMonInstances)
                         {
-                            lineTest.Append("," + pcmi.LastValue.ToString("0.00"));
+                            lineTest.Append("," + pcmi.LastValue.ToString(loggingDecimalDigits));
                         }
                         lineTest.Append("\r\n");
                         System.IO.File.AppendAllText(loggingOutputFilePath, lineTest.ToString());

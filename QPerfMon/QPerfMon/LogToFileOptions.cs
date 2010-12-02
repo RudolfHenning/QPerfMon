@@ -23,6 +23,7 @@ namespace QPerfMon
         public long LoggingMinimumDiskSpaceLimitMB { get; set; }
         public long LoggingCreateNewFileEveryMB { get; set; }
         public int LoggingSampleRate { get; set; }
+        public int LoggingDecimalDigits { get; set; }
         #endregion
 
         #region Form events
@@ -34,6 +35,7 @@ namespace QPerfMon
             numericUpDownMinimumDiskSpaceLimitMB.Value = LoggingMinimumDiskSpaceLimitMB;
             numericUpDownCreateNewFileEveryMB.Value = LoggingCreateNewFileEveryMB;
             numericUpDownSampleRate.Value = LoggingSampleRate;
+            numericUpDownDecimals.Value = LoggingDecimalDigits;
         } 
         #endregion
 
@@ -58,6 +60,8 @@ namespace QPerfMon
                 LoggingMinimumDiskSpaceLimitMB = (long)numericUpDownMinimumDiskSpaceLimitMB.Value;
                 LoggingCreateNewFileEveryMB = (long)numericUpDownCreateNewFileEveryMB.Value;
                 LoggingSampleRate = (int)numericUpDownSampleRate.Value;
+                LoggingDecimalDigits = (int)numericUpDownDecimals.Value;
+
                 DialogResult = DialogResult.OK;
                 Close();
             }

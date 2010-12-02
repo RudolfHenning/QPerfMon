@@ -45,29 +45,32 @@
             this.label6 = new System.Windows.Forms.Label();
             this.numericUpDownSampleRate = new System.Windows.Forms.NumericUpDown();
             this.label7 = new System.Windows.Forms.Label();
+            this.numericUpDownDecimals = new System.Windows.Forms.NumericUpDown();
+            this.label8 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMinimumDiskSpaceLimitMB)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCreateNewFileEveryMB)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSampleRate)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownDecimals)).BeginInit();
             this.SuspendLayout();
             // 
             // cmdCancel
             // 
             this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(326, 245);
+            this.cmdCancel.Location = new System.Drawing.Point(326, 282);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
-            this.cmdCancel.TabIndex = 15;
+            this.cmdCancel.TabIndex = 17;
             this.cmdCancel.Text = "Cancel";
             this.cmdCancel.UseVisualStyleBackColor = true;
             // 
             // cmdOK
             // 
             this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdOK.Location = new System.Drawing.Point(245, 245);
+            this.cmdOK.Location = new System.Drawing.Point(245, 282);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
-            this.cmdOK.TabIndex = 14;
+            this.cmdOK.TabIndex = 16;
             this.cmdOK.Text = "OK";
             this.cmdOK.UseVisualStyleBackColor = true;
             this.cmdOK.Click += new System.EventHandler(this.cmdOK_Click);
@@ -77,7 +80,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(12, 11);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(92, 15);
+            this.label1.Size = new System.Drawing.Size(82, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Output directory";
             // 
@@ -106,7 +109,7 @@
             this.chkLoggingAppendDateTime.AutoSize = true;
             this.chkLoggingAppendDateTime.Location = new System.Drawing.Point(15, 96);
             this.chkLoggingAppendDateTime.Name = "chkLoggingAppendDateTime";
-            this.chkLoggingAppendDateTime.Size = new System.Drawing.Size(122, 19);
+            this.chkLoggingAppendDateTime.Size = new System.Drawing.Size(111, 17);
             this.chkLoggingAppendDateTime.TabIndex = 5;
             this.chkLoggingAppendDateTime.Text = "Append date/time";
             this.chkLoggingAppendDateTime.UseVisualStyleBackColor = true;
@@ -116,7 +119,7 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(12, 52);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(384, 15);
+            this.label2.Size = new System.Drawing.Size(333, 13);
             this.label2.TabIndex = 3;
             this.label2.Text = "File name (do not specify extension - .csv will be added automatically)";
             // 
@@ -134,7 +137,7 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(12, 118);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(245, 15);
+            this.label3.Size = new System.Drawing.Size(214, 13);
             this.label3.TabIndex = 6;
             this.label3.Text = "Stop logging if available disk space drops to";
             // 
@@ -170,7 +173,7 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(121, 138);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(26, 15);
+            this.label4.Size = new System.Drawing.Size(23, 13);
             this.label4.TabIndex = 8;
             this.label4.Text = "MB";
             // 
@@ -179,7 +182,7 @@
             this.label5.AutoSize = true;
             this.label5.Location = new System.Drawing.Point(121, 179);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(26, 15);
+            this.label5.Size = new System.Drawing.Size(23, 13);
             this.label5.TabIndex = 11;
             this.label5.Text = "MB";
             // 
@@ -210,7 +213,7 @@
             this.label6.AutoSize = true;
             this.label6.Location = new System.Drawing.Point(12, 159);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(259, 15);
+            this.label6.Size = new System.Drawing.Size(229, 13);
             this.label6.TabIndex = 9;
             this.label6.Text = "Create new file every (0 - never create new file)";
             // 
@@ -241,15 +244,48 @@
             this.label7.AutoSize = true;
             this.label7.Location = new System.Drawing.Point(12, 200);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(283, 15);
+            this.label7.Size = new System.Drawing.Size(245, 13);
             this.label7.TabIndex = 12;
             this.label7.Text = "Sample rate - log only every X times graph updates";
+            // 
+            // numericUpDownDecimals
+            // 
+            this.numericUpDownDecimals.Location = new System.Drawing.Point(37, 259);
+            this.numericUpDownDecimals.Maximum = new decimal(new int[] {
+            10,
+            0,
+            0,
+            0});
+            this.numericUpDownDecimals.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.numericUpDownDecimals.Name = "numericUpDownDecimals";
+            this.numericUpDownDecimals.Size = new System.Drawing.Size(78, 20);
+            this.numericUpDownDecimals.TabIndex = 15;
+            this.numericUpDownDecimals.Value = new decimal(new int[] {
+            2,
+            0,
+            0,
+            0});
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(12, 241);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(119, 13);
+            this.label8.TabIndex = 14;
+            this.label8.Text = "Decimal digits displayed";
             // 
             // LogToFileOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(413, 280);
+            this.ClientSize = new System.Drawing.Size(413, 317);
+            this.Controls.Add(this.numericUpDownDecimals);
+            this.Controls.Add(this.label8);
             this.Controls.Add(this.numericUpDownSampleRate);
             this.Controls.Add(this.label7);
             this.Controls.Add(this.label5);
@@ -277,6 +313,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMinimumDiskSpaceLimitMB)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCreateNewFileEveryMB)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSampleRate)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.numericUpDownDecimals)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -300,5 +337,7 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.NumericUpDown numericUpDownSampleRate;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.NumericUpDown numericUpDownDecimals;
+        private System.Windows.Forms.Label label8;
     }
 }
