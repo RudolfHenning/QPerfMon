@@ -130,5 +130,17 @@ namespace QPerfMon.Properties {
                 this["LoggingDecimalDigits"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool MainWindowSnap {
+            get {
+                return ((bool)(this["MainWindowSnap"]));
+            }
+            set {
+                this["MainWindowSnap"] = value;
+            }
+        }
     }
 }

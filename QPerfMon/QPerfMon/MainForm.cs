@@ -11,7 +11,7 @@ using HenIT.Utilities;
 
 namespace QPerfMon
 {
-    public partial class MainForm : Form
+    public partial class MainForm : FadeSnapForm
     {
         #region Private vars
         private List<PCMonInstance> pcMonInstances = new List<PCMonInstance>();
@@ -115,6 +115,8 @@ namespace QPerfMon
         #region Form events
         private void MainForm_Load(object sender, EventArgs e)
         {
+
+            snapToDesktopSidesToolStripMenuItem.Checked = Properties.Settings.Default.MainWindowSnap;
             c2DPushGraphControl.GridSize = (ushort)(c2DPushGraphControl.Height / 10);
 
             LoadCounters(initialPerfMonFile);
@@ -127,7 +129,9 @@ namespace QPerfMon
         }
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            paused = true; //stop any collection still in progress
             timer.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
+            Properties.Settings.Default.Save();
         }
         private void MainForm_ResizeEnd(object sender, EventArgs e)
         {
@@ -184,6 +188,7 @@ namespace QPerfMon
                     if (lvwCounters.SelectedItems.Count > 0)
                     {
                         c2DPushGraphControl.SetSelectedLine(lvwCounters.SelectedItems[0].Text);
+                        
                         removeToolStripMenuItem.Enabled = (lvwCounters.Items.Count > 1) && (lvwCounters.Items.Count > lvwCounters.SelectedItems.Count);
                         moveSelectionToNewWindowToolStripMenuItem.Enabled = (lvwCounters.Items.Count > lvwCounters.SelectedItems.Count);
                         //if (lvwCounters.SelectedItems.Count > 1)
@@ -207,6 +212,8 @@ namespace QPerfMon
                     {
                         visibleToolStripMenuItem.Enabled = true;
                         formattingToolStripMenuItem.Enabled = true;
+                        addClonePerformanceCounterToolStripMenuItem.Enabled = true;
+                        addCloneAllToolStripMenuItem.Enabled = true;
                         toolStripSeparator1.Visible = lvwCounters.SelectedItems[0].ForeColor == Color.Red;
                         lastErrorToolStripMenuItem1.Visible = lvwCounters.SelectedItems[0].ForeColor == Color.Red;
                     }
@@ -214,6 +221,8 @@ namespace QPerfMon
                     {
                         visibleToolStripMenuItem.Enabled = false;
                         formattingToolStripMenuItem.Enabled = false;
+                        addClonePerformanceCounterToolStripMenuItem.Enabled = false;
+                        addCloneAllToolStripMenuItem.Enabled = false;
                         toolStripSeparator1.Visible = false;
                         lastErrorToolStripMenuItem1.Visible = false;
                     }
@@ -252,56 +261,62 @@ namespace QPerfMon
             {
                 if (this != null && !this.Disposing)
                 {
-                    this.Invoke((MethodInvoker)delegate()
-                        {
-                            lvwCounters.BeginUpdate();
-                            try
+                    try
+                    {
+                        this.Invoke((MethodInvoker)delegate()
                             {
-                                int[] newvalues = new int[lvwCounters.Items.Count];
-                                for (int i = 0; i < pcMonInstances.Count; i++)
+                                lvwCounters.BeginUpdate();
+                                try
                                 {
-                                    PCMonInstance pcMonInstance = pcMonInstances[i];
-                                    try
+                                    int[] newvalues = new int[lvwCounters.Items.Count];
+                                    for (int i = 0; i < pcMonInstances.Count; i++)
                                     {
-                                        //lazy load 
-                                        if (pcMonInstance.PCInstance == null)
+                                        if (paused)
+                                            break;
+                                        PCMonInstance pcMonInstance = pcMonInstances[i];
+                                        try
                                         {
-                                            pcMonInstance.CreatePCInstance();
-                                        }
+                                            //lazy load 
+                                            if (pcMonInstance.PCInstance == null)
+                                            {
+                                                pcMonInstance.CreatePCInstance();
+                                            }
 
-                                        float pcValue = (pcMonInstance.PCInstance.NextValue());
-                                        pcMonInstance.LastValue = pcValue;
-                                        string pcValueStr = pcValue.ToString("0.00");
-                                        if (lvwCounters.Items[i].SubItems[3].Text != pcValueStr)
-                                            lvwCounters.Items[i].SubItems[3].Text = pcValueStr;
-                                        c2DPushGraphControl.Push(pcValue, pcMonInstance.Name);
-                                        if (lvwCounters.Items[i].ForeColor != SystemColors.WindowText)
-                                            lvwCounters.Items[i].ForeColor = SystemColors.WindowText;
-                                        pcMonInstance.LastError = "";
-                                        
+                                            float pcValue = (pcMonInstance.PCInstance.NextValue());
+                                            pcMonInstance.LastValue = pcValue;
+                                            string pcValueStr = pcValue.ToString("0.00");
+                                            if (lvwCounters.Items[i].SubItems[3].Text != pcValueStr)
+                                                lvwCounters.Items[i].SubItems[3].Text = pcValueStr;
+                                            c2DPushGraphControl.Push(pcValue, pcMonInstance.Name);
+                                            if (lvwCounters.Items[i].ForeColor != SystemColors.WindowText)
+                                                lvwCounters.Items[i].ForeColor = SystemColors.WindowText;
+                                            pcMonInstance.LastError = "";
+
+                                        }
+                                        catch (Exception ex) //basically ignore exception and add 0 value
+                                        {
+                                            c2DPushGraphControl.Push(0, pcMonInstances[i].Name);
+                                            lvwCounters.Items[i].ForeColor = Color.Red;
+                                            lvwCounters.Items[i].Checked = false;
+                                            lvwCounters.Items[i].SubItems[3].Text = "Err";
+                                            pcMonInstance.LastError = ex.Message;
+                                        }
                                     }
-                                    catch (Exception ex) //basically ignore exception and add 0 value
-                                    {
-                                        c2DPushGraphControl.Push(0, pcMonInstances[i].Name);
-                                        lvwCounters.Items[i].ForeColor = Color.Red;
-                                        lvwCounters.Items[i].Checked = false;
-                                        lvwCounters.Items[i].SubItems[3].Text = "Err";
-                                        pcMonInstance.LastError = ex.Message;
-                                    }
+                                    LogToFile();
+                                    c2DPushGraphControl.UpdateGraph();
                                 }
-                                LogToFile();
-                                c2DPushGraphControl.UpdateGraph();
-                            }
-                            catch (Exception ex)
-                            {
-                                paused = true;
-                                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                            }
-                            finally
-                            {
-                                lvwCounters.EndUpdate();
-                            }
-                        });
+                                catch (Exception ex)
+                                {
+                                    paused = true;
+                                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                }
+                                finally
+                                {
+                                    lvwCounters.EndUpdate();
+                                }
+                            });
+                    }
+                    catch (System.ObjectDisposedException) { }
                 }
             }
         }
@@ -363,7 +378,77 @@ namespace QPerfMon
         }
         private void addToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            AddNewCounter("", "", "", "");
+            //AddCounter addCounter = new AddCounter();
+            //if (lvwCounters.SelectedItems.Count > 0)
+            //{
+            //    PCMonInstance pcmi = (PCMonInstance)lvwCounters.SelectedItems[0].Tag;
+            //    addCounter.InitialMachine = pcmi.Machine;
+            //}
+            //if (addCounter.ShowDialog() == DialogResult.OK)
+            //{
+            //    StartStopLogging(true);
+            //    bool oldPause = paused;
+            //    paused = true;
+            //    initializing = true;
+            //    try
+            //    {
+            //        pcMonInstances.Add(addCounter.SelectedPCMonInstance);
+            //        int colorIndex = lvwCounters.Items.Count % lineColors.Count;
+            //        ListViewItem lvi = new ListViewItem(addCounter.SelectedPCMonInstance.Name);
+            //        lvi.UseItemStyleForSubItems = false;
+            //        ListViewItem.ListViewSubItem sub = new ListViewItem.ListViewSubItem();
+            //        sub.Text = "###";
+            //        sub.ForeColor = lineColors[colorIndex];
+            //        sub.BackColor = lineColors[colorIndex];
+            //        lvi.SubItems.Add(sub);
+            //        lvi.SubItems.Add("1");
+            //        lvi.SubItems.Add("");
+            //        lvi.Checked = true;
+            //        lvi.Tag = addCounter.SelectedPCMonInstance;
+            //        lvwCounters.Items.Add(lvi);
+
+            //        C2DPushGraph.LineHandle m_LineHandle;
+            //        m_LineHandle = c2DPushGraphControl.AddLine(addCounter.SelectedPCMonInstance.Name, lineColors[colorIndex], addCounter.SelectedPCMonInstance.Scale);
+            //        m_LineHandle.Thickness = defaultLineThickness;
+            //        UpdateStatusBarText();
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    }
+            //    initializing = false;
+            //    paused = oldPause;
+            //}
+        }
+        private void addClonePerformanceCounterToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (lvwCounters.SelectedItems.Count > 0)
+            {
+                PCMonInstance pcmi = (PCMonInstance)lvwCounters.SelectedItems[0].Tag;
+                AddNewCounter(pcmi.Machine, pcmi.Category, "", "");
+            }
+            else
+                AddNewCounter("", "", "", "");
+        }
+        private void addCloneAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (lvwCounters.SelectedItems.Count > 0)
+            {
+                PCMonInstance pcmi = (PCMonInstance)lvwCounters.SelectedItems[0].Tag;
+                AddNewCounter(pcmi.Machine, pcmi.Category, pcmi.Counter, pcmi.Instance);
+            }
+            else
+                AddNewCounter("", "", "", "");
+        }
+        private void AddNewCounter(string initialMachine, string initialCategory, string initialCounter, string initialInstance)
+        {
             AddCounter addCounter = new AddCounter();
+            addCounter.InitialMachine = initialMachine;
+            addCounter.InitialCategory = initialCategory;
+            addCounter.InitialCounter = initialCounter;
+            addCounter.InitialInstance = initialInstance;
+
             if (addCounter.ShowDialog() == DialogResult.OK)
             {
                 StartStopLogging(true);
@@ -381,7 +466,7 @@ namespace QPerfMon
                     sub.ForeColor = lineColors[colorIndex];
                     sub.BackColor = lineColors[colorIndex];
                     lvi.SubItems.Add(sub);
-                    lvi.SubItems.Add("1");
+                    lvi.SubItems.Add(addCounter.SelectedPCMonInstance.Scale.ToString());
                     lvi.SubItems.Add("");
                     lvi.Checked = true;
                     lvi.Tag = addCounter.SelectedPCMonInstance;
@@ -399,7 +484,7 @@ namespace QPerfMon
                 initializing = false;
                 paused = oldPause;
             }
-        }        
+        }
         private void removeToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (lvwCounters.Items.Count > 1)
@@ -553,6 +638,7 @@ namespace QPerfMon
         private void pauseToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
             paused = pauseToolStripMenuItem.Checked;
+            UpdateTitleText();
         }
         private void setTitleToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -629,6 +715,11 @@ namespace QPerfMon
         {
             StartStopLogging(false);
         }
+        private void snapToDesktopSidesToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.MainWindowSnap = snapToDesktopSidesToolStripMenuItem.Checked;
+            this.SnappingEnabled = Properties.Settings.Default.MainWindowSnap;
+        }
         #endregion        
 
         #region Loading
@@ -642,15 +733,7 @@ namespace QPerfMon
                 pcMonInstances = new List<PCMonInstance>();
                 lvwCounters.Items.Clear();
                 c2DPushGraphControl.ClearAllLines();
-                displayTitle = qPerfMonFile.Title;
-                if (displayTitle.Length > 0)
-                {
-                    this.Text = defaultTitle + " - " + displayTitle;
-                }
-                else
-                {
-                    this.Text = defaultTitle;
-                }
+                displayTitle = qPerfMonFile.Title;                
                 c2DPushGraphControl.MaxLabel = qPerfMonFile.InitialMaxValue.ToString();
                 c2DPushGraphControl.MaxPeekMagnitude = qPerfMonFile.InitialMaxValue;
                 initialMaxValue = qPerfMonFile.InitialMaxValue;
@@ -684,6 +767,7 @@ namespace QPerfMon
             }
             initializing = false;
             paused = oldPause;
+            UpdateTitleText();
             c2DPushGraphControl.UpdateGraph();
         }
         private void LoadListView()
@@ -763,6 +847,19 @@ namespace QPerfMon
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+        private void UpdateTitleText()
+        {
+            if (displayTitle.Length > 0)
+            {
+                this.Text = defaultTitle + " - " + displayTitle;
+            }
+            else
+            {
+                this.Text = defaultTitle;
+            }
+            if (paused)
+                this.Text += " (paused)";
         }
         #endregion              
 
@@ -898,6 +995,10 @@ namespace QPerfMon
             }
         } 
         #endregion
+
+
+
+        
 
     }
 }

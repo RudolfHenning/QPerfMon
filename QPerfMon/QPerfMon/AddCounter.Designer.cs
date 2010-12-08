@@ -40,6 +40,9 @@
             this.label4 = new System.Windows.Forms.Label();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
+            this.backgroundWorkerLoadMachineDetails = new System.ComponentModel.BackgroundWorker();
+            this.cboScale = new System.Windows.Forms.ComboBox();
+            this.label5 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // label1
@@ -47,7 +50,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(13, 13);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(61, 15);
+            this.label1.Size = new System.Drawing.Size(52, 13);
             this.label1.TabIndex = 0;
             this.label1.Text = "Computer";
             // 
@@ -77,7 +80,7 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(13, 50);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(55, 15);
+            this.label2.Size = new System.Drawing.Size(49, 13);
             this.label2.TabIndex = 3;
             this.label2.Text = "Category";
             // 
@@ -111,7 +114,7 @@
             this.label3.AutoSize = true;
             this.label3.Location = new System.Drawing.Point(13, 77);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(50, 15);
+            this.label3.Size = new System.Drawing.Size(44, 13);
             this.label3.TabIndex = 5;
             this.label3.Text = "Counter";
             // 
@@ -132,14 +135,14 @@
             this.label4.AutoSize = true;
             this.label4.Location = new System.Drawing.Point(13, 104);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(53, 15);
+            this.label4.Size = new System.Drawing.Size(48, 13);
             this.label4.TabIndex = 7;
             this.label4.Text = "Instance";
             // 
             // cmdOK
             // 
             this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdOK.Location = new System.Drawing.Point(209, 139);
+            this.cmdOK.Location = new System.Drawing.Point(209, 157);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
             this.cmdOK.TabIndex = 9;
@@ -151,19 +154,58 @@
             // 
             this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(290, 139);
+            this.cmdCancel.Location = new System.Drawing.Point(290, 157);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
             this.cmdCancel.TabIndex = 10;
             this.cmdCancel.Text = "Cancel";
             this.cmdCancel.UseVisualStyleBackColor = true;
             // 
+            // backgroundWorkerLoadMachineDetails
+            // 
+            this.backgroundWorkerLoadMachineDetails.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorkerLoadMachineDetails_DoWork);
+            // 
+            // cboScale
+            // 
+            this.cboScale.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboScale.FormattingEnabled = true;
+            this.cboScale.Items.AddRange(new object[] {
+            "1000000",
+            "100000",
+            "10000",
+            "1000",
+            "100",
+            "10",
+            "1",
+            "0.1",
+            "0.01",
+            "0.001",
+            "0.0001",
+            "0.00001",
+            "0.000001",
+            "0.0000001"});
+            this.cboScale.Location = new System.Drawing.Point(99, 128);
+            this.cboScale.Name = "cboScale";
+            this.cboScale.Size = new System.Drawing.Size(265, 21);
+            this.cboScale.TabIndex = 12;
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(13, 131);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(34, 13);
+            this.label5.TabIndex = 11;
+            this.label5.Text = "Scale";
+            // 
             // AddCounter
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(376, 174);
+            this.ClientSize = new System.Drawing.Size(376, 192);
+            this.Controls.Add(this.cboScale);
+            this.Controls.Add(this.label5);
             this.Controls.Add(this.cmdCancel);
             this.Controls.Add(this.cmdOK);
             this.Controls.Add(this.cboInstance);
@@ -201,5 +243,8 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Button cmdCancel;
+        private System.ComponentModel.BackgroundWorker backgroundWorkerLoadMachineDetails;
+        private System.Windows.Forms.ComboBox cboScale;
+        private System.Windows.Forms.Label label5;
     }
 }

@@ -51,6 +51,9 @@
       <DependentUpon>AddCounter.cs</DependentUpon>
     </Compile>
     <Compile Include="CommandLineUtils.cs" />
+    <Compile Include="FadeSnapForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Formatting.cs">
       <SubType>Form</SubType>
     </Compile>

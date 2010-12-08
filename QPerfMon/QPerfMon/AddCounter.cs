@@ -17,8 +17,10 @@ namespace QPerfMon
         }
 
         public PCMonInstance SelectedPCMonInstance { get; set; }
-
-
+        public string InitialMachine { get; set; }
+        public string InitialCategory { get; set; }
+        public string InitialCounter { get; set; }
+        public string InitialInstance { get; set; }
 
         private void cmdLoadCategories_Click(object sender, EventArgs e)
         {
@@ -33,6 +35,17 @@ namespace QPerfMon
                 foreach (PerformanceCounterCategory performanceCounterCategory in PerformanceCounterCategory.GetCategories(machineName))
                 {
                     cboCategory.Items.Add(performanceCounterCategory.CategoryName);
+                }
+                if (InitialCategory != null && InitialCategory.Length > 0)
+                {
+                    for (int i = 0; i < cboCategory.Items.Count; i++)
+                    {
+                        if (cboCategory.Items[i].ToString().ToLower() == InitialCategory.ToLower())
+                        {
+                            cboCategory.SelectedIndex = i;
+                            break;
+                        }
+                    }
                 }
             }
             catch (Exception ex)
@@ -72,7 +85,28 @@ namespace QPerfMon
                     {
                         cboCounter.Items.Add(pc.CounterName);
                     }
-
+                    if (InitialCounter != null && InitialCounter.Length > 0)
+                    {
+                        for (int i = 0; i < cboCounter.Items.Count; i++)
+                        {
+                            if (cboCounter.Items[i].ToString().ToLower() == InitialCounter.ToLower())
+                            {
+                                cboCounter.SelectedIndex = i;
+                                break;
+                            }
+                        }
+                    }
+                    if (InitialInstance != null && InitialInstance.Length > 0)
+                    {
+                        for (int i = 0; i < cboInstance.Items.Count; i++)
+                        {
+                            if (cboInstance.Items[i].ToString().ToLower() == InitialInstance.ToLower())
+                            {
+                                cboInstance.SelectedIndex = i;
+                                break;
+                            }
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -111,6 +145,11 @@ namespace QPerfMon
                 MessageBox.Show("You must specify the instance!", "Instance", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 cboInstance.Focus();
             }
+            else if (cboScale.SelectedIndex == -1)
+            {
+                MessageBox.Show("You must specify the scale!", "Scale", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                cboScale.Focus();
+            }
             else
             {
                 try
@@ -123,9 +162,9 @@ namespace QPerfMon
                         else
                             key += cboInstance.Text;
                     }
-                    key += "\\1";
+                    key += "\\" + cboScale.SelectedItem.ToString();
                     SelectedPCMonInstance = new PCMonInstance(key);
-                    SelectedPCMonInstance.Scale = 1;
+                    SelectedPCMonInstance.Scale = double.Parse(cboScale.SelectedItem.ToString());
                     SelectedPCMonInstance.CreatePCInstance();
 
                     DialogResult = DialogResult.OK;
@@ -140,7 +179,22 @@ namespace QPerfMon
 
         private void AddCounter_Load(object sender, EventArgs e)
         {
+            txtComputer.Text = InitialMachine;
+            if (txtComputer.Text.Length > 0)
+            {
+                backgroundWorkerLoadMachineDetails.RunWorkerAsync();
+            }
+            cboScale.SelectedIndex = 6;
+        }
 
+        private void backgroundWorkerLoadMachineDetails_DoWork(object sender, DoWorkEventArgs e)
+        {
+            this.Invoke((MethodInvoker)delegate
+            {
+                System.Threading.Thread.Sleep(100);
+                LoadCategories(txtComputer.Text);
+            }
+            );
         }        
     }
 }
