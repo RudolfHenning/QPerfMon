@@ -360,19 +360,22 @@ namespace QPerfMon
             if (lvwCounters.SelectedItems.Count ==1)
             {
                 Formatting formatting = new Formatting();
-                formatting.SelectedScale = double.Parse(lvwCounters.SelectedItems[0].SubItems[2].Text);
-                formatting.SelectedColor = lvwCounters.SelectedItems[0].SubItems[1].ForeColor;
+                HenIT.Windows.Controls.C2DPushGraph.Graphing.C2DPushGraph.LineHandle lh = c2DPushGraphControl.GetLineHandle(lvwCounters.SelectedItems[0].Text);
+                formatting.SelectedScale = lh.Scale; // double.Parse(lvwCounters.SelectedItems[0].SubItems[2].Text);
+                formatting.SelectedColor = lh.Color;// lvwCounters.SelectedItems[0].SubItems[1].ForeColor;
+                formatting.PlotStyle = lh.PlotStyle;
                 if (formatting.ShowDialog() == DialogResult.OK)
                 {
                     lvwCounters.SelectedItems[0].SubItems[2].Text = formatting.SelectedScale.ToString();
                     lvwCounters.SelectedItems[0].SubItems[1].ForeColor = formatting.SelectedColor;
                     lvwCounters.SelectedItems[0].SubItems[1].BackColor = formatting.SelectedColor;
-
-                    HenIT.Windows.Controls.C2DPushGraph.Graphing.C2DPushGraph.LineHandle lh = c2DPushGraphControl.GetLineHandle(lvwCounters.SelectedItems[0].Text);
+                                        
                     lh.Color = formatting.SelectedColor;
                     lh.Scale = formatting.SelectedScale;
+                    lh.PlotStyle = formatting.PlotStyle;
                     PCMonInstance pcMonInstance = (PCMonInstance)lvwCounters.SelectedItems[0].Tag;
                     pcMonInstance.Scale = formatting.SelectedScale;
+                    pcMonInstance.PlotStyle = (int)formatting.PlotStyle;
                 }
             }
         }
@@ -520,6 +523,7 @@ namespace QPerfMon
                     StartStopLogging(true);
                     saveFileDialogQPerf.FileName = openFileDialogQPerf.FileName;
                     QPerfMonFile qPerfMonFile = SerializationUtils.DeserializeXMLFile<QPerfMonFile>(openFileDialogQPerf.FileName);
+                    toolStripStatusLabelSelection.Text = qPerfMonFile.Version;
                     LoadCounters(qPerfMonFile);
                 }
             }
@@ -538,13 +542,17 @@ namespace QPerfMon
                     QPerfMonFile qPerfMonFile = new QPerfMonFile();
                     qPerfMonFile.Title = displayTitle;
                     qPerfMonFile.InitialMaxValue = initialMaxValue;
+                    qPerfMonFile.Version = Application.ProductVersion.ToString();
+                    
                     foreach (PCMonInstance pcmi in pcMonInstances)
                     {
+                        
                         string key = pcmi.Name;
                         if (pcmi.Scale < 1)
                             key += "\\" + pcmi.Scale.ToString("0.########");
                         else
                             key += "\\" + pcmi.Scale.ToString("0");
+                        key += "\\" + pcmi.PlotStyle;
                         qPerfMonFile.CounterDefinitionList.Add(key);
                     }
                     SerializationUtils.SerializeXMLToFile(saveFileDialogQPerf.FileName, qPerfMonFile);
@@ -757,6 +765,7 @@ namespace QPerfMon
                 {
                     int colorIndex = i % lineColors.Count;
                     m_LineHandle = c2DPushGraphControl.AddLine(pcMonInstances[i].Name, lineColors[colorIndex], pcMonInstances[i].Scale);
+                    m_LineHandle.PlotStyle = (LinePlotStyle)pcMonInstances[i].PlotStyle;
                     if (m_LineHandle != null)
                         m_LineHandle.Thickness = defaultLineThickness;
                 }

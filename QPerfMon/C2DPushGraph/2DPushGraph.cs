@@ -24,6 +24,18 @@ namespace HenIT.Windows.Controls.C2DPushGraph
 {
     namespace Graphing
     {
+        public enum LinePlotStyle
+        {
+            None,
+            Dots,
+            Cross,
+            Ex
+        }
+        internal struct ValueTimeInstance
+        {
+            public double Magnitude;
+            public DateTime Time;
+        }
         public class C2DPushGraph : Control
         {
             public event EventHandler AutoScaleEvent;
@@ -153,6 +165,19 @@ namespace HenIT.Windows.Controls.C2DPushGraph
                     get { return m_Line.m_bShowAsBar; }
                 }
 
+                public LinePlotStyle PlotStyle
+                {
+                    set
+                    {
+                        if (m_Line.PlotStyle != value)
+                        {
+                            m_Line.PlotStyle = value;
+                            m_Owner.Refresh();
+                        }
+                    }
+                    get { return m_Line.PlotStyle; }
+                }
+
                 public double GetMinValue()
                 {
                     if (m_Line == null)
@@ -189,8 +214,9 @@ namespace HenIT.Windows.Controls.C2DPushGraph
 
             private class Line
             {
-                public List<double> m_MagnitudeList = new List<double>();
+                public List<ValueTimeInstance> m_MagnitudeList = new List<ValueTimeInstance>();
                 public Color  m_Color = Color.Green;
+               
                 public string m_NameID = "";
                 public int    m_NumID = -1;
                 public uint   m_Thickness = 1;
@@ -222,11 +248,11 @@ namespace HenIT.Windows.Controls.C2DPushGraph
                     double min = 0;
                     if (m_MagnitudeList.Count > 0)
                     {
-                        min = m_MagnitudeList[0];
+                        min = m_MagnitudeList[0].Magnitude;
                         for (int i = 1; i < m_MagnitudeList.Count; i++)
                         {
-                            if (m_MagnitudeList[i] < min)
-                                min = m_MagnitudeList[i];
+                            if (m_MagnitudeList[i].Magnitude < min)
+                                min = m_MagnitudeList[i].Magnitude;
                         }
 
                     }
@@ -237,15 +263,22 @@ namespace HenIT.Windows.Controls.C2DPushGraph
                     double max = 0;
                     if (m_MagnitudeList.Count > 0)
                     {
-                        max = m_MagnitudeList[0];
+                        max = m_MagnitudeList[0].Magnitude;
                         for (int i = 1; i < m_MagnitudeList.Count; i++)
                         {
-                            if (m_MagnitudeList[i] > max)
-                                max = m_MagnitudeList[i];
+                            if (m_MagnitudeList[i].Magnitude > max)
+                                max = m_MagnitudeList[i].Magnitude;
                         }
 
                     }
                     return max;
+                }
+
+                private LinePlotStyle plotStyle = LinePlotStyle.None;
+                public LinePlotStyle PlotStyle
+                {
+                    get { return plotStyle; }
+                    set { plotStyle = value; }
                 }
             }
 
@@ -866,7 +899,7 @@ namespace HenIT.Windows.Controls.C2DPushGraph
 
                     if (line.m_MagnitudeList.Count == 0)
                     {
-                        line.m_MagnitudeList.Add(m_MinPeek);
+                        line.m_MagnitudeList.Add(new ValueTimeInstance() { Magnitude = m_MinPeek });
                     }
 
                     while (line.m_MagnitudeList.Count < greatestMCount)
@@ -895,6 +928,10 @@ namespace HenIT.Windows.Controls.C2DPushGraph
 
             protected void DrawLines(ref Graphics g)
             {
+                int greatestMCount = 0;
+                Line greatestline = null;
+                if (m_Lines.Count > 0)
+                    greatestline = m_Lines[0];
                 foreach (Line line in m_Lines)
                 {
                     if (line.m_MagnitudeList.Count == 0)
@@ -908,11 +945,49 @@ namespace HenIT.Windows.Controls.C2DPushGraph
                     //draw all 'lines' except the 'selected' one that is drawn last
                     if (selectedLine == null || (line.m_NameID != selectedLine.m_NameID))
                         DrawLine(ref g, line);
+
+                    if (greatestMCount < line.m_MagnitudeList.Count)
+                    {
+                        greatestline = line;
+                        greatestMCount = line.m_MagnitudeList.Count;
+                    }
                 }
                 //now draw selected line last
                 if (selectedLine != null && selectedLine.m_MagnitudeList.Count > 0)
                 {
                     DrawLine(ref g, selectedLine);
+                }
+                if (greatestline != null)
+                    DrawTimes(ref g, greatestMCount, greatestline);
+            }
+
+            private void DrawTimes(ref Graphics g, int greatestMCount, Line greatestline)
+            {
+                int newestTimeX;
+                newestTimeX = m_OffsetX + (greatestMCount * m_LineInterval);
+                if (newestTimeX > Width) // - 20)
+                    newestTimeX = Width;// - 20;
+                System.Diagnostics.Trace.WriteLine(string.Format("greatestMCount m_MaxCoords newestTimeX {0} {1} {2}", greatestMCount, m_MaxCoords, newestTimeX));
+
+                if (greatestline != null && greatestline.m_MagnitudeList.Count > 0)
+                {
+                    string oldestTime = greatestline.m_MagnitudeList[0].Time.ToString("HH:mm:ss");
+                    SolidBrush textBrush = new SolidBrush(m_TextColor);
+                    StringFormat stringFormat = new StringFormat();
+                    stringFormat.FormatFlags = StringFormatFlags.DirectionVertical;
+                    FontFamily fontFamily = new FontFamily("Verdana");
+                    Font font = new Font(fontFamily, 10, FontStyle.Bold, GraphicsUnit.Point);
+
+                    g.DrawString(oldestTime, font, textBrush, m_OffsetX, 0, stringFormat);
+                    if (greatestMCount > 5)
+                    {
+                        string newestTime = greatestline.m_MagnitudeList[greatestline.m_MagnitudeList.Count - 1].Time.ToString("HH:mm:ss");
+                        SizeF newestSize = g.MeasureString(newestTime, font);
+                        g.DrawString(newestTime, font, textBrush, newestTimeX - newestSize.Height, 0, stringFormat);
+                        Pen linePen = new Pen(textBrush);
+                        g.DrawLine(linePen, newestTimeX, 0, newestTimeX, Height);
+                    }
+
                 }
             }
 
@@ -929,7 +1004,7 @@ namespace HenIT.Windows.Controls.C2DPushGraph
 
                     Point lastPoint = new Point();
                     lastPoint.X = m_OffsetX;
-                    double scaledHeight = line.m_MagnitudeList[0] * line.scale;
+                    double scaledHeight = line.m_MagnitudeList[0].Magnitude * line.scale;
                     if (scaledHeight >= int.MaxValue)
                         scaledHeight = 0;
                     lastPoint.Y = Height - (int)((scaledHeight *
@@ -947,7 +1022,7 @@ namespace HenIT.Windows.Controls.C2DPushGraph
                             // Weird hack because BarRect.Location.* causes error
                             Point p = barRect.Location;
                             p.X = m_OffsetX + (n * m_LineInterval) + 1;
-                            scaledHeight = line.m_MagnitudeList[n] * line.scale;
+                            scaledHeight = line.m_MagnitudeList[n].Magnitude * line.scale;
                             if (scaledHeight >= int.MaxValue)
                                 scaledHeight = 0;
                             p.Y = Height - (int)((scaledHeight * Height) /
@@ -964,7 +1039,7 @@ namespace HenIT.Windows.Controls.C2DPushGraph
                             /* Draw a line */
 
                             int newX = m_OffsetX + (n * m_LineInterval);
-                            scaledHeight = line.m_MagnitudeList[n] * line.scale;
+                            scaledHeight = line.m_MagnitudeList[n].Magnitude * line.scale;
                             if (scaledHeight >= int.MaxValue)
                                 scaledHeight = 0;
                             int newY = Height - (int)((scaledHeight * Height) /
@@ -975,6 +1050,26 @@ namespace HenIT.Windows.Controls.C2DPushGraph
                                 newY = 1;
 
                             g.DrawLine(linePen, lastPoint.X, lastPoint.Y, newX, newY);
+                            if (line.PlotStyle != LinePlotStyle.None)
+                                using (Pen plotPen = new Pen(line.m_Color, 2))
+                                {
+                                    switch (line.PlotStyle)
+                                    {
+                                        case LinePlotStyle.Dots:
+                                            g.DrawEllipse(plotPen, newX - 2, newY - 2, 4, 4);
+                                            break;
+                                        case LinePlotStyle.Cross:
+                                            g.DrawLine(plotPen, newX, newY - 3, newX, newY + 3);
+                                            g.DrawLine(plotPen, newX - 3, newY, newX + 3, newY);
+                                            break;
+                                        case LinePlotStyle.Ex:
+                                            g.DrawLine(plotPen, newX - 3, newY - 3, newX + 3, newY + 3);
+                                            g.DrawLine(plotPen, newX - 3, newY + 3, newX + 3, newY - 3);
+                                            break;
+                                        default:
+                                            break;
+                                    }
+                                }                     
 
                             lastPoint.X = newX;
                             lastPoint.Y = newY;
@@ -1294,7 +1389,7 @@ namespace HenIT.Windows.Controls.C2DPushGraph
 
                 magnitude -= m_MinPeek; //assuming this to be 0
 
-                line.m_MagnitudeList.Add(magnitude);
+                line.m_MagnitudeList.Add(new ValueTimeInstance() { Magnitude = magnitude, Time = DateTime.Now });
                 return true;
             }
 
@@ -1314,10 +1409,10 @@ namespace HenIT.Windows.Controls.C2DPushGraph
                 {
                     if (line.m_bVisible)
                     {
-                        foreach (int datapoint in line.m_MagnitudeList)
+                        foreach (ValueTimeInstance datapoint in line.m_MagnitudeList)
                         {
-                            if (datapoint * line.Scale > globalMaxDataPoint)
-                                globalMaxDataPoint = datapoint * line.Scale;
+                            if (datapoint.Magnitude * line.Scale > globalMaxDataPoint)
+                                globalMaxDataPoint = datapoint.Magnitude * line.Scale;
                         }
                     }
                 }
@@ -1332,10 +1427,10 @@ namespace HenIT.Windows.Controls.C2DPushGraph
                 {
                     if (line.m_bVisible)
                     {
-                        foreach (int datapoint in line.m_MagnitudeList)
+                        foreach (ValueTimeInstance datapoint in line.m_MagnitudeList)
                         {
-                            if (datapoint * line.Scale > globalMaxDataPoint)
-                                globalMaxDataPoint = datapoint * line.Scale;
+                            if (datapoint.Magnitude * line.Scale > globalMaxDataPoint)
+                                globalMaxDataPoint = datapoint.Magnitude * line.Scale;
                         }
                     }
                 }

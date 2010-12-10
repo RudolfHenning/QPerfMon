@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Runtime.Serialization;
 
 namespace QPerfMon
 {
+    [Serializable]
     public class QPerfMonFile
     {
         private string title;
@@ -24,5 +26,19 @@ namespace QPerfMon
             get { return counterDefinitionList; }
             set { counterDefinitionList = value; }
         }
+
+        [OptionalField]
+        private string version = "Pre 1.4.9";
+        public string Version
+        {
+            get { return version; }
+            set { version = value; }
+        }
+        [OnDeserializing]
+        private void Setversion(StreamingContext sc)
+        {
+            version = "1.4.8";
+        }
+
     }
 }

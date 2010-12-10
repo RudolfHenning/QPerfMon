@@ -35,7 +35,12 @@ namespace QPerfMon
                     name += "\"" + instance + "\"";
                 else
                     name += instance;
-            }
+                if (parts.Length >= 6)
+                {
+                    if (!int.TryParse(parts[5], out plotStyle))
+                        plotStyle = 0;
+                }
+            }                
             else
             {
                 throw new Exception("Invalid name/key specified for PCMonInstance");
@@ -113,6 +118,12 @@ namespace QPerfMon
         {
             get { return scale; }
             set { scale = value; }
+        }
+        private int plotStyle;
+        public int PlotStyle
+        {
+            get { return plotStyle; }
+            set { plotStyle = value; }
         }
 
         private PerformanceCounter pcInstance = null;

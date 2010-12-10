@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
+using HenIT.Windows.Controls.C2DPushGraph.Graphing;
 
 namespace QPerfMon
 {
@@ -29,10 +30,16 @@ namespace QPerfMon
             set { color = value; }
         }
 
+        private LinePlotStyle plotStyle;
+        public LinePlotStyle PlotStyle
+        {
+            get { return plotStyle; }
+            set { plotStyle = value; }
+        }
+
         private void Formatting_Load(object sender, EventArgs e)
         {
             pictureBoxColor.BackColor = color;
-
 
             cboScale.Items.Add("1000000");
             cboScale.Items.Add("100000");
@@ -56,6 +63,24 @@ namespace QPerfMon
                     cboScale.SelectedIndex = i;
                     break;
                 }   
+            }
+            switch (plotStyle)
+            {
+                case LinePlotStyle.None:
+                    cboPlotStyle.SelectedIndex = 0;
+                    break;
+                case LinePlotStyle.Dots:
+                    cboPlotStyle.SelectedIndex = 1;
+                    break;
+                case LinePlotStyle.Cross:
+                    cboPlotStyle.SelectedIndex = 2;
+                    break;
+                case LinePlotStyle.Ex:
+                    cboPlotStyle.SelectedIndex = 3;
+                    break;
+                default:
+                    cboPlotStyle.SelectedIndex = 0;
+                    break;
             }
         }
 
@@ -92,6 +117,7 @@ namespace QPerfMon
             {
                 color = pictureBoxColor.BackColor;
                 scale = double.Parse(cboScale.Items[cboScale.SelectedIndex].ToString());
+                plotStyle = (LinePlotStyle)cboPlotStyle.SelectedIndex;
                 DialogResult = DialogResult.OK;
                 Close();
             }
