@@ -14,6 +14,7 @@ namespace QPerfMon
         public AddCounter()
         {
             InitializeComponent();
+            ExistingCounters = new List<string>();
         }
 
         public PCMonInstance SelectedPCMonInstance { get; set; }
@@ -22,6 +23,7 @@ namespace QPerfMon
         public string InitialCounter { get; set; }
         public string InitialInstance { get; set; }
         public Color InitialColor { get; set; }
+        public List<string> ExistingCounters { get; set; }
 
         #region Form events
         private void AddCounter_Load(object sender, EventArgs e)
@@ -34,6 +36,7 @@ namespace QPerfMon
             cboScale.SelectedIndex = 6;
             cboPlotStyle.SelectedIndex = 0;
             pictureBoxColor.BackColor = InitialColor;
+            CheckForValidCounter();
         } 
         #endregion
 
@@ -194,6 +197,7 @@ namespace QPerfMon
                     MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+            CheckForValidCounter();
         }
         private void txtComputer_KeyUp(object sender, KeyEventArgs e)
         {
@@ -210,8 +214,66 @@ namespace QPerfMon
                 LoadCategories(txtComputer.Text);
             }
             );
-        } 
+        }
+        private bool CheckForValidCounter()
+        {
+            bool result = true;
+            lblWarning.Text = "";
+            if (txtComputer.Text.Length == 0)
+            {
+                result = false;
+                lblWarning.Text = "Specify computer!";
+            }
+            else if (cboCategory.SelectedIndex == -1)
+            {
+                result = false;
+                lblWarning.Text = "Specify category!";
+            }
+            else if (cboCounter.SelectedIndex == -1)
+            {
+                result = false;
+                lblWarning.Text = "Specify counter!";
+            }
+            else if (cboInstance.Items.Count > 0 && cboInstance.SelectedIndex == -1)
+            {
+                result = false;
+                lblWarning.Text = "Specify instance!";
+            }
+            else if (cboScale.SelectedIndex == -1)
+            {
+                result = false;
+                lblWarning.Text = "Specify scale!";
+            }
+            else
+            {
+                string key = txtComputer.Text + "\\" + cboCategory.Text + "\\" + cboCounter.Text + "\\";
+                if (cboInstance.Text.Length > 0)
+                {
+                    if (cboInstance.Text.Contains("\\"))
+                        key += "\"" + cboInstance.Text + "\"";
+                    else
+                        key += cboInstance.Text;
+                }
+                if (ExistingCounters.Count > 0 && ExistingCounters.Contains(key))
+                {
+                    result = false;
+                    lblWarning.Text = "Duplicate!";
+                }
+            }
+            cmdOK.Enabled = result;
+            return result;
+        }
         #endregion
+
+        private void cboCounter_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CheckForValidCounter();
+        }
+
+        private void cboInstance_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CheckForValidCounter();
+        }
 
     }
 }

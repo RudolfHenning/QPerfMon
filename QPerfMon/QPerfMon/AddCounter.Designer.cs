@@ -50,6 +50,7 @@
             this.label7 = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+            this.lblWarning = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBoxColor)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -117,6 +118,7 @@
             this.cboCounter.Size = new System.Drawing.Size(265, 21);
             this.cboCounter.Sorted = true;
             this.cboCounter.TabIndex = 6;
+            this.cboCounter.SelectedIndexChanged += new System.EventHandler(this.cboCounter_SelectedIndexChanged);
             // 
             // label3
             // 
@@ -138,6 +140,7 @@
             this.cboInstance.Size = new System.Drawing.Size(265, 21);
             this.cboInstance.Sorted = true;
             this.cboInstance.TabIndex = 8;
+            this.cboInstance.SelectedIndexChanged += new System.EventHandler(this.cboInstance_SelectedIndexChanged);
             // 
             // label4
             // 
@@ -280,12 +283,23 @@
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Formatting";
             // 
+            // lblWarning
+            // 
+            this.lblWarning.AutoSize = true;
+            this.lblWarning.ForeColor = System.Drawing.Color.Red;
+            this.lblWarning.Location = new System.Drawing.Point(13, 254);
+            this.lblWarning.Name = "lblWarning";
+            this.lblWarning.Size = new System.Drawing.Size(10, 13);
+            this.lblWarning.TabIndex = 12;
+            this.lblWarning.Text = ".";
+            // 
             // AddCounter
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(376, 284);
+            this.Controls.Add(this.lblWarning);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.cmdCancel);
             this.Controls.Add(this.cmdOK);
@@ -337,5 +351,6 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.ColorDialog colorDialog1;
+        private System.Windows.Forms.Label lblWarning;
     }
 }

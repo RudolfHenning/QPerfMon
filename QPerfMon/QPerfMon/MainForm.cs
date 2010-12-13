@@ -373,47 +373,6 @@ namespace QPerfMon
         private void addToolStripMenuItem_Click(object sender, EventArgs e)
         {
             AddNewCounter("", "", "", "");
-            //AddCounter addCounter = new AddCounter();
-            //if (lvwCounters.SelectedItems.Count > 0)
-            //{
-            //    PCMonInstance pcmi = (PCMonInstance)lvwCounters.SelectedItems[0].Tag;
-            //    addCounter.InitialMachine = pcmi.Machine;
-            //}
-            //if (addCounter.ShowDialog() == DialogResult.OK)
-            //{
-            //    StartStopLogging(true);
-            //    bool oldPause = paused;
-            //    paused = true;
-            //    initializing = true;
-            //    try
-            //    {
-            //        pcMonInstances.Add(addCounter.SelectedPCMonInstance);
-            //        int colorIndex = lvwCounters.Items.Count % lineColors.Count;
-            //        ListViewItem lvi = new ListViewItem(addCounter.SelectedPCMonInstance.Name);
-            //        lvi.UseItemStyleForSubItems = false;
-            //        ListViewItem.ListViewSubItem sub = new ListViewItem.ListViewSubItem();
-            //        sub.Text = "###";
-            //        sub.ForeColor = lineColors[colorIndex];
-            //        sub.BackColor = lineColors[colorIndex];
-            //        lvi.SubItems.Add(sub);
-            //        lvi.SubItems.Add("1");
-            //        lvi.SubItems.Add("");
-            //        lvi.Checked = true;
-            //        lvi.Tag = addCounter.SelectedPCMonInstance;
-            //        lvwCounters.Items.Add(lvi);
-
-            //        C2DPushGraph.LineHandle m_LineHandle;
-            //        m_LineHandle = c2DPushGraphControl.AddLine(addCounter.SelectedPCMonInstance.Name, lineColors[colorIndex], addCounter.SelectedPCMonInstance.Scale);
-            //        m_LineHandle.Thickness = defaultLineThickness;
-            //        UpdateStatusBarText();
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //    }
-            //    initializing = false;
-            //    paused = oldPause;
-            //}
         }
         private void addClonePerformanceCounterToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -444,6 +403,10 @@ namespace QPerfMon
             addCounter.InitialInstance = initialInstance;
             int colorIndex = lvwCounters.Items.Count % lineColors.Count;
             addCounter.InitialColor = lineColors[colorIndex];
+            foreach(ListViewItem lvi in lvwCounters.Items)
+            {
+                addCounter.ExistingCounters.Add(lvi.Text);
+            }
 
             if (addCounter.ShowDialog() == DialogResult.OK)
             {
@@ -607,8 +570,7 @@ namespace QPerfMon
             }
             Application.DoEvents();
             c2DPushGraphControl.UpdateGraph();
-        }
-        
+        }        
         private void halfSecondsToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SetPollingFrequency(halfSecondsToolStripMenuItem);
@@ -742,11 +704,24 @@ namespace QPerfMon
 
                 foreach (string counterDefinition in qPerfMonFile.CounterDefinitionList)
                 {
+                    bool unique = true;
                     try
                     {
                         PCMonInstance pcMonInstance = new PCMonInstance(counterDefinition);
-                        pcMonInstance.CreatePCInstance();
-                        pcMonInstances.Add(pcMonInstance);
+
+                        foreach (PCMonInstance existing in pcMonInstances)
+                        {
+                            if (existing.Equals(pcMonInstance))
+                            {
+                                unique = false;
+                                break;
+                            }
+                        }
+                        if (unique)
+                        {
+                            pcMonInstance.CreatePCInstance();
+                            pcMonInstances.Add(pcMonInstance);
+                        }
                     }
                     catch (Exception innerEx)
                     {
@@ -997,11 +972,7 @@ namespace QPerfMon
                 }
             }
         } 
-        #endregion
-
-
-
-        
+        #endregion        
 
     }
 }

@@ -6,7 +6,7 @@ using System.Diagnostics;
 namespace QPerfMon
 {
     [Serializable]
-    public class PCMonInstance
+    public class PCMonInstance : IComparable
     {
         #region Constructors
         public PCMonInstance()
@@ -148,5 +148,22 @@ namespace QPerfMon
         {
             pcInstance = new PerformanceCounter(category, counter, instance, machine);
         }
+
+        #region IComparable Members
+        public string CounterDefinition()
+        {
+            return this.machine + "\\" + this.category + "\\" + this.counter + "\\" + this.instance;
+        }
+        public int CompareTo(object obj)
+        {
+            PCMonInstance otherInstance = (PCMonInstance)obj;
+            return CounterDefinition().CompareTo(otherInstance.CounterDefinition());
+        }
+        public override bool Equals(object obj)
+        {
+            PCMonInstance otherInstance = (PCMonInstance)obj;
+            return CompareTo(otherInstance) == 0;// CounterDefinition().Equals(otherInstance.CounterDefinition()); 
+        }
+        #endregion
     }
 }
