@@ -44,7 +44,7 @@
             // cmdOK
             // 
             this.cmdOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdOK.Location = new System.Drawing.Point(137, 99);
+            this.cmdOK.Location = new System.Drawing.Point(155, 99);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
             this.cmdOK.TabIndex = 4;
@@ -56,7 +56,7 @@
             // 
             this.cmdCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Location = new System.Drawing.Point(218, 99);
+            this.cmdCancel.Location = new System.Drawing.Point(236, 99);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
             this.cmdCancel.TabIndex = 5;
@@ -79,7 +79,7 @@
             this.pictureBoxColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pictureBoxColor.Location = new System.Drawing.Point(71, 6);
             this.pictureBoxColor.Name = "pictureBoxColor";
-            this.pictureBoxColor.Size = new System.Drawing.Size(180, 21);
+            this.pictureBoxColor.Size = new System.Drawing.Size(198, 21);
             this.pictureBoxColor.TabIndex = 5;
             this.pictureBoxColor.TabStop = false;
             this.pictureBoxColor.Click += new System.EventHandler(this.cmdSelectColor_Click);
@@ -87,7 +87,7 @@
             // cmdSelectColor
             // 
             this.cmdSelectColor.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.cmdSelectColor.Location = new System.Drawing.Point(257, 4);
+            this.cmdSelectColor.Location = new System.Drawing.Point(275, 4);
             this.cmdSelectColor.Name = "cmdSelectColor";
             this.cmdSelectColor.Size = new System.Drawing.Size(37, 23);
             this.cmdSelectColor.TabIndex = 1;
@@ -106,25 +106,31 @@
             // 
             // cboScale
             // 
+            this.cboScale.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.cboScale.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboScale.FormattingEnabled = true;
             this.cboScale.Location = new System.Drawing.Point(71, 38);
             this.cboScale.Name = "cboScale";
-            this.cboScale.Size = new System.Drawing.Size(180, 21);
+            this.cboScale.Size = new System.Drawing.Size(198, 21);
             this.cboScale.TabIndex = 3;
             // 
             // cboPlotStyle
             // 
+            this.cboPlotStyle.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
+                        | System.Windows.Forms.AnchorStyles.Right)));
             this.cboPlotStyle.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPlotStyle.FormattingEnabled = true;
             this.cboPlotStyle.Items.AddRange(new object[] {
             "None",
             "Dot (o)",
             "Cross (+)",
-            "Ex (X)"});
+            "Ex (X)",
+            "Box(□)",
+            "Triangle(∆)"});
             this.cboPlotStyle.Location = new System.Drawing.Point(71, 65);
             this.cboPlotStyle.Name = "cboPlotStyle";
-            this.cboPlotStyle.Size = new System.Drawing.Size(180, 21);
+            this.cboPlotStyle.Size = new System.Drawing.Size(198, 21);
             this.cboPlotStyle.TabIndex = 7;
             // 
             // label3
@@ -140,7 +146,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(305, 134);
+            this.ClientSize = new System.Drawing.Size(323, 134);
             this.Controls.Add(this.cboPlotStyle);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.cboScale);

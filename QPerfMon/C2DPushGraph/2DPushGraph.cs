@@ -29,7 +29,9 @@ namespace HenIT.Windows.Controls.C2DPushGraph
             None,
             Dots,
             Cross,
-            Ex
+            Ex,
+            Box,
+            Triangle
         }
         internal struct ValueTimeInstance
         {
@@ -1065,6 +1067,17 @@ namespace HenIT.Windows.Controls.C2DPushGraph
                                         case LinePlotStyle.Ex:
                                             g.DrawLine(plotPen, newX - 3, newY - 3, newX + 3, newY + 3);
                                             g.DrawLine(plotPen, newX - 3, newY + 3, newX + 3, newY - 3);
+                                            break;
+                                        case LinePlotStyle.Box:
+                                            g.DrawLine(plotPen, newX - 3, newY - 3, newX + 3, newY - 3);
+                                            g.DrawLine(plotPen, newX + 3, newY - 3, newX + 3, newY + 3);
+                                            g.DrawLine(plotPen, newX + 3, newY + 3, newX - 3, newY + 3);
+                                            g.DrawLine(plotPen, newX - 3, newY + 3, newX - 3, newY - 3);
+                                            break;
+                                        case LinePlotStyle.Triangle:
+                                            g.DrawLine(plotPen, newX, newY - 3, newX + 3, newY + 3);
+                                            g.DrawLine(plotPen, newX + 3, newY + 3, newX - 3, newY + 3);
+                                            g.DrawLine(plotPen, newX - 3, newY + 3, newX, newY - 3);                                            
                                             break;
                                         default:
                                             break;

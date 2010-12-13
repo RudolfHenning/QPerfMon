@@ -191,21 +191,12 @@ namespace QPerfMon
                         
                         removeToolStripMenuItem.Enabled = (lvwCounters.Items.Count > 1) && (lvwCounters.Items.Count > lvwCounters.SelectedItems.Count);
                         moveSelectionToNewWindowToolStripMenuItem.Enabled = (lvwCounters.Items.Count > lvwCounters.SelectedItems.Count);
-                        //if (lvwCounters.SelectedItems.Count > 1)
-                        //{
-                        //    toolStripStatusLabelSelection.Text = string.Format("{0} counter(s), {1} selected", lvwCounters.Items.Count, lvwCounters.SelectedItems.Count);
-                        //}
-                        //else
-                        //{
-                        //    toolStripStatusLabelSelection.Text = string.Format("{0} counter(s), Selected: {1}", lvwCounters.Items.Count, lvwCounters.SelectedItems[0].Text);
-                        //}
                     }
                     else
                     {
                         c2DPushGraphControl.SetSelectedLine("");
                         removeToolStripMenuItem.Enabled = false;
                         moveSelectionToNewWindowToolStripMenuItem.Enabled = false;
-                        //toolStripStatusLabelSelection.Text = string.Format("{0} counter(s)", lvwCounters.Items.Count);
                     }
 
                     if (lvwCounters.SelectedItems.Count == 1)
@@ -451,6 +442,8 @@ namespace QPerfMon
             addCounter.InitialCategory = initialCategory;
             addCounter.InitialCounter = initialCounter;
             addCounter.InitialInstance = initialInstance;
+            int colorIndex = lvwCounters.Items.Count % lineColors.Count;
+            addCounter.InitialColor = lineColors[colorIndex];
 
             if (addCounter.ShowDialog() == DialogResult.OK)
             {
@@ -460,14 +453,13 @@ namespace QPerfMon
                 initializing = true;
                 try
                 {
-                    pcMonInstances.Add(addCounter.SelectedPCMonInstance);
-                    int colorIndex = lvwCounters.Items.Count % lineColors.Count;
+                    pcMonInstances.Add(addCounter.SelectedPCMonInstance);                    
                     ListViewItem lvi = new ListViewItem(addCounter.SelectedPCMonInstance.Name);
                     lvi.UseItemStyleForSubItems = false;
                     ListViewItem.ListViewSubItem sub = new ListViewItem.ListViewSubItem();
                     sub.Text = "###";
-                    sub.ForeColor = lineColors[colorIndex];
-                    sub.BackColor = lineColors[colorIndex];
+                    sub.ForeColor = addCounter.InitialColor;
+                    sub.BackColor = addCounter.InitialColor;
                     lvi.SubItems.Add(sub);
                     lvi.SubItems.Add(addCounter.SelectedPCMonInstance.Scale.ToString());
                     lvi.SubItems.Add("");
@@ -476,8 +468,9 @@ namespace QPerfMon
                     lvwCounters.Items.Add(lvi);
 
                     C2DPushGraph.LineHandle m_LineHandle;
-                    m_LineHandle = c2DPushGraphControl.AddLine(addCounter.SelectedPCMonInstance.Name, lineColors[colorIndex], addCounter.SelectedPCMonInstance.Scale);
+                    m_LineHandle = c2DPushGraphControl.AddLine(addCounter.SelectedPCMonInstance.Name, addCounter.InitialColor, addCounter.SelectedPCMonInstance.Scale);
                     m_LineHandle.Thickness = defaultLineThickness;
+                    m_LineHandle.PlotStyle = (LinePlotStyle)addCounter.SelectedPCMonInstance.PlotStyle;
                     UpdateStatusBarText();
                 }
                 catch (Exception ex)
@@ -503,6 +496,7 @@ namespace QPerfMon
                             c2DPushGraphControl.RemoveLine(removeItem.Name);
                             pcMonInstances.Remove(removeItem);
                         }
+                        c2DPushGraphControl.SetSelectedLine("");
                         LoadListView();
                     }
                     catch (Exception ex)

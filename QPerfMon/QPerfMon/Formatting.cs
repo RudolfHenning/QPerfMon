@@ -78,6 +78,12 @@ namespace QPerfMon
                 case LinePlotStyle.Ex:
                     cboPlotStyle.SelectedIndex = 3;
                     break;
+                case LinePlotStyle.Box:
+                    cboPlotStyle.SelectedIndex = 4;
+                    break;
+                case LinePlotStyle.Triangle:
+                    cboPlotStyle.SelectedIndex = 5;
+                    break;
                 default:
                     cboPlotStyle.SelectedIndex = 0;
                     break;
@@ -134,3 +140,4 @@ namespace QPerfMon
 
     }
 }
+
