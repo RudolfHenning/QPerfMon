@@ -97,6 +97,7 @@ namespace QPerfMon
                     SelectedPCMonInstance = new PCMonInstance(key);
                     SelectedPCMonInstance.Scale = double.Parse(cboScale.SelectedItem.ToString());
                     SelectedPCMonInstance.PlotStyle = cboPlotStyle.SelectedIndex;
+                    SelectedPCMonInstance.PlotColor = pictureBoxColor.BackColor;
                     InitialColor = pictureBoxColor.BackColor;
                     SelectedPCMonInstance.CreatePCInstance();
 

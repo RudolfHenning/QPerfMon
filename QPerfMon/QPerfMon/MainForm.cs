@@ -367,6 +367,7 @@ namespace QPerfMon
                     PCMonInstance pcMonInstance = (PCMonInstance)lvwCounters.SelectedItems[0].Tag;
                     pcMonInstance.Scale = formatting.SelectedScale;
                     pcMonInstance.PlotStyle = (int)formatting.PlotStyle;
+                    pcMonInstance.PlotColor = formatting.SelectedColor;
                 }
             }
         }
@@ -728,16 +729,18 @@ namespace QPerfMon
                         MessageBox.Show(string.Format("Error parsing {0}\r\n{1}", counterDefinition, innerEx.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
-                LoadListView(true);
+                
                 C2DPushGraph.LineHandle m_LineHandle;
                 for (int i = 0; i < pcMonInstances.Count; i++)
                 {
                     int colorIndex = i % lineColors.Count;
+                    pcMonInstances[i].PlotColor = lineColors[colorIndex];
                     m_LineHandle = c2DPushGraphControl.AddLine(pcMonInstances[i].Name, lineColors[colorIndex], pcMonInstances[i].Scale);
                     m_LineHandle.PlotStyle = (LinePlotStyle)pcMonInstances[i].PlotStyle;
                     if (m_LineHandle != null)
                         m_LineHandle.Thickness = defaultLineThickness;
                 }
+                LoadListView(true);
             }
             catch (Exception ex)
             {
@@ -773,8 +776,8 @@ namespace QPerfMon
                     lvi.UseItemStyleForSubItems = false;
                     ListViewItem.ListViewSubItem sub = new ListViewItem.ListViewSubItem();
                     sub.Text = "###";
-                    sub.ForeColor = lineColors[colorIndex];
-                    sub.BackColor = lineColors[colorIndex];
+                    sub.ForeColor = pcMonInstance.PlotColor; 
+                    sub.BackColor = pcMonInstance.PlotColor;
                     lvi.SubItems.Add(sub);
                     lvi.SubItems.Add(scale);
                     lvi.SubItems.Add(pcMonInstance.LastValue.ToString("0.00"));
@@ -783,6 +786,7 @@ namespace QPerfMon
                     lvi.Selected = pcMonInstance.Selected;
                     lvwCounters.Items.Add(lvi);
                 }
+                c2DPushGraphControl.SetSelectedLine("");
                 UpdateStatusBarText();
             }
             catch (Exception ex)

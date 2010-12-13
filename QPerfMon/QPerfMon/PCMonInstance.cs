@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
+using System.Drawing;
 
 namespace QPerfMon
 {
@@ -35,9 +36,10 @@ namespace QPerfMon
                     name += "\"" + instance + "\"";
                 else
                     name += instance;
-                if (parts.Length >= 6)
+                string styleStr = GetParsedElement(5, parts);
+                if (styleStr.Length > 0)
                 {
-                    if (!int.TryParse(parts[5], out plotStyle))
+                    if (!int.TryParse(styleStr, out plotStyle))
                         plotStyle = 0;
                 }
             }                
@@ -125,6 +127,12 @@ namespace QPerfMon
             get { return plotStyle; }
             set { plotStyle = value; }
         }
+        private Color plotColor;
+        public Color PlotColor
+        {
+            get { return plotColor; }
+            set { plotColor = value; }
+        }
 
         private PerformanceCounter pcInstance = null;
         public PerformanceCounter PCInstance
@@ -163,6 +171,10 @@ namespace QPerfMon
         {
             PCMonInstance otherInstance = (PCMonInstance)obj;
             return CompareTo(otherInstance) == 0;// CounterDefinition().Equals(otherInstance.CounterDefinition()); 
+        }
+        public override int GetHashCode()
+        {
+            return CounterDefinition().GetHashCode();
         }
         #endregion
     }
