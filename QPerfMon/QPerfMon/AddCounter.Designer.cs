@@ -181,21 +181,6 @@
             // 
             this.cboScale.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboScale.FormattingEnabled = true;
-            this.cboScale.Items.AddRange(new object[] {
-            "1000000",
-            "100000",
-            "10000",
-            "1000",
-            "100",
-            "10",
-            "1",
-            "0.1",
-            "0.01",
-            "0.001",
-            "0.0001",
-            "0.00001",
-            "0.000001",
-            "0.0000001"});
             this.cboScale.Location = new System.Drawing.Point(102, 52);
             this.cboScale.Name = "cboScale";
             this.cboScale.Size = new System.Drawing.Size(245, 21);
@@ -251,6 +236,7 @@
             this.pictureBoxColor.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
                         | System.Windows.Forms.AnchorStyles.Right)));
             this.pictureBoxColor.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.pictureBoxColor.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pictureBoxColor.Location = new System.Drawing.Point(101, 25);
             this.pictureBoxColor.Name = "pictureBoxColor";
             this.pictureBoxColor.Size = new System.Drawing.Size(203, 21);

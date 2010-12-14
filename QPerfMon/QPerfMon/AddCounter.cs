@@ -28,6 +28,22 @@ namespace QPerfMon
         #region Form events
         private void AddCounter_Load(object sender, EventArgs e)
         {
+            cboScale.Items.Add("1000000");
+            cboScale.Items.Add("100000");
+            cboScale.Items.Add("10000");
+            cboScale.Items.Add("1000");
+            cboScale.Items.Add("100");
+            cboScale.Items.Add("10");
+            cboScale.Items.Add("1");
+            //To address different cultural formatting issues this has to be added in code.
+            cboScale.Items.Add(String.Format("{0:F1}", 0.1));
+            cboScale.Items.Add(String.Format("{0:F2}", 0.01));
+            cboScale.Items.Add(String.Format("{0:F3}", 0.001));
+            cboScale.Items.Add(String.Format("{0:F4}", 0.0001));
+            cboScale.Items.Add(String.Format("{0:F5}", 0.00001));
+            cboScale.Items.Add(String.Format("{0:F6}", 0.000001));
+            cboScale.Items.Add(String.Format("{0:F7}", 0.0000001));
+
             txtComputer.Text = InitialMachine;
             if (txtComputer.Text.Length > 0)
             {
@@ -115,6 +131,7 @@ namespace QPerfMon
         #region Load data
         private void LoadCategories(string machineName)
         {
+            Cursor.Current = Cursors.WaitCursor;
             cboCategory.Items.Clear();
             try
             {
@@ -126,18 +143,28 @@ namespace QPerfMon
                 {
                     for (int i = 0; i < cboCategory.Items.Count; i++)
                     {
-                        if (cboCategory.Items[i].ToString().ToLower() == InitialCategory.ToLower())
+                        if (InitialCategory.Length > 0 && cboCategory.Items[i].ToString().ToLower() == InitialCategory.ToLower())
                         {
                             cboCategory.SelectedIndex = i;
                             break;
                         }
                     }
                 }
+                else
+                    for (int i = 0; i < cboCategory.Items.Count; i++)
+                    {
+                        if (cboCategory.Items[i].ToString() == "Processor")
+                        {
+                            cboCategory.SelectedIndex = i;
+                            break;
+                        }
+                    }
             }
             catch (Exception ex)
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            Cursor.Current = Cursors.Default;
         }
         private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -198,6 +225,14 @@ namespace QPerfMon
                     MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+            CheckForValidCounter();
+        }
+        private void cboCounter_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            CheckForValidCounter();
+        }
+        private void cboInstance_SelectedIndexChanged(object sender, EventArgs e)
+        {
             CheckForValidCounter();
         }
         private void txtComputer_KeyUp(object sender, KeyEventArgs e)
@@ -265,16 +300,6 @@ namespace QPerfMon
             return result;
         }
         #endregion
-
-        private void cboCounter_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            CheckForValidCounter();
-        }
-
-        private void cboInstance_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            CheckForValidCounter();
-        }
 
     }
 }

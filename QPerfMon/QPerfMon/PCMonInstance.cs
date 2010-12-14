@@ -50,7 +50,9 @@ namespace QPerfMon
             Selected = false;
             LastError = "";
         }
+        #endregion
 
+        #region GetParsedElement
         /// <summary>
         /// This function returns the logical element numbered 'elementNo' 
         /// This is to cater for when an element spans two array elements because it contained a '\' inside the name
@@ -66,11 +68,11 @@ namespace QPerfMon
             string output = "";
             for (int i = 0; i < element.Length; i++)
             {
-                output += (spanning ? "\\" : "") + element[i].Replace("\"", ""); //.Replace("]", "");
+                output += (spanning ? "\\" : "") + element[i].Replace("\"", "");
 
-                if (!spanning && element[i].StartsWith("\"")) //"["))
+                if (!spanning && element[i].StartsWith("\""))
                     spanning = true;
-                if (element[i].EndsWith("\"")) //"]"))
+                if (element[i].EndsWith("\""))
                     spanning = false;
                 if (!spanning)
                 {

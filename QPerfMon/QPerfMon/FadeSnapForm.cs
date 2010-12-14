@@ -82,9 +82,9 @@ namespace QPerfMon
         }
         private void moveTimer_Tick(object sender, EventArgs e)
         {
+            moveTimer.Enabled = false;
             if (SnappingEnabled)
-            {
-                moveTimer.Enabled = false;
+            {                
                 if (this.WindowState == FormWindowState.Normal)
                 {
                     Rectangle currentScreen = Screen.FromControl(this).WorkingArea;

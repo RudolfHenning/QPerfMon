@@ -267,7 +267,7 @@ namespace QPerfMon
                                         PCMonInstance pcMonInstance = pcMonInstances[i];
                                         try
                                         {
-                                            //lazy load 
+                                            //lazy load if needed
                                             if (pcMonInstance.PCInstance == null)
                                             {
                                                 pcMonInstance.CreatePCInstance();
@@ -275,7 +275,11 @@ namespace QPerfMon
 
                                             float pcValue = (pcMonInstance.PCInstance.NextValue());
                                             pcMonInstance.LastValue = pcValue;
-                                            string pcValueStr = pcValue.ToString("0.00");
+                                            string pcValueStr;
+                                            if (pcValue > 999)
+                                                pcValueStr = string.Format("{0:F1}", pcValue);
+                                            else
+                                                pcValueStr = string.Format("{0:F3}", pcValue);
                                             if (lvwCounters.Items[i].SubItems[3].Text != pcValueStr)
                                                 lvwCounters.Items[i].SubItems[3].Text = pcValueStr;
                                             c2DPushGraphControl.Push(pcValue, pcMonInstance.Name);
@@ -352,8 +356,8 @@ namespace QPerfMon
             {
                 Formatting formatting = new Formatting();
                 HenIT.Windows.Controls.C2DPushGraph.Graphing.C2DPushGraph.LineHandle lh = c2DPushGraphControl.GetLineHandle(lvwCounters.SelectedItems[0].Text);
-                formatting.SelectedScale = lh.Scale; // double.Parse(lvwCounters.SelectedItems[0].SubItems[2].Text);
-                formatting.SelectedColor = lh.Color;// lvwCounters.SelectedItems[0].SubItems[1].ForeColor;
+                formatting.SelectedScale = lh.Scale; 
+                formatting.SelectedColor = lh.Color;
                 formatting.PlotStyle = lh.PlotStyle;
                 if (formatting.ShowDialog() == DialogResult.OK)
                 {
@@ -925,7 +929,7 @@ namespace QPerfMon
             {
                 try
                 {
-                    string loggingDecimalDigits = "0." + new string('0', Properties.Settings.Default.LoggingDecimalDigits);
+                    string loggingDecimalDigitsFormatting = "{0:F" + Properties.Settings.Default.LoggingDecimalDigits.ToString() + "}";
                     loggingSampleRateCounter++;
                     if (loggingSampleRateCounter > Properties.Settings.Default.LoggingSampleRate)
                     {
@@ -963,9 +967,9 @@ namespace QPerfMon
                         lineTest.Append(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                         foreach (PCMonInstance pcmi in pcMonInstances)
                         {
-                            lineTest.Append("," + pcmi.LastValue.ToString(loggingDecimalDigits));
+                            lineTest.Append("," + string.Format(loggingDecimalDigitsFormatting, pcmi.LastValue));
                         }
-                        lineTest.Append("\r\n");
+                        lineTest.AppendLine();
                         System.IO.File.AppendAllText(loggingOutputFilePath, lineTest.ToString());
                     }
                 }

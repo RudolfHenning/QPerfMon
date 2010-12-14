@@ -48,14 +48,15 @@ namespace QPerfMon
             cboScale.Items.Add("100");
             cboScale.Items.Add("10");
             cboScale.Items.Add("1");
-            cboScale.Items.Add("0.1");
-            cboScale.Items.Add("0.01");
-            cboScale.Items.Add("0.001");
-            cboScale.Items.Add("0.0001");
-            cboScale.Items.Add("0.00001");
-            cboScale.Items.Add("0.000001");
-            cboScale.Items.Add("0.0000001");
-
+            //To address different cultural formatting issues this has to be added in code.
+            cboScale.Items.Add(String.Format("{0:F1}", 0.1));
+            cboScale.Items.Add(String.Format("{0:F2}", 0.01));
+            cboScale.Items.Add(String.Format("{0:F3}", 0.001));
+            cboScale.Items.Add(String.Format("{0:F4}", 0.0001));
+            cboScale.Items.Add(String.Format("{0:F5}", 0.00001));
+            cboScale.Items.Add(String.Format("{0:F6}", 0.000001));
+            cboScale.Items.Add(String.Format("{0:F7}", 0.0000001));
+  
             for (int i = 0; i < cboScale.Items.Count ; i++)
             {
                 if (double.Parse(cboScale.Items[i].ToString()) == scale)
@@ -89,18 +90,6 @@ namespace QPerfMon
                     break;
             }
         }
-
-        //private void AddListColor(Color color)
-        //{
-        //    ListViewItem lvi = new ListViewItem(">");
-        //    lvi.UseItemStyleForSubItems = false;
-        //    ListViewItem.ListViewSubItem lvis = new ListViewItem.ListViewSubItem();
-        //    lvis.Text = "";
-        //    lvis.ForeColor = color;
-        //    lvis.BackColor = color;
-        //    lvi.SubItems.Add(lvis);            
-        //    lvwColors.Items.Add(lvi);
-        //}
 
         private void lvwColors_SelectedIndexChanged(object sender, EventArgs e)
         {
