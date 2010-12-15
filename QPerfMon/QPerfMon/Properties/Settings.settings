@@ -32,5 +32,17 @@
     <Setting Name="MainWindowSnap" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="GraphBackgroundColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Black</Value>
+    </Setting>
+    <Setting Name="GridColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">DarkGreen</Value>
+    </Setting>
+    <Setting Name="GraphTextColor" Type="System.Drawing.Color" Scope="User">
+      <Value Profile="(Default)">Yellow</Value>
+    </Setting>
+    <Setting Name="GraphTextFont" Type="System.Drawing.Font" Scope="User">
+      <Value Profile="(Default)">Verdana, 9.75pt, style=Bold</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

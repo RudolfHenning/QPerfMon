@@ -469,6 +469,9 @@ namespace HenIT.Windows.Controls.Graphing
                 CalculateMaxPushPoints();
             }
 
+            ILine longestLine = GetLongestLine();
+            if (longestLine == null)
+                return;
             int greatestMCount = GetLongestLine().MagnitudeList.Count;
 
             if (greatestMCount == 0)
@@ -585,12 +588,13 @@ namespace HenIT.Windows.Controls.Graphing
             {
                 DrawGrid(ref g);
             }
+            g.ResetClip();
+            DrawLines(ref g);
             if (allowClick)
             {
                 DrawClickSelectetion(ref g);
             }
-            g.ResetClip();
-            DrawLines(ref g);
+            
 
             g.SmoothingMode = prevSmoothingMode;
         }
@@ -631,8 +635,9 @@ namespace HenIT.Windows.Controls.Graphing
                         {
                             clickedSelectedValueTime = true;
                             clickSelectedTime = line.MagnitudeList[posX].Time;
+                            this.Invalidate();
 #if DEBUG
-                                System.Diagnostics.Trace.WriteLine(string.Format("posX {0} {1}", posX, clickSelectedTime));
+                            System.Diagnostics.Trace.WriteLine(string.Format("posX {0} {1}", posX, clickSelectedTime));
 #endif
                         }
                     }

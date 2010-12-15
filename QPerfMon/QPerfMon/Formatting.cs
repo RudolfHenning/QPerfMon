@@ -5,7 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
-using HenIT.Windows.Controls.C2DPushGraph.Graphing;
+using HenIT.Windows.Controls.Graphing;
 
 namespace QPerfMon
 {

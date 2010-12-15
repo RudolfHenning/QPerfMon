@@ -60,6 +60,12 @@
     <Compile Include="Formatting.Designer.cs">
       <DependentUpon>Formatting.cs</DependentUpon>
     </Compile>
+    <Compile Include="GraphFormatting.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="GraphFormatting.Designer.cs">
+      <DependentUpon>GraphFormatting.cs</DependentUpon>
+    </Compile>
     <Compile Include="InputBox.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -89,6 +95,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Formatting.resx">
       <DependentUpon>Formatting.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GraphFormatting.resx">
+      <DependentUpon>GraphFormatting.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="InputBox.resx">
       <DependentUpon>InputBox.cs</DependentUpon>
@@ -131,9 +140,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\C2DPushGraph\C2DPushGraph.csproj">
-      <Project>{290BF7F1-91BB-4AE0-A89B-9320EC1B2619}</Project>
-      <Name>C2DPushGraph</Name>
+    <ProjectReference Include="..\LineFlowGraph2D\LineFlowGraph2D.csproj">
+      <Project>{94D1A1DD-60AA-4261-A2DD-9A71B7A92D54}</Project>
+      <Name>LineFlowGraph2D</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

@@ -11,7 +11,7 @@ Global
 	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 4
 		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
-		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/TFS05
+		SccTeamFoundationServer = https://tfs.codeplex.com/tfs/tfs05
 		SccLocalPath0 = .
 		SccProjectUniqueName1 = C2DPushGraph\\C2DPushGraph.csproj
 		SccProjectName1 = C2DPushGraph
@@ -22,6 +22,9 @@ Global
 		SccProjectUniqueName3 = LineFlowGraph2D\\LineFlowGraph2D.csproj
 		SccProjectName3 = LineFlowGraph2D
 		SccLocalPath3 = LineFlowGraph2D
+	EndGlobalSection
+	GlobalSection(SharpSetup) = preSolution
+		Version = 1.2
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

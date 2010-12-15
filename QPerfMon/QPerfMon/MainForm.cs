@@ -6,8 +6,8 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using System.Diagnostics;
-using HenIT.Windows.Controls.C2DPushGraph.Graphing;
 using HenIT.Utilities;
+using HenIT.Windows.Controls.Graphing;
 
 namespace QPerfMon
 {
@@ -115,9 +115,12 @@ namespace QPerfMon
         #region Form events
         private void MainForm_Load(object sender, EventArgs e)
         {
-
             snapToDesktopSidesToolStripMenuItem.Checked = Properties.Settings.Default.MainWindowSnap;
-            c2DPushGraphControl.GridSize = (ushort)(c2DPushGraphControl.Height / 10);
+            lineFlowGraph2DControl.BackColor = Properties.Settings.Default.GraphBackgroundColor;
+            lineFlowGraph2DControl.GridColor = Properties.Settings.Default.GridColor;
+            lineFlowGraph2DControl.TextColor = Properties.Settings.Default.GraphTextColor;
+            lineFlowGraph2DControl.TextFont = Properties.Settings.Default.GraphTextFont;
+            //c2DPushGraphControl.GridSize = (ushort)(c2DPushGraphControl.Height / 10);
 
             LoadCounters(initialPerfMonFile);
 
@@ -131,6 +134,10 @@ namespace QPerfMon
         {
             paused = true; //stop any collection still in progress
             timer.Change(System.Threading.Timeout.Infinite, System.Threading.Timeout.Infinite);
+            Properties.Settings.Default.GraphBackgroundColor = lineFlowGraph2DControl.BackColor;
+            Properties.Settings.Default.GridColor = lineFlowGraph2DControl.GridColor;
+            Properties.Settings.Default.GraphTextColor = lineFlowGraph2DControl.TextColor;
+            Properties.Settings.Default.GraphTextFont =lineFlowGraph2DControl.TextFont;
             Properties.Settings.Default.Save();
         }
         private void MainForm_ResizeEnd(object sender, EventArgs e)
@@ -177,24 +184,26 @@ namespace QPerfMon
                         pcmi.Selected = lvi.Selected;
                         if (lvi.Selected)
                         {
-                            c2DPushGraphControl.GetLineHandle(lvi.Text).Thickness = defaultLineThickness + 2;
+                            //c2DPushGraphControl.GetLineHandle(lvi.Text).Thickness = defaultLineThickness + 2;
+                            lineFlowGraph2DControl.GetLine(lvi.Text).Thickness = defaultLineThickness + 2;
                         }
                         else
                         {
-                            c2DPushGraphControl.GetLineHandle(lvi.Text).Thickness = defaultLineThickness;
+                            //c2DPushGraphControl.GetLineHandle(lvi.Text).Thickness = defaultLineThickness;
+                            lineFlowGraph2DControl.GetLine(lvi.Text).Thickness = defaultLineThickness ;
                         }
                     }
                     //push only the first selected one to top
                     if (lvwCounters.SelectedItems.Count > 0)
                     {
-                        c2DPushGraphControl.SetSelectedLine(lvwCounters.SelectedItems[0].Text);
+                        lineFlowGraph2DControl.SetSelectedLine(lvwCounters.SelectedItems[0].Text);
                         
                         removeToolStripMenuItem.Enabled = (lvwCounters.Items.Count > 1) && (lvwCounters.Items.Count > lvwCounters.SelectedItems.Count);
                         moveSelectionToNewWindowToolStripMenuItem.Enabled = (lvwCounters.Items.Count > lvwCounters.SelectedItems.Count);
                     }
                     else
                     {
-                        c2DPushGraphControl.SetSelectedLine("");
+                        lineFlowGraph2DControl.SetSelectedLine("");
                         removeToolStripMenuItem.Enabled = false;
                         moveSelectionToNewWindowToolStripMenuItem.Enabled = false;
                     }
@@ -229,9 +238,10 @@ namespace QPerfMon
         {
             if (!initializing)
             {
-                HenIT.Windows.Controls.C2DPushGraph.Graphing.C2DPushGraph.LineHandle lh = c2DPushGraphControl.GetLineHandle(e.Item.Text);
-                lh.Visible = e.Item.Checked;
-                c2DPushGraphControl.UpdateGraph();
+                ILine line = lineFlowGraph2DControl.GetLine(e.Item.Text);
+                //HenIT.Windows.Controls.C2DPushGraph.Graphing.C2DPushGraph.LineHandle lh = c2DPushGraphControl.GetLineHandle(e.Item.Text);
+                line.Visible = e.Item.Checked;
+                lineFlowGraph2DControl.UpdateGraph();
                 if (lvwCounters.CheckedItems.Count == 0)
                     e.Item.Checked = true;
             }
@@ -282,7 +292,7 @@ namespace QPerfMon
                                                 pcValueStr = string.Format("{0:F3}", pcValue);
                                             if (lvwCounters.Items[i].SubItems[3].Text != pcValueStr)
                                                 lvwCounters.Items[i].SubItems[3].Text = pcValueStr;
-                                            c2DPushGraphControl.Push(pcValue, pcMonInstance.Name);
+                                            lineFlowGraph2DControl.Push(pcValue, pcMonInstance.Name);
                                             if (lvwCounters.Items[i].ForeColor != SystemColors.WindowText)
                                                 lvwCounters.Items[i].ForeColor = SystemColors.WindowText;
                                             pcMonInstance.LastError = "";
@@ -290,7 +300,7 @@ namespace QPerfMon
                                         }
                                         catch (Exception ex) //basically ignore exception and add 0 value
                                         {
-                                            c2DPushGraphControl.Push(0, pcMonInstances[i].Name);
+                                            lineFlowGraph2DControl.Push(0, pcMonInstances[i].Name);
                                             lvwCounters.Items[i].ForeColor = Color.Red;
                                             lvwCounters.Items[i].Checked = false;
                                             lvwCounters.Items[i].SubItems[3].Text = "Err";
@@ -298,7 +308,7 @@ namespace QPerfMon
                                         }
                                     }
                                     LogToFile();
-                                    c2DPushGraphControl.UpdateGraph();
+                                    lineFlowGraph2DControl.UpdateGraph();
                                 }
                                 catch (Exception ex)
                                 {
@@ -355,19 +365,20 @@ namespace QPerfMon
             if (lvwCounters.SelectedItems.Count ==1)
             {
                 Formatting formatting = new Formatting();
-                HenIT.Windows.Controls.C2DPushGraph.Graphing.C2DPushGraph.LineHandle lh = c2DPushGraphControl.GetLineHandle(lvwCounters.SelectedItems[0].Text);
-                formatting.SelectedScale = lh.Scale; 
-                formatting.SelectedColor = lh.Color;
-                formatting.PlotStyle = lh.PlotStyle;
+                ILine line = lineFlowGraph2DControl.GetLine(lvwCounters.SelectedItems[0].Text);
+                //HenIT.Windows.Controls.C2DPushGraph.Graphing.C2DPushGraph.LineHandle lh = c2DPushGraphControl.GetLineHandle(lvwCounters.SelectedItems[0].Text);
+                formatting.SelectedScale = line.Scale;
+                formatting.SelectedColor = line.Color;
+                formatting.PlotStyle = line.PlotStyle;
                 if (formatting.ShowDialog() == DialogResult.OK)
                 {
                     lvwCounters.SelectedItems[0].SubItems[2].Text = formatting.SelectedScale.ToString();
                     lvwCounters.SelectedItems[0].SubItems[1].ForeColor = formatting.SelectedColor;
                     lvwCounters.SelectedItems[0].SubItems[1].BackColor = formatting.SelectedColor;
-                                        
-                    lh.Color = formatting.SelectedColor;
-                    lh.Scale = formatting.SelectedScale;
-                    lh.PlotStyle = formatting.PlotStyle;
+
+                    line.Color = formatting.SelectedColor;
+                    line.Scale = formatting.SelectedScale;
+                    line.PlotStyle = formatting.PlotStyle;
                     PCMonInstance pcMonInstance = (PCMonInstance)lvwCounters.SelectedItems[0].Tag;
                     pcMonInstance.Scale = formatting.SelectedScale;
                     pcMonInstance.PlotStyle = (int)formatting.PlotStyle;
@@ -435,10 +446,12 @@ namespace QPerfMon
                     lvi.Tag = addCounter.SelectedPCMonInstance;
                     lvwCounters.Items.Add(lvi);
 
-                    C2DPushGraph.LineHandle m_LineHandle;
-                    m_LineHandle = c2DPushGraphControl.AddLine(addCounter.SelectedPCMonInstance.Name, addCounter.InitialColor, addCounter.SelectedPCMonInstance.Scale);
-                    m_LineHandle.Thickness = defaultLineThickness;
-                    m_LineHandle.PlotStyle = (LinePlotStyle)addCounter.SelectedPCMonInstance.PlotStyle;
+                    //C2DPushGraph.LineHandle m_LineHandle;
+                    ILine line = lineFlowGraph2DControl.AddLine(addCounter.SelectedPCMonInstance.Name, addCounter.InitialColor, addCounter.SelectedPCMonInstance.Scale);
+
+                    //m_LineHandle = c2DPushGraphControl.AddLine(addCounter.SelectedPCMonInstance.Name, addCounter.InitialColor, addCounter.SelectedPCMonInstance.Scale);
+                    line.Thickness = defaultLineThickness;
+                    line.PlotStyle = (LinePlotStyle)addCounter.SelectedPCMonInstance.PlotStyle;
                     UpdateStatusBarText();
                 }
                 catch (Exception ex)
@@ -461,10 +474,10 @@ namespace QPerfMon
                         foreach (ListViewItem lvi in lvwCounters.SelectedItems)
                         {
                             PCMonInstance removeItem = (PCMonInstance)lvi.Tag;
-                            c2DPushGraphControl.RemoveLine(removeItem.Name);
+                            lineFlowGraph2DControl.RemoveLine(removeItem.Name);
                             pcMonInstances.Remove(removeItem);
                         }
-                        c2DPushGraphControl.SetSelectedLine("");
+                        lineFlowGraph2DControl.SetSelectedLine("");
                         LoadListView();
                     }
                     catch (Exception ex)
@@ -472,7 +485,7 @@ namespace QPerfMon
                         MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                     UpdateStatusBarText();
-                    c2DPushGraphControl.UpdateGraph();
+                    lineFlowGraph2DControl.UpdateGraph();
                 }
             }
         }
@@ -564,7 +577,7 @@ namespace QPerfMon
                 foreach (ListViewItem lvi in lvwCounters.SelectedItems)
                 {
                     PCMonInstance removeItem = (PCMonInstance)lvi.Tag;
-                    c2DPushGraphControl.RemoveLine(removeItem.Name);
+                    lineFlowGraph2DControl.RemoveLine(removeItem.Name);
                     pcMonInstances.Remove(removeItem);
                 }
                 LoadListView();
@@ -574,7 +587,7 @@ namespace QPerfMon
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             Application.DoEvents();
-            c2DPushGraphControl.UpdateGraph();
+            lineFlowGraph2DControl.UpdateGraph();
         }        
         private void halfSecondsToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -635,15 +648,15 @@ namespace QPerfMon
             if (setInitialGraphMax.ShowDialog() == DialogResult.OK)
             {
                 initialMaxValue = setInitialGraphMax.InitialMaximum;
-                c2DPushGraphControl.MaxPeekMagnitudePreAutoScale = setInitialGraphMax.InitialMaximum;
+                lineFlowGraph2DControl.MaxPeekMagnitudePreAutoScale = setInitialGraphMax.InitialMaximum;
 
-                if (initialMaxValue > c2DPushGraphControl.GetCurrentMaxOnGraph())
+                if (initialMaxValue > lineFlowGraph2DControl.GetCurrentMaxOnGraph())
                 {
-                    c2DPushGraphControl.MaxPeekMagnitude = setInitialGraphMax.InitialMaximum;
-                    c2DPushGraphControl.MaxLabel = setInitialGraphMax.InitialMaximum.ToString();
+                    lineFlowGraph2DControl.MaxPeekMagnitude = setInitialGraphMax.InitialMaximum;
+                    lineFlowGraph2DControl.MaxLabel = setInitialGraphMax.InitialMaximum.ToString();
                 }
 
-                c2DPushGraphControl.UpdateGraph();
+                lineFlowGraph2DControl.UpdateGraph();
             }
         }
         private void logDataToFileToolStripMenuItem_Click(object sender, EventArgs e)
@@ -701,10 +714,10 @@ namespace QPerfMon
             {
                 pcMonInstances = new List<PCMonInstance>();
                 lvwCounters.Items.Clear();
-                c2DPushGraphControl.ClearAllLines();
-                displayTitle = qPerfMonFile.Title;                
-                c2DPushGraphControl.MaxLabel = qPerfMonFile.InitialMaxValue.ToString();
-                c2DPushGraphControl.MaxPeekMagnitude = qPerfMonFile.InitialMaxValue;
+                lineFlowGraph2DControl.ClearAllLines();
+                displayTitle = qPerfMonFile.Title;
+                lineFlowGraph2DControl.MaxLabel = qPerfMonFile.InitialMaxValue.ToString();
+                lineFlowGraph2DControl.MaxPeekMagnitude = qPerfMonFile.InitialMaxValue;
                 initialMaxValue = qPerfMonFile.InitialMaxValue;
 
                 foreach (string counterDefinition in qPerfMonFile.CounterDefinitionList)
@@ -733,16 +746,17 @@ namespace QPerfMon
                         MessageBox.Show(string.Format("Error parsing {0}\r\n{1}", counterDefinition, innerEx.Message), "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
-                
-                C2DPushGraph.LineHandle m_LineHandle;
+
+                ILine line;
+                //C2DPushGraph.LineHandle m_LineHandle;
                 for (int i = 0; i < pcMonInstances.Count; i++)
                 {
                     int colorIndex = i % lineColors.Count;
                     pcMonInstances[i].PlotColor = lineColors[colorIndex];
-                    m_LineHandle = c2DPushGraphControl.AddLine(pcMonInstances[i].Name, lineColors[colorIndex], pcMonInstances[i].Scale);
-                    m_LineHandle.PlotStyle = (LinePlotStyle)pcMonInstances[i].PlotStyle;
-                    if (m_LineHandle != null)
-                        m_LineHandle.Thickness = defaultLineThickness;
+                    line = lineFlowGraph2DControl.AddLine(pcMonInstances[i].Name, lineColors[colorIndex], pcMonInstances[i].Scale);
+                    //m_LineHandle = c2DPushGraphControl.AddLine(pcMonInstances[i].Name, lineColors[colorIndex], pcMonInstances[i].Scale);
+                    line.PlotStyle = (LinePlotStyle)pcMonInstances[i].PlotStyle;
+                    line.Thickness = defaultLineThickness;
                 }
                 LoadListView(true);
             }
@@ -753,7 +767,7 @@ namespace QPerfMon
             initializing = false;
             paused = oldPause;
             UpdateTitleText();
-            c2DPushGraphControl.UpdateGraph();
+            lineFlowGraph2DControl.UpdateGraph();
         }
         private void LoadListView()
         {
@@ -790,7 +804,7 @@ namespace QPerfMon
                     lvi.Selected = pcMonInstance.Selected;
                     lvwCounters.Items.Add(lvi);
                 }
-                c2DPushGraphControl.SetSelectedLine("");
+                lineFlowGraph2DControl.SetSelectedLine("");
                 UpdateStatusBarText();
             }
             catch (Exception ex)
@@ -981,6 +995,28 @@ namespace QPerfMon
             }
         } 
         #endregion        
+
+        private void graphFormatOptionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            GraphFormatting graphFormatting = new GraphFormatting();
+            graphFormatting.GraphBackgroundColor = lineFlowGraph2DControl.BackColor;
+            graphFormatting.GridColor = lineFlowGraph2DControl.GridColor;
+            graphFormatting.LabelFont = lineFlowGraph2DControl.TextFont;
+            graphFormatting.LabelForeColor = lineFlowGraph2DControl.TextColor;
+            if (graphFormatting.ShowDialog() == DialogResult.OK)
+            {
+                lineFlowGraph2DControl.BackColor = graphFormatting.GraphBackgroundColor;
+                lineFlowGraph2DControl.GridColor = graphFormatting.GridColor;
+                lineFlowGraph2DControl.TextFont = graphFormatting.LabelFont;
+                lineFlowGraph2DControl.TextColor = graphFormatting.LabelForeColor;
+                Properties.Settings.Default.GraphBackgroundColor = lineFlowGraph2DControl.BackColor;
+                Properties.Settings.Default.GridColor = lineFlowGraph2DControl.GridColor;
+                Properties.Settings.Default.GraphTextColor = lineFlowGraph2DControl.TextColor;
+                Properties.Settings.Default.GraphTextFont = lineFlowGraph2DControl.TextFont;
+                Properties.Settings.Default.Save();
+                lineFlowGraph2DControl.UpdateGraph();
+            }
+        }
 
     }
 }
