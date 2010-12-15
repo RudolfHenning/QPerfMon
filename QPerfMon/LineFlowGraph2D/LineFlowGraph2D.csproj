@@ -8,7 +8,7 @@
     <ProjectGuid>{94D1A1DD-60AA-4261-A2DD-9A71B7A92D54}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>LineFlowGraph2D</RootNamespace>
+    <RootNamespace>HenIT.Windows.Controls.Graphing</RootNamespace>
     <AssemblyName>LineFlowGraph2D</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
