@@ -23,7 +23,7 @@ namespace QPerfMon
         private string displayTitle = "";
         private string defaultTitle = "Quick performance counter viewer";
         private bool initializing = false;
-        private bool paused = false;
+        private bool paused = true;
         private QPerfMonFile initialPerfMonFile;
 
         private bool loggingEnabled = false;
@@ -120,8 +120,10 @@ namespace QPerfMon
             lineFlowGraph2DControl.GridColor = Properties.Settings.Default.GridColor;
             lineFlowGraph2DControl.TextColor = Properties.Settings.Default.GraphTextColor;
             lineFlowGraph2DControl.TextFont = Properties.Settings.Default.GraphTextFont;
-            //c2DPushGraphControl.GridSize = (ushort)(c2DPushGraphControl.Height / 10);
-
+            toolStripStatusLabelVersion.Text = string.Format("Version {0}", Application.ProductVersion.ToString());
+        }
+        private void MainForm_Shown(object sender, EventArgs e)
+        {
             LoadCounters(initialPerfMonFile);
 
             timerCallback = new System.Threading.TimerCallback(onTimerTick);
@@ -129,6 +131,8 @@ namespace QPerfMon
             lvwCounters_Resize(null, null);
             IsLoggingSetUp();
             initializing = false;
+            paused = false;
+            UpdateTitleText();
         }
         private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -641,6 +645,27 @@ namespace QPerfMon
                 this.Text = defaultTitle;
             }
         }
+        private void graphFormatOptionsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            GraphFormatting graphFormatting = new GraphFormatting();
+            graphFormatting.GraphBackgroundColor = lineFlowGraph2DControl.BackColor;
+            graphFormatting.GridColor = lineFlowGraph2DControl.GridColor;
+            graphFormatting.LabelFont = lineFlowGraph2DControl.TextFont;
+            graphFormatting.LabelForeColor = lineFlowGraph2DControl.TextColor;
+            if (graphFormatting.ShowDialog() == DialogResult.OK)
+            {
+                lineFlowGraph2DControl.BackColor = graphFormatting.GraphBackgroundColor;
+                lineFlowGraph2DControl.GridColor = graphFormatting.GridColor;
+                lineFlowGraph2DControl.TextFont = graphFormatting.LabelFont;
+                lineFlowGraph2DControl.TextColor = graphFormatting.LabelForeColor;
+                Properties.Settings.Default.GraphBackgroundColor = lineFlowGraph2DControl.BackColor;
+                Properties.Settings.Default.GridColor = lineFlowGraph2DControl.GridColor;
+                Properties.Settings.Default.GraphTextColor = lineFlowGraph2DControl.TextColor;
+                Properties.Settings.Default.GraphTextFont = lineFlowGraph2DControl.TextFont;
+                Properties.Settings.Default.Save();
+                lineFlowGraph2DControl.UpdateGraph();
+            }
+        }
         private void maximuminitialToolStripMenuItem_Click(object sender, EventArgs e)
         {
             SetInitialGraphMax setInitialGraphMax = new SetInitialGraphMax();
@@ -725,6 +750,8 @@ namespace QPerfMon
                     bool unique = true;
                     try
                     {
+                        toolStripStatusLabelSelection.Text = string.Format("Loading {0}", counterDefinition);
+                        Application.DoEvents();
                         PCMonInstance pcMonInstance = new PCMonInstance(counterDefinition);
 
                         foreach (PCMonInstance existing in pcMonInstances)
@@ -781,8 +808,11 @@ namespace QPerfMon
             try
             {
                 lvwCounters.Items.Clear();
+                List<ListViewItem> lvitems = new List<ListViewItem>();
                 foreach (PCMonInstance pcMonInstance in pcMonInstances)
                 {
+                    toolStripStatusLabelSelection.Text = string.Format("Loading {0}", pcMonInstance.Name);
+                    Application.DoEvents();
                     int colorIndex = lvwCounters.Items.Count % lineColors.Count;
                     string scale = "1";
                     if (pcMonInstance.Scale < 1)
@@ -802,8 +832,9 @@ namespace QPerfMon
                     lvi.Checked = true;
                     lvi.Tag = pcMonInstance;
                     lvi.Selected = pcMonInstance.Selected;
-                    lvwCounters.Items.Add(lvi);
+                    lvitems.Add(lvi);                    
                 }
+                lvwCounters.Items.AddRange(lvitems.ToArray());
                 lineFlowGraph2DControl.SetSelectedLine("");
                 UpdateStatusBarText();
             }
@@ -994,29 +1025,7 @@ namespace QPerfMon
                 }
             }
         } 
-        #endregion        
-
-        private void graphFormatOptionsToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            GraphFormatting graphFormatting = new GraphFormatting();
-            graphFormatting.GraphBackgroundColor = lineFlowGraph2DControl.BackColor;
-            graphFormatting.GridColor = lineFlowGraph2DControl.GridColor;
-            graphFormatting.LabelFont = lineFlowGraph2DControl.TextFont;
-            graphFormatting.LabelForeColor = lineFlowGraph2DControl.TextColor;
-            if (graphFormatting.ShowDialog() == DialogResult.OK)
-            {
-                lineFlowGraph2DControl.BackColor = graphFormatting.GraphBackgroundColor;
-                lineFlowGraph2DControl.GridColor = graphFormatting.GridColor;
-                lineFlowGraph2DControl.TextFont = graphFormatting.LabelFont;
-                lineFlowGraph2DControl.TextColor = graphFormatting.LabelForeColor;
-                Properties.Settings.Default.GraphBackgroundColor = lineFlowGraph2DControl.BackColor;
-                Properties.Settings.Default.GridColor = lineFlowGraph2DControl.GridColor;
-                Properties.Settings.Default.GraphTextColor = lineFlowGraph2DControl.TextColor;
-                Properties.Settings.Default.GraphTextFont = lineFlowGraph2DControl.TextFont;
-                Properties.Settings.Default.Save();
-                lineFlowGraph2DControl.UpdateGraph();
-            }
-        }
+        #endregion               
 
     }
 }
