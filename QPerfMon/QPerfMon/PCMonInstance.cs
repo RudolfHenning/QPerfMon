@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
 using System.Drawing;
+using System.Xml;
 
 namespace QPerfMon
 {
@@ -17,35 +18,114 @@ namespace QPerfMon
         }
         public PCMonInstance(string key)
         {
-            Name = name;
-            string[] parts = key.Split('\\');
-            if (parts.Length >= 4)
+            if (key.StartsWith("<"))
             {
-                machine = GetParsedElement(0, parts);
-                category = GetParsedElement(1, parts);
-                counter = GetParsedElement(2, parts);
-                instance = GetParsedElement(3, parts);
-                string scaleStr = GetParsedElement(4, parts);
-                if (scaleStr.Length > 0)
-                    scale = double.Parse(scaleStr);
+                XmlDocument config = new XmlDocument();
+                config.LoadXml(key);
+                XmlElement root = config.DocumentElement;
+                XmlNode machineNode = root.SelectSingleNode("machine");
+                if (machineNode == null)
+                    throw new Exception(string.Format("Invalid config specified! Machine name not specified\r\n{0}", key));
+                else 
+                    machine = machineNode.InnerText;
+                XmlNode categoryNode = root.SelectSingleNode("category");
+                if (categoryNode == null)
+                    throw new Exception(string.Format("Invalid config specified! Category not specified\r\n{0}", key));
                 else
+                    category = categoryNode.InnerText;
+                XmlNode counterNode = root.SelectSingleNode("counter");
+                if (counterNode == null)
+                    throw new Exception(string.Format("Invalid config specified! Counter not specified\r\n{0}", key));
+                else
+                    counter = counterNode.InnerText;
+                XmlNode instanceNode = root.SelectSingleNode("instance");
+                if (instanceNode == null)
+                    instance = "";
+                else
+                    instance = instanceNode.InnerText;
+                XmlNode scaleNode = root.SelectSingleNode("scale");
+                if (scaleNode == null)
                     scale = 1;
+                else if (!double.TryParse(scaleNode.InnerText, out scale))
+                    scale = 1;
+                XmlNode styleNode = root.SelectSingleNode("style");
+                if (styleNode == null)
+                    plotStyle = 0;
+                else if (!int.TryParse(styleNode.InnerText, out plotStyle))
+                    plotStyle = 0;
+                LoadColorError = false;
+                XmlNode colorNode = root.SelectSingleNode("color");
+                if (colorNode == null)
+                    LoadColorError = true;
+                else
+                {
+                    try
+                    {
+                        if (colorNode.InnerText.StartsWith("#"))
+                        {
+                            plotColor = Color.FromArgb(int.Parse(colorNode.InnerText.Substring(1)));
+                        }
+                        else
+                            plotColor = Color.FromName(colorNode.InnerText);
+                        if (plotColor.R == 0 && plotColor.B == 0 && plotColor.G == 0)
+                            LoadColorError = true;
+                    }
+                    catch
+                    {
+                        LoadColorError = true;
+                    }
+                }
 
+                //Set name
                 name = string.Format("{0}\\{1}\\{2}\\", machine, category, counter);
                 if (instance.Contains("\\"))
                     name += "\"" + instance + "\"";
                 else
                     name += instance;
-                string styleStr = GetParsedElement(5, parts);
-                if (styleStr.Length > 0)
-                {
-                    if (!int.TryParse(styleStr, out plotStyle))
-                        plotStyle = 0;
-                }
-            }                
+            }
             else
             {
-                throw new Exception("Invalid name/key specified for PCMonInstance");
+                string[] parts = key.Split('\\');
+                if (parts.Length >= 4)
+                {
+                    machine = GetParsedElement(0, parts);
+                    category = GetParsedElement(1, parts);
+                    counter = GetParsedElement(2, parts);
+                    instance = GetParsedElement(3, parts);
+                    string scaleStr = GetParsedElement(4, parts);
+                    if (scaleStr.Length > 0)
+                        scale = double.Parse(scaleStr);
+                    else
+                        scale = 1;
+
+                    name = string.Format("{0}\\{1}\\{2}\\", machine, category, counter);
+                    if (instance.Contains("\\"))
+                        name += "\"" + instance + "\"";
+                    else
+                        name += instance;
+                    string styleStr = GetParsedElement(5, parts);
+                    if (styleStr.Length > 0)
+                    {
+                        if (!int.TryParse(styleStr, out plotStyle))
+                            plotStyle = 0;
+                    }
+                    string colorStr = GetParsedElement(6, parts);
+                    if (colorStr.Length > 0)
+                    {
+                        try
+                        {
+                            plotColor = Color.FromName(colorStr);
+                            LoadColorError = false;
+                        }
+                        catch { LoadColorError = true; }
+                    }
+                    else
+                        LoadColorError = true;
+                }
+                else
+                {
+                    throw new Exception("Invalid name/key specified for PCMonInstance");
+                }
             }
             Selected = false;
             LastError = "";
@@ -129,6 +209,7 @@ namespace QPerfMon
             get { return plotStyle; }
             set { plotStyle = value; }
         }
+        public bool LoadColorError { get; private set; }
         private Color plotColor;
         public Color PlotColor
         {
@@ -179,5 +260,23 @@ namespace QPerfMon
             return CounterDefinition().GetHashCode();
         }
         #endregion
+
+        public string KeyToXml()
+        {
+            XmlDocument config = new XmlDocument();
+            config.LoadXml("<xml />");
+            XmlElement root = config.DocumentElement;
+            root.AppendChild(root.CreateElementWithText("machine", machine));
+            root.AppendChild(root.CreateElementWithText("category", category));
+            root.AppendChild(root.CreateElementWithText("counter", counter));
+            root.AppendChild(root.CreateElementWithText("instance", instance));
+            if (scale != 1)
+                root.AppendChild(root.CreateElementWithText("scale", scale.ToString()));
+            if (plotStyle != 0)
+                root.AppendChild(root.CreateElementWithText("style", plotStyle.ToString()));
+
+            root.AppendChild(root.CreateElementWithText("color", plotColor.IsKnownColor ? plotColor.Name : "#" + plotColor.ToArgb().ToString()));
+            return config.OuterXml;
+        }
     }
 }

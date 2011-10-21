@@ -56,14 +56,15 @@
             this.logDataToFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startLoggingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lvwCounters = new QPerfMon.ListViewR();
-            this.columnHeader1 = new System.Windows.Forms.ColumnHeader();
-            this.columnHeader2 = new System.Windows.Forms.ColumnHeader();
-            this.columnHeaderScale = new System.Windows.Forms.ColumnHeader();
-            this.columnHeader3 = new System.Windows.Forms.ColumnHeader();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeaderScale = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.contextMenuStripLvw = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.visibleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.formattingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            this.disableCounterOnErrorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lastErrorToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
             this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -77,9 +78,10 @@
             this.saveFileDialogQPerf = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialogQPerf = new System.Windows.Forms.OpenFileDialog();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripStatusLabelVersion = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabelSelection = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.toolStripStatusLabelVersion = new System.Windows.Forms.ToolStripStatusLabel();
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
             this.splitContainer1.SuspendLayout();
@@ -104,6 +106,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.lvwCounters);
             this.splitContainer1.Size = new System.Drawing.Size(586, 422);
             this.splitContainer1.SplitterDistance = 312;
+            this.splitContainer1.SplitterWidth = 8;
             this.splitContainer1.TabIndex = 1;
             this.splitContainer1.SplitterMoved += new System.Windows.Forms.SplitterEventHandler(this.splitContainer1_SplitterMoved);
             // 
@@ -121,10 +124,10 @@
             this.lineFlowGraph2DControl.LineInterval = ((ushort)(5));
             this.lineFlowGraph2DControl.Location = new System.Drawing.Point(0, 0);
             this.lineFlowGraph2DControl.MaxLabel = "100";
-            this.lineFlowGraph2DControl.MaxPeekMagnitude = 100;
-            this.lineFlowGraph2DControl.MaxPeekMagnitudePreAutoScale = 100;
+            this.lineFlowGraph2DControl.MaxPeekMagnitude = 100D;
+            this.lineFlowGraph2DControl.MaxPeekMagnitudePreAutoScale = 100D;
             this.lineFlowGraph2DControl.MinLabel = "0";
-            this.lineFlowGraph2DControl.MinPeekMagnitude = 0;
+            this.lineFlowGraph2DControl.MinPeekMagnitude = 0D;
             this.lineFlowGraph2DControl.Name = "lineFlowGraph2DControl";
             this.lineFlowGraph2DControl.ShowGrid = true;
             this.lineFlowGraph2DControl.ShowLabels = true;
@@ -322,13 +325,13 @@
             listViewItem1});
             this.lvwCounters.Location = new System.Drawing.Point(0, 0);
             this.lvwCounters.Name = "lvwCounters";
-            this.lvwCounters.Size = new System.Drawing.Size(586, 106);
+            this.lvwCounters.Size = new System.Drawing.Size(586, 102);
             this.lvwCounters.TabIndex = 0;
             this.lvwCounters.UseCompatibleStateImageBehavior = false;
             this.lvwCounters.View = System.Windows.Forms.View.Details;
-            this.lvwCounters.Resize += new System.EventHandler(this.lvwCounters_Resize);
             this.lvwCounters.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.lvwCounters_ItemChecked);
             this.lvwCounters.SelectedIndexChanged += new System.EventHandler(this.lvwCounters_SelectedIndexChanged);
+            this.lvwCounters.Resize += new System.EventHandler(this.lvwCounters_Resize);
             // 
             // columnHeader1
             // 
@@ -354,6 +357,7 @@
             this.visibleToolStripMenuItem,
             this.formattingToolStripMenuItem,
             this.toolStripSeparator1,
+            this.disableCounterOnErrorToolStripMenuItem,
             this.lastErrorToolStripMenuItem1,
             this.toolStripMenuItem1,
             this.addToolStripMenuItem,
@@ -365,7 +369,7 @@
             this.saveCurrentSetToolStripMenuItem,
             this.moveSelectionToNewWindowToolStripMenuItem});
             this.contextMenuStripLvw.Name = "contextMenuStrip1";
-            this.contextMenuStripLvw.Size = new System.Drawing.Size(246, 242);
+            this.contextMenuStripLvw.Size = new System.Drawing.Size(246, 286);
             // 
             // visibleToolStripMenuItem
             // 
@@ -388,6 +392,14 @@
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
             this.toolStripSeparator1.Size = new System.Drawing.Size(242, 6);
+            // 
+            // disableCounterOnErrorToolStripMenuItem
+            // 
+            this.disableCounterOnErrorToolStripMenuItem.CheckOnClick = true;
+            this.disableCounterOnErrorToolStripMenuItem.Name = "disableCounterOnErrorToolStripMenuItem";
+            this.disableCounterOnErrorToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
+            this.disableCounterOnErrorToolStripMenuItem.Text = "Disable counter on error";
+            this.disableCounterOnErrorToolStripMenuItem.CheckedChanged += new System.EventHandler(this.disableCounterOnErrorToolStripMenuItem_CheckedChanged);
             // 
             // lastErrorToolStripMenuItem1
             // 
@@ -467,6 +479,7 @@
             // 
             // openFileDialogQPerf
             // 
+            this.openFileDialogQPerf.DefaultExt = "qpmset";
             this.openFileDialogQPerf.Filter = "Quick Perfmon Files|*.qpmset";
             // 
             // statusStrip1
@@ -480,15 +493,6 @@
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
-            // toolStripStatusLabelSelection
-            // 
-            this.toolStripStatusLabelSelection.AutoSize = false;
-            this.toolStripStatusLabelSelection.Name = "toolStripStatusLabelSelection";
-            this.toolStripStatusLabelSelection.Size = new System.Drawing.Size(390, 17);
-            this.toolStripStatusLabelSelection.Spring = true;
-            this.toolStripStatusLabelSelection.Text = ".";
-            this.toolStripStatusLabelSelection.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // toolStripStatusLabelVersion
             // 
             this.toolStripStatusLabelVersion.AutoSize = false;
@@ -496,6 +500,15 @@
             this.toolStripStatusLabelVersion.Size = new System.Drawing.Size(150, 17);
             this.toolStripStatusLabelVersion.Text = "Version";
             this.toolStripStatusLabelVersion.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // toolStripStatusLabelSelection
+            // 
+            this.toolStripStatusLabelSelection.AutoSize = false;
+            this.toolStripStatusLabelSelection.Name = "toolStripStatusLabelSelection";
+            this.toolStripStatusLabelSelection.Size = new System.Drawing.Size(421, 17);
+            this.toolStripStatusLabelSelection.Spring = true;
+            this.toolStripStatusLabelSelection.Text = ".";
+            this.toolStripStatusLabelSelection.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // MainForm
             // 
@@ -509,13 +522,14 @@
             this.MinimumSize = new System.Drawing.Size(400, 300);
             this.Name = "MainForm";
             this.Text = "Quick performance counter viewer";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.Shown += new System.EventHandler(this.MainForm_Shown);
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
-            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             this.ResizeEnd += new System.EventHandler(this.MainForm_ResizeEnd);
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.MainForm_KeyDown);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
             this.splitContainer1.ResumeLayout(false);
             this.contextMenuStripGraph.ResumeLayout(false);
             this.contextMenuStripLvw.ResumeLayout(false);
@@ -577,6 +591,7 @@
         private HenIT.Windows.Controls.Graphing.LineFlowGraph2D lineFlowGraph2DControl;
         private System.Windows.Forms.ToolStripMenuItem graphFormatOptionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelVersion;
+        private System.Windows.Forms.ToolStripMenuItem disableCounterOnErrorToolStripMenuItem;
     }
 }
 

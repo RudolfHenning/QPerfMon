@@ -44,5 +44,8 @@
     <Setting Name="GraphTextFont" Type="System.Drawing.Font" Scope="User">
       <Value Profile="(Default)">Verdana, 9.75pt, style=Bold</Value>
     </Setting>
+    <Setting Name="DisableCounterOnError" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

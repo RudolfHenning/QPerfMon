@@ -25,7 +25,7 @@ namespace QPerfMon
             {
                 if (args.Length == 0)
                 {
-                    Application.Run(new MainForm(new string[] { @".\Processor\% Processor Time\_Total" }));
+                    Application.Run(new MainForm(new string[] { @"<xml><machine>.</machine><category>Processor</category><counter>% Processor Time</counter><instance>_Total</instance><scale>1</scale><color>red</color></xml>" }));
                 }
                 else
                 {

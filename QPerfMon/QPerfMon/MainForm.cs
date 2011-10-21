@@ -64,7 +64,7 @@ namespace QPerfMon
                 displayTitle = CommandLineUtils.GetCommand(args, "", new string[] { "-title:", "/title:" });
 
                 if (counters.Count == 0)
-                    counters.Add(@".\Processor\% Processor Time\_Total\1");
+                    counters.Add(@"<xml><machine>.</machine><category>Processor</category><counter>% Processor Time</counter><instance>_Total</instance></xml>");
                 if (counters[0].EndsWith(".qpmset"))
                 {
                     openFileDialogQPerf.FileName = counters[0];
@@ -279,6 +279,7 @@ namespace QPerfMon
                                         if (paused)
                                             break;
                                         PCMonInstance pcMonInstance = pcMonInstances[i];
+                                        float pcValue = 0;
                                         try
                                         {
                                             //lazy load if needed
@@ -287,7 +288,24 @@ namespace QPerfMon
                                                 pcMonInstance.CreatePCInstance();
                                             }
 
-                                            float pcValue = (pcMonInstance.PCInstance.NextValue());
+                                            pcValue = (pcMonInstance.PCInstance.NextValue());
+                                            if (lvwCounters.Items[i].ForeColor != SystemColors.WindowText)
+                                                lvwCounters.Items[i].ForeColor = SystemColors.WindowText;
+                                            pcMonInstance.LastError = "";
+
+                                        }
+                                        catch (Exception ex)
+                                        {
+                                            lvwCounters.Items[i].ForeColor = Color.Red;
+                                            pcMonInstance.LastError = ex.Message;
+                                            if (Properties.Settings.Default.DisableCounterOnError)
+                                            {
+                                                lvwCounters.Items[i].Checked = false;
+                                                lvwCounters.Items[i].SubItems[3].Text = "Err";
+                                            }
+                                        }
+                                        finally
+                                        {
                                             pcMonInstance.LastValue = pcValue;
                                             string pcValueStr;
                                             if (pcValue > 999)
@@ -296,20 +314,56 @@ namespace QPerfMon
                                                 pcValueStr = string.Format("{0:F3}", pcValue);
                                             if (lvwCounters.Items[i].SubItems[3].Text != pcValueStr)
                                                 lvwCounters.Items[i].SubItems[3].Text = pcValueStr;
-                                            lineFlowGraph2DControl.Push(pcValue, pcMonInstance.Name);
-                                            if (lvwCounters.Items[i].ForeColor != SystemColors.WindowText)
-                                                lvwCounters.Items[i].ForeColor = SystemColors.WindowText;
-                                            pcMonInstance.LastError = "";
 
+                                            lineFlowGraph2DControl.Push(pcValue, pcMonInstance.Name);
                                         }
-                                        catch (Exception ex) //basically ignore exception and add 0 value
-                                        {
-                                            lineFlowGraph2DControl.Push(0, pcMonInstances[i].Name);
-                                            lvwCounters.Items[i].ForeColor = Color.Red;
-                                            lvwCounters.Items[i].Checked = false;
-                                            lvwCounters.Items[i].SubItems[3].Text = "Err";
-                                            pcMonInstance.LastError = ex.Message;
-                                        }
+
+                                        //try
+                                        //{
+                                        //    //lazy load if needed
+                                        //    if (pcMonInstance.PCInstance == null)
+                                        //    {
+                                        //        pcMonInstance.CreatePCInstance();
+                                        //    }
+
+                                        //    float pcValue = 0;
+                                        //    try
+                                        //    {
+                                        //        pcValue = (pcMonInstance.PCInstance.NextValue());
+                                        //        if (lvwCounters.Items[i].ForeColor != SystemColors.WindowText)
+                                        //            lvwCounters.Items[i].ForeColor = SystemColors.WindowText;
+                                        //        pcMonInstance.LastError = "";
+                                        //    }
+                                        //    catch(Exception ex)
+                                        //    {
+                                        //        lvwCounters.Items[i].ForeColor = Color.Red;
+                                        //        pcMonInstance.LastError = ex.Message;
+                                        //        if (Properties.Settings.Default.DisableCounterOnError)
+                                        //        {
+                                        //            lvwCounters.Items[i].Checked = false;
+                                        //            lvwCounters.Items[i].SubItems[3].Text = "Err";
+                                        //        }
+                                        //    }
+                                        //    pcMonInstance.LastValue = pcValue;
+                                        //    string pcValueStr;
+                                        //    if (pcValue > 999)
+                                        //        pcValueStr = string.Format("{0:F1}", pcValue);
+                                        //    else
+                                        //        pcValueStr = string.Format("{0:F3}", pcValue);
+                                        //    if (lvwCounters.Items[i].SubItems[3].Text != pcValueStr)
+                                        //        lvwCounters.Items[i].SubItems[3].Text = pcValueStr;
+
+                                        //    lineFlowGraph2DControl.Push(pcValue, pcMonInstance.Name); 
+
+                                        //}
+                                        //catch (Exception ex) //disable counter
+                                        //{
+                                        //    lineFlowGraph2DControl.Push(0, pcMonInstances[i].Name);
+                                        //    lvwCounters.Items[i].ForeColor = Color.Red;
+                                        //    lvwCounters.Items[i].Checked = false;
+                                        //    lvwCounters.Items[i].SubItems[3].Text = "Err";
+                                        //    pcMonInstance.LastError = ex.Message;
+                                        //}
                                     }
                                     LogToFile();
                                     lineFlowGraph2DControl.UpdateGraph();
@@ -450,10 +504,8 @@ namespace QPerfMon
                     lvi.Tag = addCounter.SelectedPCMonInstance;
                     lvwCounters.Items.Add(lvi);
 
-                    //C2DPushGraph.LineHandle m_LineHandle;
                     ILine line = lineFlowGraph2DControl.AddLine(addCounter.SelectedPCMonInstance.Name, addCounter.InitialColor, addCounter.SelectedPCMonInstance.Scale);
 
-                    //m_LineHandle = c2DPushGraphControl.AddLine(addCounter.SelectedPCMonInstance.Name, addCounter.InitialColor, addCounter.SelectedPCMonInstance.Scale);
                     line.Thickness = defaultLineThickness;
                     line.PlotStyle = (LinePlotStyle)addCounter.SelectedPCMonInstance.PlotStyle;
                     UpdateStatusBarText();
@@ -502,7 +554,7 @@ namespace QPerfMon
                     StartStopLogging(true);
                     saveFileDialogQPerf.FileName = openFileDialogQPerf.FileName;
                     QPerfMonFile qPerfMonFile = SerializationUtils.DeserializeXMLFile<QPerfMonFile>(openFileDialogQPerf.FileName);
-                    toolStripStatusLabelSelection.Text = qPerfMonFile.Version;
+                    //toolStripStatusLabelSelection.Text = qPerfMonFile.Version;
                     LoadCounters(qPerfMonFile);
                 }
             }
@@ -526,12 +578,13 @@ namespace QPerfMon
                     foreach (PCMonInstance pcmi in pcMonInstances)
                     {
                         
-                        string key = pcmi.Name;
-                        if (pcmi.Scale < 1)
-                            key += "\\" + pcmi.Scale.ToString("0.########");
-                        else
-                            key += "\\" + pcmi.Scale.ToString("0");
-                        key += "\\" + pcmi.PlotStyle;
+                        string key = pcmi.KeyToXml();// .Name;
+                        //if (pcmi.Scale < 1)
+                        //    key += "\\" + pcmi.Scale.ToString("0.########");
+                        //else
+                        //    key += "\\" + pcmi.Scale.ToString("0");
+                        //key += "\\" + pcmi.PlotStyle;
+                        //key += "\\" + pcmi.PlotColor;
                         qPerfMonFile.CounterDefinitionList.Add(key);
                     }
                     SerializationUtils.SerializeXMLToFile(saveFileDialogQPerf.FileName, qPerfMonFile);
@@ -727,6 +780,10 @@ namespace QPerfMon
             Properties.Settings.Default.MainWindowSnap = snapToDesktopSidesToolStripMenuItem.Checked;
             this.SnappingEnabled = Properties.Settings.Default.MainWindowSnap;
         }
+        private void disableCounterOnErrorToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.DisableCounterOnError = disableCounterOnErrorToolStripMenuItem.Checked;
+        }
         #endregion        
 
         #region Loading
@@ -779,9 +836,9 @@ namespace QPerfMon
                 for (int i = 0; i < pcMonInstances.Count; i++)
                 {
                     int colorIndex = i % lineColors.Count;
-                    pcMonInstances[i].PlotColor = lineColors[colorIndex];
-                    line = lineFlowGraph2DControl.AddLine(pcMonInstances[i].Name, lineColors[colorIndex], pcMonInstances[i].Scale);
-                    //m_LineHandle = c2DPushGraphControl.AddLine(pcMonInstances[i].Name, lineColors[colorIndex], pcMonInstances[i].Scale);
+                    if (pcMonInstances[i].LoadColorError)
+                        pcMonInstances[i].PlotColor = lineColors[colorIndex];
+                    line = lineFlowGraph2DControl.AddLine(pcMonInstances[i].Name, pcMonInstances[i].PlotColor, pcMonInstances[i].Scale);
                     line.PlotStyle = (LinePlotStyle)pcMonInstances[i].PlotStyle;
                     line.Thickness = defaultLineThickness;
                 }
