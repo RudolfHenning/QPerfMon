@@ -255,7 +255,11 @@ namespace QPerfMon
         #region Splitter events
         private void splitContainer1_SplitterMoved(object sender, SplitterEventArgs e)
         {
-            LoadListView(false);
+            try
+            {
+                lvwCounters.EndUpdate();
+            }
+            catch { }
         }
         #endregion
 
@@ -316,54 +320,7 @@ namespace QPerfMon
                                                 lvwCounters.Items[i].SubItems[3].Text = pcValueStr;
 
                                             lineFlowGraph2DControl.Push(pcValue, pcMonInstance.Name);
-                                        }
-
-                                        //try
-                                        //{
-                                        //    //lazy load if needed
-                                        //    if (pcMonInstance.PCInstance == null)
-                                        //    {
-                                        //        pcMonInstance.CreatePCInstance();
-                                        //    }
-
-                                        //    float pcValue = 0;
-                                        //    try
-                                        //    {
-                                        //        pcValue = (pcMonInstance.PCInstance.NextValue());
-                                        //        if (lvwCounters.Items[i].ForeColor != SystemColors.WindowText)
-                                        //            lvwCounters.Items[i].ForeColor = SystemColors.WindowText;
-                                        //        pcMonInstance.LastError = "";
-                                        //    }
-                                        //    catch(Exception ex)
-                                        //    {
-                                        //        lvwCounters.Items[i].ForeColor = Color.Red;
-                                        //        pcMonInstance.LastError = ex.Message;
-                                        //        if (Properties.Settings.Default.DisableCounterOnError)
-                                        //        {
-                                        //            lvwCounters.Items[i].Checked = false;
-                                        //            lvwCounters.Items[i].SubItems[3].Text = "Err";
-                                        //        }
-                                        //    }
-                                        //    pcMonInstance.LastValue = pcValue;
-                                        //    string pcValueStr;
-                                        //    if (pcValue > 999)
-                                        //        pcValueStr = string.Format("{0:F1}", pcValue);
-                                        //    else
-                                        //        pcValueStr = string.Format("{0:F3}", pcValue);
-                                        //    if (lvwCounters.Items[i].SubItems[3].Text != pcValueStr)
-                                        //        lvwCounters.Items[i].SubItems[3].Text = pcValueStr;
-
-                                        //    lineFlowGraph2DControl.Push(pcValue, pcMonInstance.Name); 
-
-                                        //}
-                                        //catch (Exception ex) //disable counter
-                                        //{
-                                        //    lineFlowGraph2DControl.Push(0, pcMonInstances[i].Name);
-                                        //    lvwCounters.Items[i].ForeColor = Color.Red;
-                                        //    lvwCounters.Items[i].Checked = false;
-                                        //    lvwCounters.Items[i].SubItems[3].Text = "Err";
-                                        //    pcMonInstance.LastError = ex.Message;
-                                        //}
+                                        }                                        
                                     }
                                     LogToFile();
                                     lineFlowGraph2DControl.UpdateGraph();
@@ -424,7 +381,6 @@ namespace QPerfMon
             {
                 Formatting formatting = new Formatting();
                 ILine line = lineFlowGraph2DControl.GetLine(lvwCounters.SelectedItems[0].Text);
-                //HenIT.Windows.Controls.C2DPushGraph.Graphing.C2DPushGraph.LineHandle lh = c2DPushGraphControl.GetLineHandle(lvwCounters.SelectedItems[0].Text);
                 formatting.SelectedScale = line.Scale;
                 formatting.SelectedColor = line.Color;
                 formatting.PlotStyle = line.PlotStyle;
@@ -578,13 +534,7 @@ namespace QPerfMon
                     foreach (PCMonInstance pcmi in pcMonInstances)
                     {
                         
-                        string key = pcmi.KeyToXml();// .Name;
-                        //if (pcmi.Scale < 1)
-                        //    key += "\\" + pcmi.Scale.ToString("0.########");
-                        //else
-                        //    key += "\\" + pcmi.Scale.ToString("0");
-                        //key += "\\" + pcmi.PlotStyle;
-                        //key += "\\" + pcmi.PlotColor;
+                        string key = pcmi.KeyToXml();
                         qPerfMonFile.CounterDefinitionList.Add(key);
                     }
                     SerializationUtils.SerializeXMLToFile(saveFileDialogQPerf.FileName, qPerfMonFile);
@@ -613,11 +563,7 @@ namespace QPerfMon
             {
                 lvi.Checked = false;
                 PCMonInstance pcmi = (PCMonInstance)lvi.Tag;
-                string key = pcmi.Name;
-                if (pcmi.Scale < 1)
-                    key += "\\" + pcmi.Scale.ToString("0.########");
-                else
-                    key += "\\" + pcmi.Scale.ToString("0");
+                string key = pcmi.KeyToXml();
                 parameters.Append("\"");
                 parameters.Append(key);
                 parameters.Append("\" ");
@@ -832,7 +778,6 @@ namespace QPerfMon
                 }
 
                 ILine line;
-                //C2DPushGraph.LineHandle m_LineHandle;
                 for (int i = 0; i < pcMonInstances.Count; i++)
                 {
                     int colorIndex = i % lineColors.Count;
