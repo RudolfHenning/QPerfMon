@@ -70,6 +70,12 @@
     <Compile Include="AddCounter.Designer.cs">
       <DependentUpon>AddCounter.cs</DependentUpon>
     </Compile>
+    <Compile Include="AddCounters.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddCounters.Designer.cs">
+      <DependentUpon>AddCounters.cs</DependentUpon>
+    </Compile>
     <Compile Include="CommandLineUtils.cs" />
     <Compile Include="FadeSnapForm.cs">
       <SubType>Form</SubType>
@@ -113,6 +119,9 @@
     <Compile Include="XmlUtils.cs" />
     <EmbeddedResource Include="AddCounter.resx">
       <DependentUpon>AddCounter.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AddCounters.resx">
+      <DependentUpon>AddCounters.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Formatting.resx">
       <DependentUpon>Formatting.cs</DependentUpon>
@@ -169,6 +178,9 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="GRAPH04.ICO" />
+    <None Include="Resources\stop.png" />
+    <None Include="Resources\add.png" />
+    <None Include="Resources\AddEx.png" />
     <Content Include="ToDo.txt" />
   </ItemGroup>
   <ItemGroup>

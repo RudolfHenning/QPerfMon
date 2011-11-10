@@ -402,27 +402,28 @@ namespace QPerfMon
         }
         private void addToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            AddNewCounter("", "", "", "");
+            //AddNewCounter("", "", "", "");
+            AddNewCounters("", "", "");
         }
         private void addClonePerformanceCounterToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (lvwCounters.SelectedItems.Count > 0)
             {
                 PCMonInstance pcmi = (PCMonInstance)lvwCounters.SelectedItems[0].Tag;
-                AddNewCounter(pcmi.Machine, pcmi.Category, "", "");
+                AddNewCounters(pcmi.Machine, pcmi.Category, "");
             }
             else
-                AddNewCounter("", "", "", "");
+                AddNewCounters("", "", "");
         }
         private void addCloneAllToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if (lvwCounters.SelectedItems.Count > 0)
             {
                 PCMonInstance pcmi = (PCMonInstance)lvwCounters.SelectedItems[0].Tag;
-                AddNewCounter(pcmi.Machine, pcmi.Category, pcmi.Counter, pcmi.Instance);
+                AddNewCounters(pcmi.Machine, pcmi.Category, pcmi.Counter);
             }
             else
-                AddNewCounter("", "", "", "");
+                AddNewCounters("", "", "");
         }
         private void AddNewCounter(string initialMachine, string initialCategory, string initialCounter, string initialInstance)
         {
@@ -1029,5 +1030,150 @@ namespace QPerfMon
         } 
         #endregion               
 
+        private void testAddToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            AddNewCounters("", "", "");
+            //AddCounters addcounters = new AddCounters();
+            //if (addcounters.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            //{
+            //    StartStopLogging(true);
+            //    bool oldPause = paused;
+            //    paused = true;
+            //    initializing = true;
+            //    try
+            //    {
+
+            //        foreach (PCMonInstance pcmi in addcounters.SelectedPCMonInstances)
+            //        {
+            //            pcmi.PlotColor = lineColors[(lvwCounters.Items.Count + 1) % lineColors.Count];
+
+            //            pcMonInstances.Add(pcmi);
+            //            ListViewItem lvi = new ListViewItem(pcmi.Name);
+            //            lvi.UseItemStyleForSubItems = false;
+            //            ListViewItem.ListViewSubItem sub = new ListViewItem.ListViewSubItem();
+            //            sub.Text = "###";
+            //            sub.ForeColor = pcmi.PlotColor;
+            //            sub.BackColor = pcmi.PlotColor;
+            //            lvi.SubItems.Add(sub);
+            //            lvi.SubItems.Add(pcmi.Scale.ToString());
+            //            lvi.SubItems.Add("");
+            //            lvi.Checked = true;
+            //            lvi.Tag = pcmi;
+            //            lvwCounters.Items.Add(lvi);
+
+            //            ILine line = lineFlowGraph2DControl.AddLine(pcmi.Name, pcmi.PlotColor, pcmi.Scale);
+
+            //            line.Thickness = defaultLineThickness;
+            //            line.PlotStyle = (LinePlotStyle)pcmi.PlotStyle;
+            //            UpdateStatusBarText();
+            //        }
+            //    }
+            //    catch (Exception ex)
+            //    {
+            //        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            //    }
+            //    initializing = false;
+            //    paused = oldPause;
+            //}
+        }
+
+        private void testAddCloneCategoryToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (lvwCounters.SelectedItems.Count > 0)
+            {
+                PCMonInstance pcmi = (PCMonInstance)lvwCounters.SelectedItems[0].Tag;
+                AddNewCounters(pcmi.Machine, pcmi.Category, "");
+            }
+            else
+                AddNewCounters("", "", "");
+        }
+
+        private void AddNewCounters(string initialMachine, string initialCategory, string initialCounter)
+        {
+            AddCounters addcounters = new AddCounters();
+            addcounters.InitialMachine = initialMachine;
+            foreach (ListViewItem lvi in lvwCounters.Items)
+            {
+                addcounters.ExistingCounters.Add(lvi.Text);
+            }
+            if (initialCategory.Length > 0) 
+                addcounters.InitialCategory = initialCategory;
+            if (initialCounter.Length > 0)
+                addcounters.InitialCounter = initialCounter;
+            if (addcounters.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                StartStopLogging(true);
+                bool oldPause = paused;
+                paused = true;
+                initializing = true;
+                try
+                {
+
+                    foreach (PCMonInstance pcmi in addcounters.SelectedPCMonInstances)
+                    {
+                        pcmi.PlotColor = GetNextLineColor();
+
+                        pcMonInstances.Add(pcmi);
+                        ListViewItem lvi = new ListViewItem(pcmi.Name);
+                        lvi.UseItemStyleForSubItems = false;
+                        ListViewItem.ListViewSubItem sub = new ListViewItem.ListViewSubItem();
+                        sub.Text = "###";
+                        sub.ForeColor = pcmi.PlotColor;
+                        sub.BackColor = pcmi.PlotColor;
+                        lvi.SubItems.Add(sub);
+                        lvi.SubItems.Add(pcmi.Scale.ToString());
+                        lvi.SubItems.Add("");
+                        lvi.Checked = true;
+                        lvi.Tag = pcmi;
+                        lvwCounters.Items.Add(lvi);
+
+                        ILine line = lineFlowGraph2DControl.AddLine(pcmi.Name, pcmi.PlotColor, pcmi.Scale);
+
+                        line.Thickness = defaultLineThickness;
+                        line.PlotStyle = (LinePlotStyle)pcmi.PlotStyle;
+                        UpdateStatusBarText();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                initializing = false;
+                paused = oldPause;
+            }
+        }
+
+        private void textAddCloneAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (lvwCounters.SelectedItems.Count > 0)
+            {
+                PCMonInstance pcmi = (PCMonInstance)lvwCounters.SelectedItems[0].Tag;
+                AddNewCounters(pcmi.Machine, pcmi.Category, pcmi.Counter);
+            }
+            else
+                AddNewCounter("", "", "", "");
+        }
+        
+        private Color GetNextLineColor()
+        {
+            Color nextColor = lineColors[(lvwCounters.Items.Count + 1) % lineColors.Count];
+            if (lvwCounters.Items.Count > 0)
+            {
+                PCMonInstance lastItem = (PCMonInstance)lvwCounters.Items[lvwCounters.Items.Count - 1].Tag;
+                if (nextColor.ToArgb() == lastItem.PlotColor.ToArgb())
+                {
+                    nextColor = lineColors[(lvwCounters.Items.Count + 2) % lineColors.Count];
+                }
+            }
+            return nextColor;
+        }
+
+        private void lvwCounters_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                removeToolStripMenuItem_Click(sender, e);
+            }
+        }
     }
 }

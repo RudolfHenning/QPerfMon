@@ -130,6 +130,14 @@ namespace QPerfMon
             Selected = false;
             LastError = "";
         }
+        public void SetName()
+        {
+            name = string.Format("{0}\\{1}\\{2}\\", machine, category, counter);
+            if (instance.Contains("\\"))
+                name += "\"" + instance + "\"";
+            else
+                name += instance;
+        }
         #endregion
 
         #region GetParsedElement

@@ -67,20 +67,23 @@
             this.disableCounterOnErrorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lastErrorToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
-            this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addClonePerformanceCounterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.addCloneAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.loadSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveCurrentSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moveSelectionToNewWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.testAddToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.testAddCloneCategoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.textAddCloneAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveFileDialogQPerf = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialogQPerf = new System.Windows.Forms.OpenFileDialog();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripStatusLabelVersion = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabelSelection = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.addToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addClonePerformanceCounterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.addCloneAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
             this.splitContainer1.Panel1.SuspendLayout();
             this.splitContainer1.Panel2.SuspendLayout();
@@ -154,7 +157,7 @@
             this.logDataToFileToolStripMenuItem,
             this.startLoggingToolStripMenuItem});
             this.contextMenuStripGraph.Name = "contextMenuStripGraph";
-            this.contextMenuStripGraph.Size = new System.Drawing.Size(212, 264);
+            this.contextMenuStripGraph.Size = new System.Drawing.Size(212, 286);
             // 
             // frequencyToolStripMenuItem
             // 
@@ -270,6 +273,7 @@
             // 
             // addPerformanceCounterToolStripMenuItem
             // 
+            this.addPerformanceCounterToolStripMenuItem.Image = global::QPerfMon.Properties.Resources.add;
             this.addPerformanceCounterToolStripMenuItem.Name = "addPerformanceCounterToolStripMenuItem";
             this.addPerformanceCounterToolStripMenuItem.Size = new System.Drawing.Size(211, 22);
             this.addPerformanceCounterToolStripMenuItem.Text = "Add performance counter";
@@ -331,6 +335,7 @@
             this.lvwCounters.View = System.Windows.Forms.View.Details;
             this.lvwCounters.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.lvwCounters_ItemChecked);
             this.lvwCounters.SelectedIndexChanged += new System.EventHandler(this.lvwCounters_SelectedIndexChanged);
+            this.lvwCounters.KeyUp += new System.Windows.Forms.KeyEventHandler(this.lvwCounters_KeyUp);
             this.lvwCounters.Resize += new System.EventHandler(this.lvwCounters_Resize);
             // 
             // columnHeader1
@@ -367,9 +372,12 @@
             this.toolStripMenuItem3,
             this.loadSetToolStripMenuItem,
             this.saveCurrentSetToolStripMenuItem,
-            this.moveSelectionToNewWindowToolStripMenuItem});
+            this.moveSelectionToNewWindowToolStripMenuItem,
+            this.testAddToolStripMenuItem,
+            this.testAddCloneCategoryToolStripMenuItem,
+            this.textAddCloneAllToolStripMenuItem});
             this.contextMenuStripLvw.Name = "contextMenuStrip1";
-            this.contextMenuStripLvw.Size = new System.Drawing.Size(246, 286);
+            this.contextMenuStripLvw.Size = new System.Drawing.Size(246, 330);
             // 
             // visibleToolStripMenuItem
             // 
@@ -414,37 +422,6 @@
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
             this.toolStripMenuItem1.Size = new System.Drawing.Size(242, 6);
             // 
-            // addToolStripMenuItem
-            // 
-            this.addToolStripMenuItem.Name = "addToolStripMenuItem";
-            this.addToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
-            this.addToolStripMenuItem.Text = "Add performance counter";
-            this.addToolStripMenuItem.Click += new System.EventHandler(this.addToolStripMenuItem_Click);
-            // 
-            // addClonePerformanceCounterToolStripMenuItem
-            // 
-            this.addClonePerformanceCounterToolStripMenuItem.Enabled = false;
-            this.addClonePerformanceCounterToolStripMenuItem.Name = "addClonePerformanceCounterToolStripMenuItem";
-            this.addClonePerformanceCounterToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
-            this.addClonePerformanceCounterToolStripMenuItem.Text = "Add clone category";
-            this.addClonePerformanceCounterToolStripMenuItem.Click += new System.EventHandler(this.addClonePerformanceCounterToolStripMenuItem_Click);
-            // 
-            // addCloneAllToolStripMenuItem
-            // 
-            this.addCloneAllToolStripMenuItem.Enabled = false;
-            this.addCloneAllToolStripMenuItem.Name = "addCloneAllToolStripMenuItem";
-            this.addCloneAllToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
-            this.addCloneAllToolStripMenuItem.Text = "Add clone all";
-            this.addCloneAllToolStripMenuItem.Click += new System.EventHandler(this.addCloneAllToolStripMenuItem_Click);
-            // 
-            // removeToolStripMenuItem
-            // 
-            this.removeToolStripMenuItem.Enabled = false;
-            this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
-            this.removeToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
-            this.removeToolStripMenuItem.Text = "Remove performance counter(s)";
-            this.removeToolStripMenuItem.Click += new System.EventHandler(this.removeToolStripMenuItem_Click);
-            // 
             // toolStripMenuItem3
             // 
             this.toolStripMenuItem3.Name = "toolStripMenuItem3";
@@ -471,6 +448,30 @@
             this.moveSelectionToNewWindowToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
             this.moveSelectionToNewWindowToolStripMenuItem.Text = "Move selection to new window";
             this.moveSelectionToNewWindowToolStripMenuItem.Click += new System.EventHandler(this.moveSelectionToNewWindowToolStripMenuItem_Click);
+            // 
+            // testAddToolStripMenuItem
+            // 
+            this.testAddToolStripMenuItem.Name = "testAddToolStripMenuItem";
+            this.testAddToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
+            this.testAddToolStripMenuItem.Text = "Test add";
+            this.testAddToolStripMenuItem.Visible = false;
+            this.testAddToolStripMenuItem.Click += new System.EventHandler(this.testAddToolStripMenuItem_Click);
+            // 
+            // testAddCloneCategoryToolStripMenuItem
+            // 
+            this.testAddCloneCategoryToolStripMenuItem.Name = "testAddCloneCategoryToolStripMenuItem";
+            this.testAddCloneCategoryToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
+            this.testAddCloneCategoryToolStripMenuItem.Text = "Test add clone category";
+            this.testAddCloneCategoryToolStripMenuItem.Visible = false;
+            this.testAddCloneCategoryToolStripMenuItem.Click += new System.EventHandler(this.testAddCloneCategoryToolStripMenuItem_Click);
+            // 
+            // textAddCloneAllToolStripMenuItem
+            // 
+            this.textAddCloneAllToolStripMenuItem.Name = "textAddCloneAllToolStripMenuItem";
+            this.textAddCloneAllToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
+            this.textAddCloneAllToolStripMenuItem.Text = "Text add clone all";
+            this.textAddCloneAllToolStripMenuItem.Visible = false;
+            this.textAddCloneAllToolStripMenuItem.Click += new System.EventHandler(this.textAddCloneAllToolStripMenuItem_Click);
             // 
             // saveFileDialogQPerf
             // 
@@ -509,6 +510,41 @@
             this.toolStripStatusLabelSelection.Spring = true;
             this.toolStripStatusLabelSelection.Text = ".";
             this.toolStripStatusLabelSelection.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // addToolStripMenuItem
+            // 
+            this.addToolStripMenuItem.Image = global::QPerfMon.Properties.Resources.add;
+            this.addToolStripMenuItem.Name = "addToolStripMenuItem";
+            this.addToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
+            this.addToolStripMenuItem.Text = "Add performance counter";
+            this.addToolStripMenuItem.Click += new System.EventHandler(this.addToolStripMenuItem_Click);
+            // 
+            // addClonePerformanceCounterToolStripMenuItem
+            // 
+            this.addClonePerformanceCounterToolStripMenuItem.Enabled = false;
+            this.addClonePerformanceCounterToolStripMenuItem.Image = global::QPerfMon.Properties.Resources.AddEx;
+            this.addClonePerformanceCounterToolStripMenuItem.Name = "addClonePerformanceCounterToolStripMenuItem";
+            this.addClonePerformanceCounterToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
+            this.addClonePerformanceCounterToolStripMenuItem.Text = "Add clone category";
+            this.addClonePerformanceCounterToolStripMenuItem.Click += new System.EventHandler(this.addClonePerformanceCounterToolStripMenuItem_Click);
+            // 
+            // addCloneAllToolStripMenuItem
+            // 
+            this.addCloneAllToolStripMenuItem.Enabled = false;
+            this.addCloneAllToolStripMenuItem.Image = global::QPerfMon.Properties.Resources.AddEx;
+            this.addCloneAllToolStripMenuItem.Name = "addCloneAllToolStripMenuItem";
+            this.addCloneAllToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
+            this.addCloneAllToolStripMenuItem.Text = "Add clone all";
+            this.addCloneAllToolStripMenuItem.Click += new System.EventHandler(this.addCloneAllToolStripMenuItem_Click);
+            // 
+            // removeToolStripMenuItem
+            // 
+            this.removeToolStripMenuItem.Enabled = false;
+            this.removeToolStripMenuItem.Image = global::QPerfMon.Properties.Resources.stop;
+            this.removeToolStripMenuItem.Name = "removeToolStripMenuItem";
+            this.removeToolStripMenuItem.Size = new System.Drawing.Size(245, 22);
+            this.removeToolStripMenuItem.Text = "Remove performance counter(s)";
+            this.removeToolStripMenuItem.Click += new System.EventHandler(this.removeToolStripMenuItem_Click);
             // 
             // MainForm
             // 
@@ -592,6 +628,9 @@
         private System.Windows.Forms.ToolStripMenuItem graphFormatOptionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelVersion;
         private System.Windows.Forms.ToolStripMenuItem disableCounterOnErrorToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem testAddToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem testAddCloneCategoryToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem textAddCloneAllToolStripMenuItem;
     }
 }
 

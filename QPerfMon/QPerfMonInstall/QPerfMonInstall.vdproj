@@ -69,6 +69,19 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
+                "Items"
+                {
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:.NETFramework,Version=v4.0,Profile=Client"
+                    {
+                    "Name" = "8:Microsoft .NET Framework 4 Client Profile (x86 and x64)"
+                    "ProductCode" = "8:.NETFramework,Version=v4.0,Profile=Client"
+                    }
+                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
+                    {
+                    "Name" = "8:Windows Installer 3.1"
+                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
+                    }
+                }
             }
         }
         "Release"
@@ -277,15 +290,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:QPerfMon"
-        "ProductCode" = "8:{9DC266AE-6B40-4961-A48B-C51BAE067576}"
-        "PackageCode" = "8:{8E8B58A7-463F-4B17-B70A-B3D7947E71CD}"
+        "ProductCode" = "8:{5425456D-FAE0-4C51-9EAB-C7C67304D391}"
+        "PackageCode" = "8:{D97683C4-FC41-4ED7-9D6D-4C0DD8E93D66}"
         "UpgradeCode" = "8:{88B07EAE-B50F-4A9E-9F86-EE5B55975008}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.7.1"
+        "ProductVersion" = "8:1.8.0"
         "Manufacturer" = "8:Hen IT"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"

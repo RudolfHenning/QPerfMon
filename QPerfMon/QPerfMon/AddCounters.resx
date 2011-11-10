@@ -117,14 +117,33 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="add" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\add.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="stop" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\stop.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="AddEx" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\AddEx.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <metadata name="timerResize.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <metadata name="backgroundWorkerLoadCategories.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>131, 17</value>
+  </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        AAABAAIAICAQAAAAAADoAgAAJgAAABAQEAAAAAAAKAEAAA4DAAAoAAAAIAAAAEAAAAABAAQAAAAAAIAC
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAgAAAAICAAIAAAACAAIAAgIAAAICAgADAwMAAAAD/AAD/
+        AAAA//8A/wAAAP8A/wD//wAA////AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+        AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACIiI+IiI+IiI+IiI+IiAAAiIiPiIiPiIiPiIiPiIgAAI
+        iIj4iIj4iIj4iIj4iIAAAIiI+IiI+IiI+IiI+IiAAAAIiPiIiPiIiPiIiPiIgAAPAP////8AD///////
+        //AACIAA+IgACAAI+IiI+IiAAAiIgAiICPiICPiIiACIgAAIiIgIiAj4iAD4iIAAiIAACIiIAIAI+IiA
+        CIiA8AiAAAiIiPAIiPiIiAAAgPgAgAAP////D///////8AD/8PAACYiI+IiI+IiI+IgA+ICAAAmYiPiI
+        iPiIiPiIiPiAAAAImZj4iIn4iIj4iIj4iAAACIiY+YiZmIiI+IiZ+IgAAAiImZmZmJmZiPiJmfiIgAAP
+        ////////+Zn/mYmf//AACIiI+IiI+IiJmZiImZmAAAiIiPiIiPiIiPmYiPiJkAAIiIj4iIj4iIj4iIj4
+        iJAACIiI+IiI+IiI+IiI+IiAAAiIiPiIiPiIiPiIiPiIgAAP//////////////////AACIiI+IiI+IiI
+        +IiI+IiAAAiIiPiIiPiIiPiIiPiIgAAIiIj4iIj4iIj4iIj4iIAACIiI+IiI+IiI+IiI+IiA/////999
+        99//////QAAAAcAAAAHAAAABwAAAAcAAAAHAAAABQAAAAcAAAAHAAAABwAAAAcAAAAHAAAABQAAAAcAA
+        AAHAAAABwAAAAcAAAAHAAAABQAAAAcAAAAHAAAABwAAAAcAAAAHAAAABQAAAAcAAAAHAAAABwAAAAcAA
+        AAEoAAAAEAAAACAAAAABAAQAAAAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAgAAAAICAAIAA
+        AACAAIAAgIAAAICAgADAwMAAAAD/AAD/AAAA//8A/wAAAP8A/wD//wAA////AAAAAAAAAAAAAAAAAAAA
+        AAAAiPiPiPiPiAAA+I+I+I+IAP8P//////AAiAAPAAiPCACI+A8I8ICIAJ//8P//AP8AifiPmPiAiACI
+        mImJmI+IAP+Zn//5+Z8AiPiPiPmfmACI+I+I+I+JAP////////8AiPiPiPiPiACI+I+I+I+IttsAAAAA
+        AACAAAAAgAAAAAAAAACAAAAAgAAAAAAAAACAAAAAgAAAAAAAAACAAAAAgAAAAAAAAACAAAAAgAAAAA==
+</value>
   </data>
 </root>
