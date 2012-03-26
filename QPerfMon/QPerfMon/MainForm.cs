@@ -116,6 +116,7 @@ namespace QPerfMon
         private void MainForm_Load(object sender, EventArgs e)
         {
             snapToDesktopSidesToolStripMenuItem.Checked = Properties.Settings.Default.MainWindowSnap;
+            alwaysOnTopToolStripMenuItem.Checked = Properties.Settings.Default.AlwaysOnTop;
             lineFlowGraph2DControl.BackColor = Properties.Settings.Default.GraphBackgroundColor;
             lineFlowGraph2DControl.GridColor = Properties.Settings.Default.GridColor;
             lineFlowGraph2DControl.TextColor = Properties.Settings.Default.GraphTextColor;
@@ -1174,6 +1175,12 @@ namespace QPerfMon
             {
                 removeToolStripMenuItem_Click(sender, e);
             }
+        }
+
+        private void alwaysOnTopToolStripMenuItem_CheckStateChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.AlwaysOnTop = alwaysOnTopToolStripMenuItem.Checked;
+            this.TopMost = alwaysOnTopToolStripMenuItem.Checked;
         }
     }
 }
