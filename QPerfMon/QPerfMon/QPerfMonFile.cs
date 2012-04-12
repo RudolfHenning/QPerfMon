@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Runtime.Serialization;
+using System.Drawing;
 
 namespace QPerfMon
 {
@@ -40,5 +41,28 @@ namespace QPerfMon
             version = "1.4.8";
         }
 
+        [OptionalField]
+        private bool rememberMainWindowSizeLocation = false;
+        public bool RememberMainWindowSizeLocation
+        {
+            get { return rememberMainWindowSizeLocation; }
+            set { rememberMainWindowSizeLocation = value; }
+        }
+
+        [OptionalField]
+        private Size mainWindowSize = new Size(0, 0);
+        public Size MainWindowSize
+        {
+            get { return mainWindowSize; }
+            set { mainWindowSize = value; }
+        }
+
+        [OptionalField]
+        private Point mainWindowLocation = new Point(0, 0);
+        public Point MainWindowLocation
+        {
+            get { return mainWindowLocation; }
+            set { mainWindowLocation = value; }
+        }
     }
 }

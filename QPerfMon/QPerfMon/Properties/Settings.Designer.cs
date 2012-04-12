@@ -214,5 +214,17 @@ namespace QPerfMon.Properties {
                 this["AlwaysOnTop"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool RememberSizeLocationOnSaveLoad {
+            get {
+                return ((bool)(this["RememberSizeLocationOnSaveLoad"]));
+            }
+            set {
+                this["RememberSizeLocationOnSaveLoad"] = value;
+            }
+        }
     }
 }

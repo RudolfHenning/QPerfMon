@@ -115,6 +115,7 @@ namespace QPerfMon
         #region Form events
         private void MainForm_Load(object sender, EventArgs e)
         {
+            rememberSizePositionToolStripMenuItem.Checked = Properties.Settings.Default.RememberSizeLocationOnSaveLoad;
             snapToDesktopSidesToolStripMenuItem.Checked = Properties.Settings.Default.MainWindowSnap;
             alwaysOnTopToolStripMenuItem.Checked = Properties.Settings.Default.AlwaysOnTop;
             lineFlowGraph2DControl.BackColor = Properties.Settings.Default.GraphBackgroundColor;
@@ -539,6 +540,9 @@ namespace QPerfMon
                         string key = pcmi.KeyToXml();
                         qPerfMonFile.CounterDefinitionList.Add(key);
                     }
+                    qPerfMonFile.MainWindowSize = this.Size;
+                    qPerfMonFile.MainWindowLocation = this.Location;
+                    qPerfMonFile.RememberMainWindowSizeLocation = rememberSizePositionToolStripMenuItem.Checked;                    
                     SerializationUtils.SerializeXMLToFile(saveFileDialogQPerf.FileName, qPerfMonFile);
                 }
             }
@@ -789,6 +793,19 @@ namespace QPerfMon
                     line.PlotStyle = (LinePlotStyle)pcMonInstances[i].PlotStyle;
                     line.Thickness = defaultLineThickness;
                 }
+
+                try
+                {
+                    if (qPerfMonFile.MainWindowSize != null && qPerfMonFile.MainWindowLocation != null && qPerfMonFile.RememberMainWindowSizeLocation && qPerfMonFile.MainWindowSize != new Size(0, 0))
+                    {
+                        this.Size = qPerfMonFile.MainWindowSize;
+                        this.Location = qPerfMonFile.MainWindowLocation;                        
+                    }
+                    rememberSizePositionToolStripMenuItem.Checked = qPerfMonFile.RememberMainWindowSizeLocation;
+                    Properties.Settings.Default.RememberSizeLocationOnSaveLoad = rememberSizePositionToolStripMenuItem.Checked;
+                }
+                catch { }
+
                 LoadListView(true);
             }
             catch (Exception ex)
@@ -1181,6 +1198,12 @@ namespace QPerfMon
         {
             Properties.Settings.Default.AlwaysOnTop = alwaysOnTopToolStripMenuItem.Checked;
             this.TopMost = alwaysOnTopToolStripMenuItem.Checked;
+        }
+
+        private void rememberSizePositionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            rememberSizePositionToolStripMenuItem.Checked = !rememberSizePositionToolStripMenuItem.Checked;
+            Properties.Settings.Default.RememberSizeLocationOnSaveLoad = rememberSizePositionToolStripMenuItem.Checked;
         }
     }
 }
