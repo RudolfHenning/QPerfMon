@@ -55,6 +55,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -77,6 +80,12 @@
       <DependentUpon>AddCounters.cs</DependentUpon>
     </Compile>
     <Compile Include="CommandLineUtils.cs" />
+    <Compile Include="Controls\DragAndDropListView.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\DragAndDropListView.designer.cs">
+      <DependentUpon>DragAndDropListView.cs</DependentUpon>
+    </Compile>
     <Compile Include="FadeSnapForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -152,6 +161,7 @@
       <DesignTime>True</DesignTime>
     </Compile>
     <None Include="app.config" />
+    <None Include="app.manifest" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

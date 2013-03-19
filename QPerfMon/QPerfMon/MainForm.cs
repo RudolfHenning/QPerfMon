@@ -8,6 +8,7 @@ using System.Windows.Forms;
 using System.Diagnostics;
 using HenIT.Utilities;
 using HenIT.Windows.Controls.Graphing;
+using System.Linq;
 
 namespace QPerfMon
 {
@@ -188,17 +189,22 @@ namespace QPerfMon
                     {
                         PCMonInstance pcmi = (PCMonInstance)lvi.Tag;
                         pcmi.Selected = lvi.Selected;
-                        if (lvi.Selected)
+                        ILine currentLine = lineFlowGraph2DControl.GetLine(lvi.Text);
+                        if (currentLine != null)
                         {
-                            //c2DPushGraphControl.GetLineHandle(lvi.Text).Thickness = defaultLineThickness + 2;
-                            lineFlowGraph2DControl.GetLine(lvi.Text).Thickness = defaultLineThickness + 2;
-                        }
-                        else
-                        {
-                            //c2DPushGraphControl.GetLineHandle(lvi.Text).Thickness = defaultLineThickness;
-                            lineFlowGraph2DControl.GetLine(lvi.Text).Thickness = defaultLineThickness ;
+                            if (lvi.Selected)
+                            {
+                                //c2DPushGraphControl.GetLineHandle(lvi.Text).Thickness = defaultLineThickness + 2;
+                                currentLine.Thickness = defaultLineThickness + 2;
+                            }
+                            else
+                            {
+                                //c2DPushGraphControl.GetLineHandle(lvi.Text).Thickness = defaultLineThickness;
+                                currentLine.Thickness = defaultLineThickness;
+                            }
                         }
                     }
+                    copyDefinitionToolStripMenuItem.Enabled = false;
                     //push only the first selected one to top
                     if (lvwCounters.SelectedItems.Count > 0)
                     {
@@ -206,11 +212,19 @@ namespace QPerfMon
                         
                         removeToolStripMenuItem.Enabled = (lvwCounters.Items.Count > 1) && (lvwCounters.Items.Count > lvwCounters.SelectedItems.Count);
                         moveSelectionToNewWindowToolStripMenuItem.Enabled = (lvwCounters.Items.Count > lvwCounters.SelectedItems.Count);
+                        copyDefinitionToolStripMenuItem.Enabled = true;
+
+                        if (lvwCounters.SelectedItems[0].Index > 0)
+                            moveUpToolStripMenuItem.Enabled = true;
+                        if (lvwCounters.SelectedItems[lvwCounters.SelectedItems.Count-1].Index < lvwCounters.Items.Count-1)
+                            moveDownToolStripMenuItem.Enabled = true;
                     }
                     else
                     {
                         lineFlowGraph2DControl.SetSelectedLine("");
                         removeToolStripMenuItem.Enabled = false;
+                        moveUpToolStripMenuItem.Enabled = false;
+                        moveDownToolStripMenuItem.Enabled = false;
                         moveSelectionToNewWindowToolStripMenuItem.Enabled = false;
                     }
 
@@ -232,6 +246,9 @@ namespace QPerfMon
                         toolStripSeparator1.Visible = false;
                         lastErrorToolStripMenuItem1.Visible = false;
                     }
+
+                    
+
                     UpdateStatusBarText();
                 }
                 catch (Exception ex)
@@ -276,15 +293,21 @@ namespace QPerfMon
                     {
                         this.Invoke((MethodInvoker)delegate()
                             {
-                                lvwCounters.BeginUpdate();
                                 try
                                 {
+                                    lvwCounters.BeginUpdate();
                                     int[] newvalues = new int[lvwCounters.Items.Count];
                                     for (int i = 0; i < pcMonInstances.Count; i++)
                                     {
                                         if (paused)
                                             break;
                                         PCMonInstance pcMonInstance = pcMonInstances[i];
+                                        ListViewItem currentLvi = null;
+                                        currentLvi = (from ListViewItem l in lvwCounters.Items
+                                                      where l.Tag is PCMonInstance &&
+                                                        ((PCMonInstance)l.Tag).CounterDefinition() == pcMonInstance.CounterDefinition()
+                                                      select l).FirstOrDefault();
+
                                         float pcValue = 0;
                                         try
                                         {
@@ -295,19 +318,25 @@ namespace QPerfMon
                                             }
 
                                             pcValue = (pcMonInstance.PCInstance.NextValue());
-                                            if (lvwCounters.Items[i].ForeColor != SystemColors.WindowText)
-                                                lvwCounters.Items[i].ForeColor = SystemColors.WindowText;
+                                            //Get right list view item to update
+                                            if (currentLvi != null)
+                                                if (currentLvi.ForeColor != SystemColors.WindowText)
+                                                    currentLvi.ForeColor = SystemColors.WindowText;
                                             pcMonInstance.LastError = "";
 
                                         }
                                         catch (Exception ex)
                                         {
-                                            lvwCounters.Items[i].ForeColor = Color.Red;
+                                            if (currentLvi != null)
+                                                currentLvi.ForeColor = Color.Red;
                                             pcMonInstance.LastError = ex.Message;
                                             if (Properties.Settings.Default.DisableCounterOnError)
                                             {
-                                                lvwCounters.Items[i].Checked = false;
-                                                lvwCounters.Items[i].SubItems[3].Text = "Err";
+                                                if (currentLvi != null)
+                                                {
+                                                    currentLvi.Checked = false;
+                                                    currentLvi.SubItems[3].Text = "Err";
+                                                }
                                             }
                                         }
                                         finally
@@ -318,11 +347,12 @@ namespace QPerfMon
                                                 pcValueStr = string.Format("{0:F1}", pcValue);
                                             else
                                                 pcValueStr = string.Format("{0:F3}", pcValue);
-                                            if (lvwCounters.Items[i].SubItems[3].Text != pcValueStr)
-                                                lvwCounters.Items[i].SubItems[3].Text = pcValueStr;
+                                            if (currentLvi != null)
+                                                if (currentLvi.SubItems[3].Text != pcValueStr)
+                                                    currentLvi.SubItems[3].Text = pcValueStr;
 
                                             lineFlowGraph2DControl.Push(pcValue, pcMonInstance.Name);
-                                        }                                        
+                                        }
                                     }
                                     LogToFile();
                                     lineFlowGraph2DControl.UpdateGraph();
@@ -339,6 +369,7 @@ namespace QPerfMon
                             });
                     }
                     catch (System.ObjectDisposedException) { }
+                    catch (System.InvalidOperationException) { }
                 }
             }
         }
@@ -401,6 +432,26 @@ namespace QPerfMon
                     pcMonInstance.PlotColor = formatting.SelectedColor;
                 }
             }
+        }
+        private void moveUpToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if (lvwCounters.SelectedItems.Count > 0 && lvwCounters.SelectedItems[0].Index > 0)
+            {
+                bool oldPause = paused;
+                StartStopLogging(true);
+                paused = true;
+                initializing = true;
+
+                ListViewItem itemAbove = lvwCounters.Items[lvwCounters.SelectedItems[0].Index - 1];
+
+
+                initializing = false;
+                paused = oldPause;
+            }
+        }
+        private void moveDownToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
         }
         private void addToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -501,7 +552,96 @@ namespace QPerfMon
                     }
                     UpdateStatusBarText();
                     lineFlowGraph2DControl.UpdateGraph();
+                    copyDefinitionToolStripMenuItem.Enabled = false;
                 }
+            }
+        }
+        private void copyDefinitionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("<CounterDefinitionList>");
+            foreach (ListViewItem lvi in lvwCounters.SelectedItems)
+            {
+                PCMonInstance item = (PCMonInstance)lvi.Tag;
+                string xmlDef = item.GetCounterDefinitionXml();
+                sb.AppendLine(string.Format("<string>{0}</string>", 
+                    xmlDef.Replace("<", "&lt;").Replace(">", "&gt;")));
+                
+            }
+            sb.AppendLine("</CounterDefinitionList>");
+            Clipboard.SetText(sb.ToString());
+        }
+        private void pasteFromDefnitionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            bool oldPause = paused;
+            try
+            {
+                StartStopLogging(true);                
+                paused = true;
+                initializing = true;
+
+                string definitionXml = Clipboard.GetText(TextDataFormat.UnicodeText).Trim(' ','\r','\n');
+                if (definitionXml.Length > 0)
+                {
+                    if (definitionXml.StartsWith("<CounterDefinitionList>") && definitionXml.EndsWith("</CounterDefinitionList>"))
+                    {
+                        List<PCMonInstance> importCounters = PCMonInstance.GetCountersFromCounterDefinitionList(definitionXml);
+
+                        foreach (PCMonInstance pcmi in importCounters)
+                        {
+                            bool duplicate = false;
+                            foreach (ListViewItem i in lvwCounters.Items)
+                            {
+                                if (i.Tag is PCMonInstance)
+                                {
+                                    PCMonInstance item = (PCMonInstance)i.Tag;
+                                    if (item.CounterDefinition() == pcmi.CounterDefinition())
+                                    {
+                                        duplicate = true;
+                                        MessageBox.Show(string.Format("You cannot add a duplicate performance counter!\r\nThe counter {0} already exists!", pcmi.CounterDefinition()),
+                                            "Duplicate", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                    }
+                                }
+                            }
+
+                            if (!duplicate)
+                            {
+                                pcMonInstances.Add(pcmi);
+                                ListViewItem lvi = new ListViewItem(pcmi.Name);
+                                lvi.UseItemStyleForSubItems = false;
+                                ListViewItem.ListViewSubItem sub = new ListViewItem.ListViewSubItem();
+                                sub.Text = "###";
+                                sub.ForeColor = pcmi.PlotColor;
+                                sub.BackColor = pcmi.PlotColor;
+                                lvi.SubItems.Add(sub);
+                                lvi.SubItems.Add(pcmi.Scale.ToString());
+                                lvi.SubItems.Add("");
+                                lvi.Checked = true;
+                                lvi.Tag = pcmi;
+                                lvwCounters.Items.Add(lvi);
+
+                                ILine line = lineFlowGraph2DControl.AddLine(pcmi.Name, pcmi.PlotColor, pcmi.Scale);
+
+                                line.Thickness = defaultLineThickness;
+                                line.PlotStyle = (LinePlotStyle)pcmi.PlotStyle;
+                                UpdateStatusBarText();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show("The current content of the clipboard does not contain a valid performance counter definition (set)", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                initializing = false;
+                paused = oldPause;
             }
         }
         private void loadSetToolStripMenuItem_Click(object sender, EventArgs e)
@@ -533,13 +673,24 @@ namespace QPerfMon
                     qPerfMonFile.Title = displayTitle;
                     qPerfMonFile.InitialMaxValue = initialMaxValue;
                     qPerfMonFile.Version = Application.ProductVersion.ToString();
-                    
-                    foreach (PCMonInstance pcmi in pcMonInstances)
+
+                    //to preserve the order of visible items the definitions from the ListView are used
+                    foreach (ListViewItem lvi in lvwCounters.Items)
                     {
-                        
-                        string key = pcmi.KeyToXml();
-                        qPerfMonFile.CounterDefinitionList.Add(key);
+                        if (lvi.Tag is PCMonInstance)
+                        {
+                            PCMonInstance pcmi = (PCMonInstance)lvi.Tag;
+                            string key = pcmi.KeyToXml();
+                            qPerfMonFile.CounterDefinitionList.Add(key);
+                        }
                     }
+
+                    //foreach (PCMonInstance pcmi in pcMonInstances)
+                    //{
+                        
+                    //    string key = pcmi.KeyToXml();
+                    //    qPerfMonFile.CounterDefinitionList.Add(key);
+                    //}
                     qPerfMonFile.MainWindowSize = this.Size;
                     qPerfMonFile.MainWindowLocation = this.Location;
                     qPerfMonFile.RememberMainWindowSizeLocation = rememberSizePositionToolStripMenuItem.Checked;                    
@@ -1205,5 +1356,11 @@ namespace QPerfMon
             rememberSizePositionToolStripMenuItem.Checked = !rememberSizePositionToolStripMenuItem.Checked;
             Properties.Settings.Default.RememberSizeLocationOnSaveLoad = rememberSizePositionToolStripMenuItem.Checked;
         }
+
+
+
+
+
+
     }
 }

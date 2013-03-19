@@ -286,5 +286,38 @@ namespace QPerfMon
             root.AppendChild(root.CreateElementWithText("color", plotColor.IsKnownColor ? plotColor.Name : "#" + plotColor.ToArgb().ToString()));
             return config.OuterXml;
         }
+
+        internal string GetCounterDefinitionXml()
+        {
+            string plotColorStr = plotColor.IsKnownColor ? plotColor.Name : "#" + plotColor.ToArgb().ToString();
+            string scaleStr = "1";
+            string plotStyleStr = "";
+            if (scale != 1)
+                scaleStr = scale.ToString();
+            if (plotStyle != 0)
+                plotStyleStr = plotStyle.ToString();
+            return string.Format("<machine>{0}</machine>" + 
+                "<category>{1}</category>" +
+                "<counter>{2}</counter>" + 
+                "<instance>{3}</instance>" +
+                "<scale>{4}</scale>" +
+                "<color>{5}</color>" +
+                "<style>{6}</style>",
+                this.machine, this.category, this.counter, this.instance, this.scale, plotColorStr, plotStyleStr);
+        }
+
+        public static List<PCMonInstance> GetCountersFromCounterDefinitionList(string counterDefinitionList)
+        {
+            List<PCMonInstance> counters = new List<PCMonInstance>();
+            XmlDocument config = new XmlDocument();
+            config.LoadXml(counterDefinitionList);
+            XmlElement root = config.DocumentElement;
+            foreach (XmlNode n in root.GetElementsByTagName("string"))
+            {
+                PCMonInstance newCounter = new PCMonInstance(string.Format("<xml>{0}</xml>", n.InnerText));
+                counters.Add(newCounter);
+            }
+            return counters;
+        }
     }
 }

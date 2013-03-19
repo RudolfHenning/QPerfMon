@@ -1,4 +1,5 @@
-﻿namespace QPerfMon
+﻿using HenIT.Windows.Controls;
+namespace QPerfMon
 {
     partial class MainForm
     {
@@ -58,7 +59,7 @@
             this.toolStripMenuItem4 = new System.Windows.Forms.ToolStripSeparator();
             this.logDataToFileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.startLoggingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.lvwCounters = new QPerfMon.ListViewR();
+            this.lvwCounters = new HenIT.Windows.Controls.DragAndDropListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeaderScale = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -66,6 +67,9 @@
             this.contextMenuStripLvw = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.visibleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.formattingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.moveToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.moveUpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.moveDownToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
             this.disableCounterOnErrorToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.lastErrorToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
@@ -74,6 +78,8 @@
             this.addClonePerformanceCounterToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addCloneAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.removeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.copyDefinitionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.pasteFromDefnitionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuItem3 = new System.Windows.Forms.ToolStripSeparator();
             this.loadSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveCurrentSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -163,7 +169,7 @@
             this.logDataToFileToolStripMenuItem,
             this.startLoggingToolStripMenuItem});
             this.contextMenuStripGraph.Name = "contextMenuStripGraph";
-            this.contextMenuStripGraph.Size = new System.Drawing.Size(321, 362);
+            this.contextMenuStripGraph.Size = new System.Drawing.Size(321, 340);
             // 
             // frequencyToolStripMenuItem
             // 
@@ -341,6 +347,7 @@
             // 
             // lvwCounters
             // 
+            this.lvwCounters.AllowDrop = true;
             this.lvwCounters.CheckBoxes = true;
             this.lvwCounters.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
@@ -387,6 +394,7 @@
             this.contextMenuStripLvw.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.visibleToolStripMenuItem,
             this.formattingToolStripMenuItem,
+            this.moveToolStripMenuItem,
             this.toolStripSeparator1,
             this.disableCounterOnErrorToolStripMenuItem,
             this.lastErrorToolStripMenuItem1,
@@ -395,6 +403,8 @@
             this.addClonePerformanceCounterToolStripMenuItem,
             this.addCloneAllToolStripMenuItem,
             this.removeToolStripMenuItem,
+            this.copyDefinitionToolStripMenuItem,
+            this.pasteFromDefnitionToolStripMenuItem,
             this.toolStripMenuItem3,
             this.loadSetToolStripMenuItem,
             this.saveCurrentSetToolStripMenuItem,
@@ -403,7 +413,7 @@
             this.testAddCloneCategoryToolStripMenuItem,
             this.textAddCloneAllToolStripMenuItem});
             this.contextMenuStripLvw.Name = "contextMenuStrip1";
-            this.contextMenuStripLvw.Size = new System.Drawing.Size(274, 358);
+            this.contextMenuStripLvw.Size = new System.Drawing.Size(274, 430);
             // 
             // visibleToolStripMenuItem
             // 
@@ -421,6 +431,32 @@
             this.formattingToolStripMenuItem.Size = new System.Drawing.Size(273, 24);
             this.formattingToolStripMenuItem.Text = "Formatting";
             this.formattingToolStripMenuItem.Click += new System.EventHandler(this.formattingToolStripMenuItem_Click);
+            // 
+            // moveToolStripMenuItem
+            // 
+            this.moveToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.moveUpToolStripMenuItem,
+            this.moveDownToolStripMenuItem});
+            this.moveToolStripMenuItem.Name = "moveToolStripMenuItem";
+            this.moveToolStripMenuItem.Size = new System.Drawing.Size(273, 24);
+            this.moveToolStripMenuItem.Text = "Move";
+            this.moveToolStripMenuItem.Visible = false;
+            // 
+            // moveUpToolStripMenuItem
+            // 
+            this.moveUpToolStripMenuItem.Enabled = false;
+            this.moveUpToolStripMenuItem.Name = "moveUpToolStripMenuItem";
+            this.moveUpToolStripMenuItem.Size = new System.Drawing.Size(153, 24);
+            this.moveUpToolStripMenuItem.Text = "Move Up";
+            this.moveUpToolStripMenuItem.Click += new System.EventHandler(this.moveUpToolStripMenuItem_Click);
+            // 
+            // moveDownToolStripMenuItem
+            // 
+            this.moveDownToolStripMenuItem.Enabled = false;
+            this.moveDownToolStripMenuItem.Name = "moveDownToolStripMenuItem";
+            this.moveDownToolStripMenuItem.Size = new System.Drawing.Size(153, 24);
+            this.moveDownToolStripMenuItem.Text = "Move Down";
+            this.moveDownToolStripMenuItem.Click += new System.EventHandler(this.moveDownToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
@@ -482,6 +518,21 @@
             this.removeToolStripMenuItem.Size = new System.Drawing.Size(273, 24);
             this.removeToolStripMenuItem.Text = "Remove performance counter(s)";
             this.removeToolStripMenuItem.Click += new System.EventHandler(this.removeToolStripMenuItem_Click);
+            // 
+            // copyDefinitionToolStripMenuItem
+            // 
+            this.copyDefinitionToolStripMenuItem.Enabled = false;
+            this.copyDefinitionToolStripMenuItem.Name = "copyDefinitionToolStripMenuItem";
+            this.copyDefinitionToolStripMenuItem.Size = new System.Drawing.Size(273, 24);
+            this.copyDefinitionToolStripMenuItem.Text = "Copy definition";
+            this.copyDefinitionToolStripMenuItem.Click += new System.EventHandler(this.copyDefinitionToolStripMenuItem_Click);
+            // 
+            // pasteFromDefnitionToolStripMenuItem
+            // 
+            this.pasteFromDefnitionToolStripMenuItem.Name = "pasteFromDefnitionToolStripMenuItem";
+            this.pasteFromDefnitionToolStripMenuItem.Size = new System.Drawing.Size(273, 24);
+            this.pasteFromDefnitionToolStripMenuItem.Text = "Paste from definition";
+            this.pasteFromDefnitionToolStripMenuItem.Click += new System.EventHandler(this.pasteFromDefnitionToolStripMenuItem_Click);
             // 
             // toolStripMenuItem3
             // 
@@ -619,7 +670,7 @@
         private System.Windows.Forms.ToolStripMenuItem halfSecondsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem secondToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem twoSecondsToolStripMenuItem;
-        private ListViewR lvwCounters;
+        private DragAndDropListView lvwCounters;
         private System.Windows.Forms.ToolStripMenuItem fiveSecondsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem tenSecondsToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem thirtySecondsToolStripMenuItem;
@@ -660,6 +711,11 @@
         private System.Windows.Forms.ToolStripMenuItem alwaysOnTopToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem rememberSizePositionToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem6;
+        private System.Windows.Forms.ToolStripMenuItem copyDefinitionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem pasteFromDefnitionToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem moveToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem moveUpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem moveDownToolStripMenuItem;
     }
 }
 
