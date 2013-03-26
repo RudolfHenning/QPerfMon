@@ -84,9 +84,6 @@ namespace QPerfMon
             this.loadSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveCurrentSetToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.moveSelectionToNewWindowToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.testAddToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.testAddCloneCategoryToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.textAddCloneAllToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.saveFileDialogQPerf = new System.Windows.Forms.SaveFileDialog();
             this.openFileDialogQPerf = new System.Windows.Forms.OpenFileDialog();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -368,6 +365,7 @@ namespace QPerfMon
             this.lvwCounters.View = System.Windows.Forms.View.Details;
             this.lvwCounters.ItemChecked += new System.Windows.Forms.ItemCheckedEventHandler(this.lvwCounters_ItemChecked);
             this.lvwCounters.SelectedIndexChanged += new System.EventHandler(this.lvwCounters_SelectedIndexChanged);
+            this.lvwCounters.DragDrop += new System.Windows.Forms.DragEventHandler(this.lvwCounters_DragDrop);
             this.lvwCounters.KeyUp += new System.Windows.Forms.KeyEventHandler(this.lvwCounters_KeyUp);
             this.lvwCounters.Resize += new System.EventHandler(this.lvwCounters_Resize);
             // 
@@ -408,12 +406,9 @@ namespace QPerfMon
             this.toolStripMenuItem3,
             this.loadSetToolStripMenuItem,
             this.saveCurrentSetToolStripMenuItem,
-            this.moveSelectionToNewWindowToolStripMenuItem,
-            this.testAddToolStripMenuItem,
-            this.testAddCloneCategoryToolStripMenuItem,
-            this.textAddCloneAllToolStripMenuItem});
+            this.moveSelectionToNewWindowToolStripMenuItem});
             this.contextMenuStripLvw.Name = "contextMenuStrip1";
-            this.contextMenuStripLvw.Size = new System.Drawing.Size(274, 430);
+            this.contextMenuStripLvw.Size = new System.Drawing.Size(274, 380);
             // 
             // visibleToolStripMenuItem
             // 
@@ -561,30 +556,6 @@ namespace QPerfMon
             this.moveSelectionToNewWindowToolStripMenuItem.Text = "Move selection to new window";
             this.moveSelectionToNewWindowToolStripMenuItem.Click += new System.EventHandler(this.moveSelectionToNewWindowToolStripMenuItem_Click);
             // 
-            // testAddToolStripMenuItem
-            // 
-            this.testAddToolStripMenuItem.Name = "testAddToolStripMenuItem";
-            this.testAddToolStripMenuItem.Size = new System.Drawing.Size(273, 24);
-            this.testAddToolStripMenuItem.Text = "Test add";
-            this.testAddToolStripMenuItem.Visible = false;
-            this.testAddToolStripMenuItem.Click += new System.EventHandler(this.testAddToolStripMenuItem_Click);
-            // 
-            // testAddCloneCategoryToolStripMenuItem
-            // 
-            this.testAddCloneCategoryToolStripMenuItem.Name = "testAddCloneCategoryToolStripMenuItem";
-            this.testAddCloneCategoryToolStripMenuItem.Size = new System.Drawing.Size(273, 24);
-            this.testAddCloneCategoryToolStripMenuItem.Text = "Test add clone category";
-            this.testAddCloneCategoryToolStripMenuItem.Visible = false;
-            this.testAddCloneCategoryToolStripMenuItem.Click += new System.EventHandler(this.testAddCloneCategoryToolStripMenuItem_Click);
-            // 
-            // textAddCloneAllToolStripMenuItem
-            // 
-            this.textAddCloneAllToolStripMenuItem.Name = "textAddCloneAllToolStripMenuItem";
-            this.textAddCloneAllToolStripMenuItem.Size = new System.Drawing.Size(273, 24);
-            this.textAddCloneAllToolStripMenuItem.Text = "Text add clone all";
-            this.textAddCloneAllToolStripMenuItem.Visible = false;
-            this.textAddCloneAllToolStripMenuItem.Click += new System.EventHandler(this.textAddCloneAllToolStripMenuItem_Click);
-            // 
             // saveFileDialogQPerf
             // 
             this.saveFileDialogQPerf.DefaultExt = "qpmset";
@@ -705,9 +676,6 @@ namespace QPerfMon
         private System.Windows.Forms.ToolStripMenuItem graphFormatOptionsToolStripMenuItem;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabelVersion;
         private System.Windows.Forms.ToolStripMenuItem disableCounterOnErrorToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem testAddToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem testAddCloneCategoryToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem textAddCloneAllToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem alwaysOnTopToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem rememberSizePositionToolStripMenuItem;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem6;

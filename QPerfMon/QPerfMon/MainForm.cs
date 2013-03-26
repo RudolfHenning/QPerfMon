@@ -262,11 +262,55 @@ namespace QPerfMon
             if (!initializing)
             {
                 ILine line = lineFlowGraph2DControl.GetLine(e.Item.Text);
-                //HenIT.Windows.Controls.C2DPushGraph.Graphing.C2DPushGraph.LineHandle lh = c2DPushGraphControl.GetLineHandle(e.Item.Text);
-                line.Visible = e.Item.Checked;
-                lineFlowGraph2DControl.UpdateGraph();
-                if (lvwCounters.CheckedItems.Count == 0)
-                    e.Item.Checked = true;
+                if (line != null)
+                {
+                    //HenIT.Windows.Controls.C2DPushGraph.Graphing.C2DPushGraph.LineHandle lh = c2DPushGraphControl.GetLineHandle(e.Item.Text);
+                    line.Visible = e.Item.Checked;
+                    lineFlowGraph2DControl.UpdateGraph();
+                    if (lvwCounters.CheckedItems.Count == 0)
+                        e.Item.Checked = true;
+                }
+            }
+        }
+        private void lvwCounters_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Delete)
+            {
+                removeToolStripMenuItem_Click(sender, e);
+            }
+        }
+        private void lvwCounters_DragDrop(object sender, DragEventArgs e)
+        {
+            //have to check if dropped items are from another window so it might have to be added to pcMonInstances
+            foreach (ListViewItem lvi in lvwCounters.Items)
+            {
+                if (lvi.Tag is PCMonInstance)
+                {
+                    PCMonInstance pcmi = (PCMonInstance)lvi.Tag;
+                    if ((from p in pcMonInstances
+                         where p.CounterDefinition() == pcmi.CounterDefinition()
+                         select p).FirstOrDefault() == null)
+                    {
+                        pcMonInstances.Add(pcmi);
+                        //also check if line was added to graph
+                        ILine line = lineFlowGraph2DControl.GetLine(lvi.Text);
+                        if (line == null)
+                        {
+                            if (pcmi.PlotColor.IsEmpty)
+                            {
+                                if (!lvi.SubItems[1].ForeColor.IsEmpty)
+                                    pcmi.PlotColor = lvi.SubItems[1].ForeColor;
+                                else
+                                    pcmi.PlotColor = GetNextLineColor();
+                            }
+                            line = lineFlowGraph2DControl.AddLine(pcmi.Name, pcmi.PlotColor, pcmi.Scale);
+
+                            line.Thickness = defaultLineThickness;
+                            line.PlotStyle = (LinePlotStyle)pcmi.PlotStyle;
+                            line.Color = pcmi.PlotColor;
+                        }
+                    }
+                }
             }
         }
         #endregion
@@ -414,22 +458,29 @@ namespace QPerfMon
             {
                 Formatting formatting = new Formatting();
                 ILine line = lineFlowGraph2DControl.GetLine(lvwCounters.SelectedItems[0].Text);
-                formatting.SelectedScale = line.Scale;
-                formatting.SelectedColor = line.Color;
-                formatting.PlotStyle = line.PlotStyle;
-                if (formatting.ShowDialog() == DialogResult.OK)
+                if (line != null)
                 {
-                    lvwCounters.SelectedItems[0].SubItems[2].Text = formatting.SelectedScale.ToString();
-                    lvwCounters.SelectedItems[0].SubItems[1].ForeColor = formatting.SelectedColor;
-                    lvwCounters.SelectedItems[0].SubItems[1].BackColor = formatting.SelectedColor;
+                    formatting.SelectedScale = line.Scale;
+                    formatting.SelectedColor = line.Color;
+                    formatting.PlotStyle = line.PlotStyle;
+                    if (formatting.ShowDialog() == DialogResult.OK)
+                    {
+                        lvwCounters.SelectedItems[0].SubItems[2].Text = formatting.SelectedScale.ToString();
+                        lvwCounters.SelectedItems[0].SubItems[1].ForeColor = formatting.SelectedColor;
+                        lvwCounters.SelectedItems[0].SubItems[1].BackColor = formatting.SelectedColor;
 
-                    line.Color = formatting.SelectedColor;
-                    line.Scale = formatting.SelectedScale;
-                    line.PlotStyle = formatting.PlotStyle;
-                    PCMonInstance pcMonInstance = (PCMonInstance)lvwCounters.SelectedItems[0].Tag;
-                    pcMonInstance.Scale = formatting.SelectedScale;
-                    pcMonInstance.PlotStyle = (int)formatting.PlotStyle;
-                    pcMonInstance.PlotColor = formatting.SelectedColor;
+                        line.Color = formatting.SelectedColor;
+                        line.Scale = formatting.SelectedScale;
+                        line.PlotStyle = formatting.PlotStyle;
+                        PCMonInstance pcMonInstance = (PCMonInstance)lvwCounters.SelectedItems[0].Tag;
+                        pcMonInstance.Scale = formatting.SelectedScale;
+                        pcMonInstance.PlotStyle = (int)formatting.PlotStyle;
+                        pcMonInstance.PlotColor = formatting.SelectedColor;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("There was an error retrieving the line instance!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -455,7 +506,6 @@ namespace QPerfMon
         }
         private void addToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //AddNewCounter("", "", "", "");
             AddNewCounters("", "", "");
         }
         private void addClonePerformanceCounterToolStripMenuItem_Click(object sender, EventArgs e)
@@ -606,6 +656,9 @@ namespace QPerfMon
 
                             if (!duplicate)
                             {
+                                if (pcmi.PlotColor == null || pcmi.PlotColor.IsEmpty || pcmi.PlotColor.Equals(Color.FromArgb(0, 0, 0, 0)))
+                                    pcmi.PlotColor = GetNextLineColor();
+
                                 pcMonInstances.Add(pcmi);
                                 ListViewItem lvi = new ListViewItem(pcmi.Name);
                                 lvi.UseItemStyleForSubItems = false;
@@ -701,6 +754,12 @@ namespace QPerfMon
             {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+        }
+
+        private void rememberSizePositionToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            rememberSizePositionToolStripMenuItem.Checked = !rememberSizePositionToolStripMenuItem.Checked;
+            Properties.Settings.Default.RememberSizeLocationOnSaveLoad = rememberSizePositionToolStripMenuItem.Checked;
         }
         private void lastErrorToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -882,6 +941,11 @@ namespace QPerfMon
         {
             Properties.Settings.Default.MainWindowSnap = snapToDesktopSidesToolStripMenuItem.Checked;
             this.SnappingEnabled = Properties.Settings.Default.MainWindowSnap;
+        }
+        private void alwaysOnTopToolStripMenuItem_CheckStateChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.AlwaysOnTop = alwaysOnTopToolStripMenuItem.Checked;
+            this.TopMost = alwaysOnTopToolStripMenuItem.Checked;
         }
         private void disableCounterOnErrorToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
@@ -1199,64 +1263,7 @@ namespace QPerfMon
         } 
         #endregion               
 
-        private void testAddToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            AddNewCounters("", "", "");
-            //AddCounters addcounters = new AddCounters();
-            //if (addcounters.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-            //{
-            //    StartStopLogging(true);
-            //    bool oldPause = paused;
-            //    paused = true;
-            //    initializing = true;
-            //    try
-            //    {
-
-            //        foreach (PCMonInstance pcmi in addcounters.SelectedPCMonInstances)
-            //        {
-            //            pcmi.PlotColor = lineColors[(lvwCounters.Items.Count + 1) % lineColors.Count];
-
-            //            pcMonInstances.Add(pcmi);
-            //            ListViewItem lvi = new ListViewItem(pcmi.Name);
-            //            lvi.UseItemStyleForSubItems = false;
-            //            ListViewItem.ListViewSubItem sub = new ListViewItem.ListViewSubItem();
-            //            sub.Text = "###";
-            //            sub.ForeColor = pcmi.PlotColor;
-            //            sub.BackColor = pcmi.PlotColor;
-            //            lvi.SubItems.Add(sub);
-            //            lvi.SubItems.Add(pcmi.Scale.ToString());
-            //            lvi.SubItems.Add("");
-            //            lvi.Checked = true;
-            //            lvi.Tag = pcmi;
-            //            lvwCounters.Items.Add(lvi);
-
-            //            ILine line = lineFlowGraph2DControl.AddLine(pcmi.Name, pcmi.PlotColor, pcmi.Scale);
-
-            //            line.Thickness = defaultLineThickness;
-            //            line.PlotStyle = (LinePlotStyle)pcmi.PlotStyle;
-            //            UpdateStatusBarText();
-            //        }
-            //    }
-            //    catch (Exception ex)
-            //    {
-            //        MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //    }
-            //    initializing = false;
-            //    paused = oldPause;
-            //}
-        }
-
-        private void testAddCloneCategoryToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (lvwCounters.SelectedItems.Count > 0)
-            {
-                PCMonInstance pcmi = (PCMonInstance)lvwCounters.SelectedItems[0].Tag;
-                AddNewCounters(pcmi.Machine, pcmi.Category, "");
-            }
-            else
-                AddNewCounters("", "", "");
-        }
-
+        #region Private methods
         private void AddNewCounters(string initialMachine, string initialCategory, string initialCounter)
         {
             AddCounters addcounters = new AddCounters();
@@ -1265,7 +1272,7 @@ namespace QPerfMon
             {
                 addcounters.ExistingCounters.Add(lvi.Text);
             }
-            if (initialCategory.Length > 0) 
+            if (initialCategory.Length > 0)
                 addcounters.InitialCategory = initialCategory;
             if (initialCounter.Length > 0)
                 addcounters.InitialCounter = initialCounter;
@@ -1311,18 +1318,6 @@ namespace QPerfMon
                 paused = oldPause;
             }
         }
-
-        private void textAddCloneAllToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            if (lvwCounters.SelectedItems.Count > 0)
-            {
-                PCMonInstance pcmi = (PCMonInstance)lvwCounters.SelectedItems[0].Tag;
-                AddNewCounters(pcmi.Machine, pcmi.Category, pcmi.Counter);
-            }
-            else
-                AddNewCounter("", "", "", "");
-        }
-        
         private Color GetNextLineColor()
         {
             Color nextColor = lineColors[(lvwCounters.Items.Count + 1) % lineColors.Count];
@@ -1335,32 +1330,8 @@ namespace QPerfMon
                 }
             }
             return nextColor;
-        }
-
-        private void lvwCounters_KeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.KeyCode == Keys.Delete)
-            {
-                removeToolStripMenuItem_Click(sender, e);
-            }
-        }
-
-        private void alwaysOnTopToolStripMenuItem_CheckStateChanged(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.AlwaysOnTop = alwaysOnTopToolStripMenuItem.Checked;
-            this.TopMost = alwaysOnTopToolStripMenuItem.Checked;
-        }
-
-        private void rememberSizePositionToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            rememberSizePositionToolStripMenuItem.Checked = !rememberSizePositionToolStripMenuItem.Checked;
-            Properties.Settings.Default.RememberSizeLocationOnSaveLoad = rememberSizePositionToolStripMenuItem.Checked;
-        }
-
-
-
-
-
+        } 
+        #endregion
 
     }
 }

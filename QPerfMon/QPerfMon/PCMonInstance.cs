@@ -217,6 +217,7 @@ namespace QPerfMon
             get { return plotStyle; }
             set { plotStyle = value; }
         }
+        [System.Xml.Serialization.XmlIgnore]
         public bool LoadColorError { get; private set; }
         private Color plotColor;
         public Color PlotColor
@@ -226,6 +227,7 @@ namespace QPerfMon
         }
 
         private PerformanceCounter pcInstance = null;
+        [System.Xml.Serialization.XmlIgnore]
         public PerformanceCounter PCInstance
         {
             get { return pcInstance; }
@@ -305,7 +307,6 @@ namespace QPerfMon
                 "<style>{6}</style>",
                 this.machine, this.category, this.counter, this.instance, this.scale, plotColorStr, plotStyleStr);
         }
-
         public static List<PCMonInstance> GetCountersFromCounterDefinitionList(string counterDefinitionList)
         {
             List<PCMonInstance> counters = new List<PCMonInstance>();

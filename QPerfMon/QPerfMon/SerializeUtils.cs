@@ -43,6 +43,16 @@ namespace QPerfMon
         #endregion
 
         #region Deserialize
+        public static object DeserializeXML(Type t, string serializedObject) 
+        {
+            XmlSerializer ser = new XmlSerializer(t);
+            MemoryStream input = null;
+            object result = null;
+            input = new MemoryStream(System.Text.Encoding.Unicode.GetBytes(serializedObject));
+            input.Position = 0;
+            result = ser.Deserialize(input);
+            return result;
+        }
         /// <summary>
         /// Deserialize class
         /// </summary>
