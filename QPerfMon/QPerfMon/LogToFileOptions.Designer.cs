@@ -47,6 +47,8 @@
             this.label7 = new System.Windows.Forms.Label();
             this.numericUpDownDecimals = new System.Windows.Forms.NumericUpDown();
             this.label8 = new System.Windows.Forms.Label();
+            this.txtValueSeparator = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownMinimumDiskSpaceLimitMB)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownCreateNewFileEveryMB)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.numericUpDownSampleRate)).BeginInit();
@@ -60,7 +62,7 @@
             this.cmdCancel.Location = new System.Drawing.Point(326, 282);
             this.cmdCancel.Name = "cmdCancel";
             this.cmdCancel.Size = new System.Drawing.Size(75, 23);
-            this.cmdCancel.TabIndex = 17;
+            this.cmdCancel.TabIndex = 19;
             this.cmdCancel.Text = "Cancel";
             this.cmdCancel.UseVisualStyleBackColor = true;
             // 
@@ -70,7 +72,7 @@
             this.cmdOK.Location = new System.Drawing.Point(245, 282);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(75, 23);
-            this.cmdOK.TabIndex = 16;
+            this.cmdOK.TabIndex = 18;
             this.cmdOK.Text = "OK";
             this.cmdOK.UseVisualStyleBackColor = true;
             this.cmdOK.Click += new System.EventHandler(this.cmdOK_Click);
@@ -86,8 +88,8 @@
             // 
             // txtLoggingDirectory
             // 
-            this.txtLoggingDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtLoggingDirectory.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtLoggingDirectory.Location = new System.Drawing.Point(37, 29);
             this.txtLoggingDirectory.Name = "txtLoggingDirectory";
             this.txtLoggingDirectory.Size = new System.Drawing.Size(321, 20);
@@ -125,8 +127,8 @@
             // 
             // txtLoggingFileName
             // 
-            this.txtLoggingFileName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
-                        | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtLoggingFileName.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.txtLoggingFileName.Location = new System.Drawing.Point(37, 70);
             this.txtLoggingFileName.Name = "txtLoggingFileName";
             this.txtLoggingFileName.Size = new System.Drawing.Size(321, 20);
@@ -138,7 +140,7 @@
             this.label3.Location = new System.Drawing.Point(12, 118);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(214, 13);
-            this.label3.TabIndex = 6;
+            this.label3.TabIndex = 8;
             this.label3.Text = "Stop logging if available disk space drops to";
             // 
             // numericUpDownMinimumDiskSpaceLimitMB
@@ -161,7 +163,7 @@
             0});
             this.numericUpDownMinimumDiskSpaceLimitMB.Name = "numericUpDownMinimumDiskSpaceLimitMB";
             this.numericUpDownMinimumDiskSpaceLimitMB.Size = new System.Drawing.Size(78, 20);
-            this.numericUpDownMinimumDiskSpaceLimitMB.TabIndex = 7;
+            this.numericUpDownMinimumDiskSpaceLimitMB.TabIndex = 9;
             this.numericUpDownMinimumDiskSpaceLimitMB.Value = new decimal(new int[] {
             50,
             0,
@@ -174,7 +176,7 @@
             this.label4.Location = new System.Drawing.Point(121, 138);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(23, 13);
-            this.label4.TabIndex = 8;
+            this.label4.TabIndex = 10;
             this.label4.Text = "MB";
             // 
             // label5
@@ -183,7 +185,7 @@
             this.label5.Location = new System.Drawing.Point(121, 179);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(23, 13);
-            this.label5.TabIndex = 11;
+            this.label5.TabIndex = 13;
             this.label5.Text = "MB";
             // 
             // numericUpDownCreateNewFileEveryMB
@@ -201,7 +203,7 @@
             0});
             this.numericUpDownCreateNewFileEveryMB.Name = "numericUpDownCreateNewFileEveryMB";
             this.numericUpDownCreateNewFileEveryMB.Size = new System.Drawing.Size(78, 20);
-            this.numericUpDownCreateNewFileEveryMB.TabIndex = 10;
+            this.numericUpDownCreateNewFileEveryMB.TabIndex = 12;
             this.numericUpDownCreateNewFileEveryMB.Value = new decimal(new int[] {
             50,
             0,
@@ -214,7 +216,7 @@
             this.label6.Location = new System.Drawing.Point(12, 159);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(229, 13);
-            this.label6.TabIndex = 9;
+            this.label6.TabIndex = 11;
             this.label6.Text = "Create new file every (0 - never create new file)";
             // 
             // numericUpDownSampleRate
@@ -232,7 +234,7 @@
             0});
             this.numericUpDownSampleRate.Name = "numericUpDownSampleRate";
             this.numericUpDownSampleRate.Size = new System.Drawing.Size(78, 20);
-            this.numericUpDownSampleRate.TabIndex = 13;
+            this.numericUpDownSampleRate.TabIndex = 15;
             this.numericUpDownSampleRate.Value = new decimal(new int[] {
             1,
             0,
@@ -245,7 +247,7 @@
             this.label7.Location = new System.Drawing.Point(12, 200);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(245, 13);
-            this.label7.TabIndex = 12;
+            this.label7.TabIndex = 14;
             this.label7.Text = "Sample rate - log only every X times graph updates";
             // 
             // numericUpDownDecimals
@@ -263,7 +265,7 @@
             0});
             this.numericUpDownDecimals.Name = "numericUpDownDecimals";
             this.numericUpDownDecimals.Size = new System.Drawing.Size(78, 20);
-            this.numericUpDownDecimals.TabIndex = 15;
+            this.numericUpDownDecimals.TabIndex = 17;
             this.numericUpDownDecimals.Value = new decimal(new int[] {
             2,
             0,
@@ -276,14 +278,36 @@
             this.label8.Location = new System.Drawing.Point(12, 241);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(119, 13);
-            this.label8.TabIndex = 14;
+            this.label8.TabIndex = 16;
             this.label8.Text = "Decimal digits displayed";
+            // 
+            // txtValueSeparator
+            // 
+            this.txtValueSeparator.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtValueSeparator.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.12727F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtValueSeparator.Location = new System.Drawing.Point(326, 94);
+            this.txtValueSeparator.MaxLength = 50;
+            this.txtValueSeparator.Name = "txtValueSeparator";
+            this.txtValueSeparator.Size = new System.Drawing.Size(32, 27);
+            this.txtValueSeparator.TabIndex = 7;
+            this.txtValueSeparator.Text = ",";
+            // 
+            // label9
+            // 
+            this.label9.Location = new System.Drawing.Point(228, 102);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(97, 19);
+            this.label9.TabIndex = 6;
+            this.label9.Text = "Value separator";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.TopRight;
             // 
             // LogToFileOptions
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(413, 317);
+            this.Controls.Add(this.label9);
+            this.Controls.Add(this.txtValueSeparator);
             this.Controls.Add(this.numericUpDownDecimals);
             this.Controls.Add(this.label8);
             this.Controls.Add(this.numericUpDownSampleRate);
@@ -339,5 +363,7 @@
         private System.Windows.Forms.Label label7;
         private System.Windows.Forms.NumericUpDown numericUpDownDecimals;
         private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.TextBox txtValueSeparator;
+        private System.Windows.Forms.Label label9;
     }
 }

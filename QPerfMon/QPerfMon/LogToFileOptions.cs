@@ -24,6 +24,7 @@ namespace QPerfMon
         public long LoggingCreateNewFileEveryMB { get; set; }
         public int LoggingSampleRate { get; set; }
         public int LoggingDecimalDigits { get; set; }
+        public string ValueSeparator { get; set; }
         #endregion
 
         #region Form events
@@ -36,6 +37,7 @@ namespace QPerfMon
             numericUpDownCreateNewFileEveryMB.Value = LoggingCreateNewFileEveryMB;
             numericUpDownSampleRate.Value = LoggingSampleRate;
             numericUpDownDecimals.Value = LoggingDecimalDigits;
+            txtValueSeparator.Text = ValueSeparator;
         } 
         #endregion
 
@@ -61,6 +63,7 @@ namespace QPerfMon
                 LoggingCreateNewFileEveryMB = (long)numericUpDownCreateNewFileEveryMB.Value;
                 LoggingSampleRate = (int)numericUpDownSampleRate.Value;
                 LoggingDecimalDigits = (int)numericUpDownDecimals.Value;
+                ValueSeparator = txtValueSeparator.Text;
 
                 DialogResult = DialogResult.OK;
                 Close();

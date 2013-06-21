@@ -920,6 +920,7 @@ namespace QPerfMon
             logToFileOptions.LoggingCreateNewFileEveryMB = Properties.Settings.Default.LoggingCreateNewFileEveryMB;
             logToFileOptions.LoggingSampleRate = Properties.Settings.Default.LoggingSampleRate;
             logToFileOptions.LoggingDecimalDigits = Properties.Settings.Default.LoggingDecimalDigits;
+            logToFileOptions.ValueSeparator = Properties.Settings.Default.LoggingValueSeparator;
             if (logToFileOptions.ShowDialog() == DialogResult.OK)
             {
                 Properties.Settings.Default.LoggingDirectory = logToFileOptions.LoggingDirectory;
@@ -929,6 +930,7 @@ namespace QPerfMon
                 Properties.Settings.Default.LoggingCreateNewFileEveryMB = logToFileOptions.LoggingCreateNewFileEveryMB;
                 Properties.Settings.Default.LoggingSampleRate = logToFileOptions.LoggingSampleRate;
                 Properties.Settings.Default.LoggingDecimalDigits = logToFileOptions.LoggingDecimalDigits;
+                Properties.Settings.Default.LoggingValueSeparator = logToFileOptions.ValueSeparator;
                 Properties.Settings.Default.Save();
                 IsLoggingSetUp();
             }
@@ -1184,7 +1186,9 @@ namespace QPerfMon
                 header.Append("Time");
                 foreach (PCMonInstance pcmi in pcMonInstances)
                 {
-                    header.Append("," + pcmi.Name.Replace(",", ""));
+                    header.Append(Properties.Settings.Default.LoggingValueSeparator);
+                    header.Append(pcmi.Name.Replace(Properties.Settings.Default.LoggingValueSeparator, ""));
+                    header.Append(Properties.Settings.Default.LoggingValueSeparator);
                 }
                 header.Append("\r\n");
                 System.IO.File.WriteAllText(loggingOutputFilePath, header.ToString());
@@ -1248,7 +1252,8 @@ namespace QPerfMon
                         lineTest.Append(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                         foreach (PCMonInstance pcmi in pcMonInstances)
                         {
-                            lineTest.Append("," + string.Format(loggingDecimalDigitsFormatting, pcmi.LastValue));
+                            lineTest.Append(Properties.Settings.Default.LoggingValueSeparator);
+                            lineTest.Append(string.Format(loggingDecimalDigitsFormatting, pcmi.LastValue));
                         }
                         lineTest.AppendLine();
                         System.IO.File.AppendAllText(loggingOutputFilePath, lineTest.ToString());
