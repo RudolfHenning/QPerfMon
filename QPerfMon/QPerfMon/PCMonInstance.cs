@@ -53,6 +53,11 @@ namespace QPerfMon
                     plotStyle = 0;
                 else if (!int.TryParse(styleNode.InnerText, out plotStyle))
                     plotStyle = 0;
+                XmlNode dashNode = root.SelectSingleNode("dash");
+                if (dashNode == null)
+                    dashStyle = 0;
+                else if (!int.TryParse(dashNode.InnerText, out dashStyle))
+                    dashStyle = 0;
                 LoadColorError = false;
                 XmlNode colorNode = root.SelectSingleNode("color");
                 if (colorNode == null)
@@ -75,6 +80,7 @@ namespace QPerfMon
                         LoadColorError = true;
                     }
                 }
+                
 
                 //Set name
                 name = string.Format("{0}\\{1}\\{2}\\", machine, category, counter);
@@ -217,6 +223,12 @@ namespace QPerfMon
             get { return plotStyle; }
             set { plotStyle = value; }
         }
+        private int dashStyle;
+        public int DashStyle
+        {
+            get { return dashStyle; }
+            set { dashStyle = value; }
+        }
         [System.Xml.Serialization.XmlIgnore]
         public bool LoadColorError { get; private set; }
         private Color plotColor;
@@ -284,6 +296,8 @@ namespace QPerfMon
                 root.AppendChild(root.CreateElementWithText("scale", scale.ToString()));
             if (plotStyle != 0)
                 root.AppendChild(root.CreateElementWithText("style", plotStyle.ToString()));
+            if (dashStyle != 0)
+                root.AppendChild(root.CreateElementWithText("dash", dashStyle.ToString()));
 
             root.AppendChild(root.CreateElementWithText("color", plotColor.IsKnownColor ? plotColor.Name : "#" + plotColor.ToArgb().ToString()));
             return config.OuterXml;
@@ -294,18 +308,22 @@ namespace QPerfMon
             string plotColorStr = plotColor.IsKnownColor ? plotColor.Name : "#" + plotColor.ToArgb().ToString();
             string scaleStr = "1";
             string plotStyleStr = "";
+            string dashStyleStr = "";
             if (scale != 1)
                 scaleStr = scale.ToString();
             if (plotStyle != 0)
                 plotStyleStr = plotStyle.ToString();
+            if (dashStyle != 0)
+                dashStyleStr = dashStyle.ToString();
             return string.Format("<machine>{0}</machine>" + 
                 "<category>{1}</category>" +
                 "<counter>{2}</counter>" + 
                 "<instance>{3}</instance>" +
                 "<scale>{4}</scale>" +
                 "<color>{5}</color>" +
-                "<style>{6}</style>",
-                this.machine, this.category, this.counter, this.instance, this.scale, plotColorStr, plotStyleStr);
+                "<style>{6}</style>" +
+                "<dash>{7}</dash>",
+                this.machine, this.category, this.counter, this.instance, this.scale, plotColorStr, plotStyleStr, dashStyleStr);
         }
         public static List<PCMonInstance> GetCountersFromCounterDefinitionList(string counterDefinitionList)
         {

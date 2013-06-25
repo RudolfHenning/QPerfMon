@@ -37,6 +37,13 @@ namespace QPerfMon
             set { plotStyle = value; }
         }
 
+        private System.Drawing.Drawing2D.DashStyle dashStyle;
+        public System.Drawing.Drawing2D.DashStyle DashStyle
+        {
+            get { return dashStyle; }
+            set { dashStyle = value; }
+        }
+
         private void Formatting_Load(object sender, EventArgs e)
         {
             pictureBoxColor.BackColor = color;
@@ -89,6 +96,24 @@ namespace QPerfMon
                     cboPlotStyle.SelectedIndex = 0;
                     break;
             }
+            switch (dashStyle)
+            {
+                case System.Drawing.Drawing2D.DashStyle.Dash:
+                    cboDashStyle.SelectedIndex = 1;
+                    break;
+                case System.Drawing.Drawing2D.DashStyle.Dot:
+                    cboDashStyle.SelectedIndex = 2;
+                    break;                
+                case System.Drawing.Drawing2D.DashStyle.DashDot:
+                    cboDashStyle.SelectedIndex = 3;
+                    break;
+                case System.Drawing.Drawing2D.DashStyle.DashDotDot:
+                    cboDashStyle.SelectedIndex = 4;
+                    break;                
+                default:
+                    cboDashStyle.SelectedIndex = 0;
+                    break;
+            }
         }
 
         private void lvwColors_SelectedIndexChanged(object sender, EventArgs e)
@@ -113,6 +138,7 @@ namespace QPerfMon
                 color = pictureBoxColor.BackColor;
                 scale = double.Parse(cboScale.Items[cboScale.SelectedIndex].ToString());
                 plotStyle = (LinePlotStyle)cboPlotStyle.SelectedIndex;
+                dashStyle = (System.Drawing.Drawing2D.DashStyle)cboDashStyle.SelectedIndex;
                 DialogResult = DialogResult.OK;
                 Close();
             }

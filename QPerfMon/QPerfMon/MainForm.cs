@@ -303,7 +303,8 @@ namespace QPerfMon
                                 else
                                     pcmi.PlotColor = GetNextLineColor();
                             }
-                            line = lineFlowGraph2DControl.AddLine(pcmi.Name, pcmi.PlotColor, pcmi.Scale);
+                            line = lineFlowGraph2DControl.AddLine(pcmi.Name, pcmi.PlotColor, pcmi.Scale,
+                               pcmi.PlotStyle, pcmi.DashStyle);
 
                             line.Thickness = defaultLineThickness;
                             line.PlotStyle = (LinePlotStyle)pcmi.PlotStyle;
@@ -340,7 +341,7 @@ namespace QPerfMon
                                 try
                                 {
                                     lvwCounters.BeginUpdate();
-                                    int[] newvalues = new int[lvwCounters.Items.Count];
+                                    //int[] newvalues = new int[lvwCounters.Items.Count];
                                     for (int i = 0; i < pcMonInstances.Count; i++)
                                     {
                                         if (paused)
@@ -463,6 +464,7 @@ namespace QPerfMon
                     formatting.SelectedScale = line.Scale;
                     formatting.SelectedColor = line.Color;
                     formatting.PlotStyle = line.PlotStyle;
+                    formatting.DashStyle = line.DashStyle;
                     if (formatting.ShowDialog() == DialogResult.OK)
                     {
                         lvwCounters.SelectedItems[0].SubItems[2].Text = formatting.SelectedScale.ToString();
@@ -472,9 +474,11 @@ namespace QPerfMon
                         line.Color = formatting.SelectedColor;
                         line.Scale = formatting.SelectedScale;
                         line.PlotStyle = formatting.PlotStyle;
+                        line.DashStyle = formatting.DashStyle;                        
                         PCMonInstance pcMonInstance = (PCMonInstance)lvwCounters.SelectedItems[0].Tag;
                         pcMonInstance.Scale = formatting.SelectedScale;
                         pcMonInstance.PlotStyle = (int)formatting.PlotStyle;
+                        pcMonInstance.DashStyle = (int)formatting.DashStyle;
                         pcMonInstance.PlotColor = formatting.SelectedColor;
                     }
                 }
@@ -564,7 +568,12 @@ namespace QPerfMon
                     lvi.Tag = addCounter.SelectedPCMonInstance;
                     lvwCounters.Items.Add(lvi);
 
-                    ILine line = lineFlowGraph2DControl.AddLine(addCounter.SelectedPCMonInstance.Name, addCounter.InitialColor, addCounter.SelectedPCMonInstance.Scale);
+                    ILine line = lineFlowGraph2DControl.AddLine(
+                        addCounter.SelectedPCMonInstance.Name, 
+                        addCounter.InitialColor, 
+                        addCounter.SelectedPCMonInstance.Scale,
+                        addCounter.SelectedPCMonInstance.PlotStyle,
+                        addCounter.SelectedPCMonInstance.DashStyle);
 
                     line.Thickness = defaultLineThickness;
                     line.PlotStyle = (LinePlotStyle)addCounter.SelectedPCMonInstance.PlotStyle;
@@ -608,18 +617,25 @@ namespace QPerfMon
         }
         private void copyDefinitionToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            StringBuilder sb = new StringBuilder();
-            sb.AppendLine("<CounterDefinitionList>");
-            foreach (ListViewItem lvi in lvwCounters.SelectedItems)
+            try
             {
-                PCMonInstance item = (PCMonInstance)lvi.Tag;
-                string xmlDef = item.GetCounterDefinitionXml();
-                sb.AppendLine(string.Format("<string>{0}</string>", 
-                    xmlDef.Replace("<", "&lt;").Replace(">", "&gt;")));
-                
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine("<CounterDefinitionList>");
+                foreach (ListViewItem lvi in lvwCounters.SelectedItems)
+                {
+                    PCMonInstance item = (PCMonInstance)lvi.Tag;
+                    string xmlDef = item.GetCounterDefinitionXml();
+                    sb.AppendLine(string.Format("<string>{0}</string>",
+                        xmlDef.Replace("<", "&lt;").Replace(">", "&gt;")));
+
+                }
+                sb.AppendLine("</CounterDefinitionList>");
+                Clipboard.SetText(sb.ToString());
             }
-            sb.AppendLine("</CounterDefinitionList>");
-            Clipboard.SetText(sb.ToString());
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
         private void pasteFromDefnitionToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -673,10 +689,16 @@ namespace QPerfMon
                                 lvi.Tag = pcmi;
                                 lvwCounters.Items.Add(lvi);
 
-                                ILine line = lineFlowGraph2DControl.AddLine(pcmi.Name, pcmi.PlotColor, pcmi.Scale);
+                                ILine line = lineFlowGraph2DControl.AddLine(
+                                    pcmi.Name, 
+                                    pcmi.PlotColor, 
+                                    pcmi.Scale,
+                                    pcmi.PlotStyle,
+                                    pcmi.DashStyle);
 
                                 line.Thickness = defaultLineThickness;
                                 line.PlotStyle = (LinePlotStyle)pcmi.PlotStyle;
+                                line.DashStyle = (System.Drawing.Drawing2D.DashStyle)pcmi.DashStyle;
                                 UpdateStatusBarText();
                             }
                         }
@@ -1006,8 +1028,14 @@ namespace QPerfMon
                     int colorIndex = i % lineColors.Count;
                     if (pcMonInstances[i].LoadColorError)
                         pcMonInstances[i].PlotColor = lineColors[colorIndex];
-                    line = lineFlowGraph2DControl.AddLine(pcMonInstances[i].Name, pcMonInstances[i].PlotColor, pcMonInstances[i].Scale);
+                    line = lineFlowGraph2DControl.AddLine(
+                        pcMonInstances[i].Name, 
+                        pcMonInstances[i].PlotColor, 
+                        pcMonInstances[i].Scale,
+                        pcMonInstances[i].PlotStyle,
+                        pcMonInstances[i].DashStyle);
                     line.PlotStyle = (LinePlotStyle)pcMonInstances[i].PlotStyle;
+                    line.DashStyle = (System.Drawing.Drawing2D.DashStyle)pcMonInstances[i].DashStyle;
                     line.Thickness = defaultLineThickness;
                 }
 
@@ -1308,7 +1336,12 @@ namespace QPerfMon
                         lvi.Tag = pcmi;
                         lvwCounters.Items.Add(lvi);
 
-                        ILine line = lineFlowGraph2DControl.AddLine(pcmi.Name, pcmi.PlotColor, pcmi.Scale);
+                        ILine line = lineFlowGraph2DControl.AddLine(
+                            pcmi.Name, 
+                            pcmi.PlotColor, 
+                            pcmi.Scale,
+                            pcmi.PlotStyle,
+                            pcmi.DashStyle);
 
                         line.Thickness = defaultLineThickness;
                         line.PlotStyle = (LinePlotStyle)pcmi.PlotStyle;

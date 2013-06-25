@@ -25,7 +25,7 @@ namespace HenIT.Windows.Controls.Graphing
 
         event EventHandler AutoScaleEvent;
 
-        ILine AddLine(string nameID, Color clr, double scale);
+        ILine AddLine(string nameID, Color clr, double scale, LinePlotStyle plotStyle, System.Drawing.Drawing2D.DashStyle dashStyle);
         void ClearAllLines();
         double GetCurrentMaxOnGraph();
         ILine GetLine(string nameID);        

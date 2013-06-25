@@ -282,7 +282,11 @@ namespace HenIT.Windows.Controls.Graphing
         #endregion
 
         #region Line handling
-        public ILine AddLine(string nameId, Color color, double scale)
+        public ILine AddLine(string nameId, Color color, double scale, int plotStyle, int dashStyle)
+        {
+            return AddLine(nameId, color, scale, (LinePlotStyle)plotStyle, (DashStyle)dashStyle);
+        }
+        public ILine AddLine(string nameId, Color color, double scale, LinePlotStyle plotStyle, DashStyle dashStyle)
         {
             if (LineExists(nameId))
             {
@@ -292,6 +296,8 @@ namespace HenIT.Windows.Controls.Graphing
             ILine line = new FlowLine(nameId, color, scale);
             line.Color = color;
             line.Scale = scale;
+            line.PlotStyle = plotStyle;
+            line.DashStyle = dashStyle;
 
             lines.Add(line);
             return line;
@@ -750,9 +756,10 @@ namespace HenIT.Windows.Controls.Graphing
             using (Pen linePen = new Pen(line.Color, line.Thickness))
             {
 #if DEBUG
+                
                 //System.Diagnostics.Trace.WriteLine(string.Format("line value {0} {1}", line.NameId, line.MagnitudeList[line.MagnitudeList.Count - 1].Magnitude));
 #endif
-
+                linePen.DashStyle = line.DashStyle;
                 Point lastPoint = new Point();
                 //start from newest
                 lastPoint.X = currentWidth;

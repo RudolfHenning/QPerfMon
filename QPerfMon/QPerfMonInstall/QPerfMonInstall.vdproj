@@ -173,7 +173,7 @@
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:LineFlowGraph2D, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:LineFlowGraph2D, Version=1.0.1.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
                     "_628955C173C175ADCC50E1974211786A"
@@ -290,15 +290,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:QPerfMon"
-        "ProductCode" = "8:{55C905CA-B93E-4FC1-8A78-824B4BCE1179}"
-        "PackageCode" = "8:{0D165CED-B0AD-40B0-8A6D-92B91DD11CB5}"
+        "ProductCode" = "8:{BFA848EE-C251-4D6A-A397-EE3B0F352C95}"
+        "PackageCode" = "8:{9DDB4D19-4D7C-4F99-96AC-678E89E49E4C}"
         "UpgradeCode" = "8:{88B07EAE-B50F-4A9E-9F86-EE5B55975008}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:TRUE"
         "DetectNewerInstalledVersion" = "11:TRUE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:1.9.3"
+        "ProductVersion" = "8:1.9.4"
         "Manufacturer" = "8:Hen IT"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"

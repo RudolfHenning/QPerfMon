@@ -9,6 +9,7 @@ namespace HenIT.Windows.Controls.Graphing
         List<ValueTimeInstance> MagnitudeList { get; }
         Color Color { get; set; }
         LinePlotStyle PlotStyle { get; set; }
+        System.Drawing.Drawing2D.DashStyle DashStyle { get; set; }
         double Scale { get; set; }
         uint Thickness { get; set; }
         bool Visible { get; set; }

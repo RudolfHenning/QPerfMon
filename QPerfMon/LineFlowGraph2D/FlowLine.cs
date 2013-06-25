@@ -56,6 +56,18 @@ namespace HenIT.Windows.Controls.Graphing
                 plotStyle = value;
             }
         }
+        private System.Drawing.Drawing2D.DashStyle dashStyle = System.Drawing.Drawing2D.DashStyle.Solid;
+        public System.Drawing.Drawing2D.DashStyle DashStyle
+        {
+            get
+            {
+                return dashStyle;
+            }
+            set
+            {
+                dashStyle = value;
+            }
+        }
         private double scale;
         public double Scale
         {
