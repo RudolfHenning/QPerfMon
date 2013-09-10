@@ -1216,7 +1216,7 @@ namespace QPerfMon
                 {
                     header.Append(Properties.Settings.Default.LoggingValueSeparator);
                     header.Append(pcmi.Name.Replace(Properties.Settings.Default.LoggingValueSeparator, ""));
-                    header.Append(Properties.Settings.Default.LoggingValueSeparator);
+                    //header.Append(Properties.Settings.Default.LoggingValueSeparator);
                 }
                 header.Append("\r\n");
                 System.IO.File.WriteAllText(loggingOutputFilePath, header.ToString());
