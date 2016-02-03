@@ -55,6 +55,13 @@ namespace QPerfMon
             lineColors.Add(Color.Orange);
             lineColors.Add(Color.BlueViolet);
             lineColors.Add(Color.White);
+            lineColors.Add(Color.LightCyan);
+            lineColors.Add(Color.LightPink);
+            lineColors.Add(Color.Lime);
+            lineColors.Add(Color.Olive);
+            lineColors.Add(Color.OrangeRed);
+            lineColors.Add(Color.RosyBrown);
+            lineColors.Add(Color.Violet);            
 
             try
             {
@@ -116,9 +123,10 @@ namespace QPerfMon
         #region Form events
         private void MainForm_Load(object sender, EventArgs e)
         {
-            rememberSizePositionToolStripMenuItem.Checked = Properties.Settings.Default.RememberSizeLocationOnSaveLoad;
+            rememberWindowsSizeLocationSaveLoadToolStripMenuItem.Checked = Properties.Settings.Default.RememberSizeLocationOnSaveLoad;
             snapToDesktopSidesToolStripMenuItem.Checked = Properties.Settings.Default.MainWindowSnap;
             alwaysOnTopToolStripMenuItem.Checked = Properties.Settings.Default.AlwaysOnTop;
+            disablePerformanceCountersOnErrorToolStripMenuItem.Checked = Properties.Settings.Default.DisableCounterOnError;
             lineFlowGraph2DControl.BackColor = Properties.Settings.Default.GraphBackgroundColor;
             lineFlowGraph2DControl.GridColor = Properties.Settings.Default.GridColor;
             lineFlowGraph2DControl.TextColor = Properties.Settings.Default.GraphTextColor;
@@ -165,7 +173,15 @@ namespace QPerfMon
             {
                 c2DPushGraphControl_DoubleClick(sender, e);
             }
-        }
+            else if (e.KeyCode == Keys.OemOpenBrackets)
+            {
+                SelectPreviousLine();
+            }
+            else if (e.KeyCode == Keys.OemCloseBrackets)
+            {
+                SelectNextLine();
+            }
+        }        
         private void c2DPushGraphControl_DoubleClick(object sender, EventArgs e)
         {
             splitContainer1.Panel2Collapsed = !splitContainer1.Panel2Collapsed;
@@ -204,50 +220,54 @@ namespace QPerfMon
                             }
                         }
                     }
-                    copyDefinitionToolStripMenuItem.Enabled = false;
+                    
                     //push only the first selected one to top
                     if (lvwCounters.SelectedItems.Count > 0)
                     {
                         lineFlowGraph2DControl.SetSelectedLine(lvwCounters.SelectedItems[0].Text);
                         
-                        removeToolStripMenuItem.Enabled = (lvwCounters.Items.Count > 1) && (lvwCounters.Items.Count > lvwCounters.SelectedItems.Count);
-                        moveSelectionToNewWindowToolStripMenuItem.Enabled = (lvwCounters.Items.Count > lvwCounters.SelectedItems.Count);
-                        copyDefinitionToolStripMenuItem.Enabled = true;
+                        removePerformanceCountersToolStripMenuItem.Enabled = (lvwCounters.Items.Count > 1) && (lvwCounters.Items.Count > lvwCounters.SelectedItems.Count);
+                        //removePerformanceCountersToolStripMenuItem.Enabled = lvwCounters.Items.Count > 0;
+                        moveSelectedToNewWindowToolStripMenuItem.Enabled = (lvwCounters.Items.Count > 0 && lvwCounters.SelectedItems.Count > 0);
+                        copyDefinitionsToolStripMenuItem.Enabled = true;
 
-                        if (lvwCounters.SelectedItems[0].Index > 0)
-                            moveUpToolStripMenuItem.Enabled = true;
-                        if (lvwCounters.SelectedItems[lvwCounters.SelectedItems.Count-1].Index < lvwCounters.Items.Count-1)
-                            moveDownToolStripMenuItem.Enabled = true;
+                        //if (lvwCounters.SelectedItems[0].Index > 0)
+                        //    moveUpToolStripMenuItem.Enabled = true;
+                        //if (lvwCounters.SelectedItems[lvwCounters.SelectedItems.Count-1].Index < lvwCounters.Items.Count-1)
+                        //    moveDownToolStripMenuItem.Enabled = true;
+
+                        formattingToolStripMenuItem1.Enabled = true;
                     }
                     else
                     {
                         lineFlowGraph2DControl.SetSelectedLine("");
-                        removeToolStripMenuItem.Enabled = false;
-                        moveUpToolStripMenuItem.Enabled = false;
-                        moveDownToolStripMenuItem.Enabled = false;
-                        moveSelectionToNewWindowToolStripMenuItem.Enabled = false;
+                        removePerformanceCountersToolStripMenuItem.Enabled = false;
+                        //moveUpToolStripMenuItem.Enabled = false;
+                        //moveDownToolStripMenuItem.Enabled = false;
+                        moveSelectedToNewWindowToolStripMenuItem.Enabled = false;
+                        formattingToolStripMenuItem1.Enabled = false;
+                        copyDefinitionsToolStripMenuItem.Enabled = false;
                     }
 
                     if (lvwCounters.SelectedItems.Count == 1)
                     {
-                        visibleToolStripMenuItem.Enabled = true;
-                        formattingToolStripMenuItem.Enabled = true;
-                        addClonePerformanceCounterToolStripMenuItem.Enabled = true;
-                        addCloneAllToolStripMenuItem.Enabled = true;
-                        toolStripSeparator1.Visible = lvwCounters.SelectedItems[0].ForeColor == Color.Red;
-                        lastErrorToolStripMenuItem1.Visible = lvwCounters.SelectedItems[0].ForeColor == Color.Red;
+                        visibleToolStripMenuItem1.Enabled = true;
+                        cloneCategoryToolStripMenuItem.Enabled = true;
+                        cloneAllToolStripMenuItem.Enabled = true;
+
+ 
+                        //toolStripSeparator1.Visible = lvwCounters.SelectedItems[0].ForeColor == Color.Red;
+                        //lastErrorToolStripMenuItem1.Visible = lvwCounters.SelectedItems[0].ForeColor == Color.Red;
                     }
                     else
                     {
-                        visibleToolStripMenuItem.Enabled = false;
-                        formattingToolStripMenuItem.Enabled = false;
-                        addClonePerformanceCounterToolStripMenuItem.Enabled = false;
-                        addCloneAllToolStripMenuItem.Enabled = false;
-                        toolStripSeparator1.Visible = false;
-                        lastErrorToolStripMenuItem1.Visible = false;
-                    }
+                        visibleToolStripMenuItem1.Enabled = false;
+                        cloneCategoryToolStripMenuItem.Enabled = false;
+                        cloneAllToolStripMenuItem.Enabled = false;
 
-                    
+                        //toolStripSeparator1.Visible = false;
+                        //lastErrorToolStripMenuItem1.Visible = false;
+                    }                    
 
                     UpdateStatusBarText();
                 }
@@ -480,12 +500,73 @@ namespace QPerfMon
                         pcMonInstance.PlotStyle = (int)formatting.PlotStyle;
                         pcMonInstance.DashStyle = (int)formatting.DashStyle;
                         pcMonInstance.PlotColor = formatting.SelectedColor;
+
+                        string scale = "1";
+                        if (pcMonInstance.Scale < 1)
+                        {
+                            if (pcMonInstance.Scale >= 0.0001)
+                                scale = pcMonInstance.Scale.ToString("0.####");
+                            else
+                                scale = pcMonInstance.Scale.ToString("G1");
+                        }
+                        else
+                            scale = pcMonInstance.Scale.ToString("0");
+                        lvwCounters.SelectedItems[0].SubItems[2].Text = scale;
                     }
                 }
                 else
                 {
                     MessageBox.Show("There was an error retrieving the line instance!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
+            }
+            else if (lvwCounters.SelectedItems.Count > 1)
+            {
+                Formatting formatting = new Formatting();
+                formatting.MultiItemFormat = true;
+                if (formatting.ShowDialog() == DialogResult.OK)
+                {
+                    foreach(ListViewItem lvi in lvwCounters.SelectedItems)
+                    {
+                        ILine line = lineFlowGraph2DControl.GetLine(lvi.Text);
+                        line.Scale = formatting.SelectedScale;
+                        line.PlotStyle = formatting.PlotStyle;
+                        line.DashStyle = formatting.DashStyle;
+
+                        PCMonInstance pcMonInstance = (PCMonInstance)lvi.Tag;
+                        pcMonInstance.Scale = formatting.SelectedScale;
+                        pcMonInstance.PlotStyle = (int)formatting.PlotStyle;
+                        pcMonInstance.DashStyle = (int)formatting.DashStyle;
+
+                        string scale="1";
+                        if (pcMonInstance.Scale < 1)
+                        {
+                            if (pcMonInstance.Scale >= 0.0001)
+                                scale = pcMonInstance.Scale.ToString("0.####");
+                            else
+                                scale = pcMonInstance.Scale.ToString("G1");
+                        }
+                        else
+                            scale = pcMonInstance.Scale.ToString("0");
+                        lvi.SubItems[2].Text = scale;
+                    }
+                }
+            }
+        }
+        private void resetAllColorsToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (ListViewItem lvi in lvwCounters.Items)
+            {
+                Color newColor = GetNextLineColor(lvi.Index);
+
+                ILine line = lineFlowGraph2DControl.GetLine(lvi.Text);
+                line.Color = newColor;
+
+                PCMonInstance pcMonInstance = (PCMonInstance)lvi.Tag;
+                pcMonInstance.PlotColor = newColor;
+
+                lvi.SubItems[1].ForeColor = newColor;
+                lvi.SubItems[1].BackColor = newColor;
+                
             }
         }
         private void moveUpToolStripMenuItem_Click(object sender, EventArgs e)
@@ -611,7 +692,7 @@ namespace QPerfMon
                     }
                     UpdateStatusBarText();
                     lineFlowGraph2DControl.UpdateGraph();
-                    copyDefinitionToolStripMenuItem.Enabled = false;
+                    copyDefinitionsToolStripMenuItem.Enabled = false;
                 }
             }
         }
@@ -768,7 +849,7 @@ namespace QPerfMon
                     //}
                     qPerfMonFile.MainWindowSize = this.Size;
                     qPerfMonFile.MainWindowLocation = this.Location;
-                    qPerfMonFile.RememberMainWindowSizeLocation = rememberSizePositionToolStripMenuItem.Checked;                    
+                    qPerfMonFile.RememberMainWindowSizeLocation = rememberWindowsSizeLocationSaveLoadToolStripMenuItem.Checked;
                     SerializationUtils.SerializeXMLToFile(saveFileDialogQPerf.FileName, qPerfMonFile);
                 }
             }
@@ -778,10 +859,10 @@ namespace QPerfMon
             }
         }
 
-        private void rememberSizePositionToolStripMenuItem_Click(object sender, EventArgs e)
+        private void rememberWindowsSizeLocationSaveLoadToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            rememberSizePositionToolStripMenuItem.Checked = !rememberSizePositionToolStripMenuItem.Checked;
-            Properties.Settings.Default.RememberSizeLocationOnSaveLoad = rememberSizePositionToolStripMenuItem.Checked;
+            rememberWindowsSizeLocationSaveLoadToolStripMenuItem.Checked = !rememberWindowsSizeLocationSaveLoadToolStripMenuItem.Checked;
+            Properties.Settings.Default.RememberSizeLocationOnSaveLoad = rememberWindowsSizeLocationSaveLoadToolStripMenuItem.Checked;
         }
         private void lastErrorToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -860,7 +941,7 @@ namespace QPerfMon
         }
         private void pauseToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
-            paused = pauseToolStripMenuItem.Checked;
+            paused = pauseAllToolStripMenuItem.Checked;
             UpdateTitleText();
         }
         private void setTitleToolStripMenuItem_Click(object sender, EventArgs e)
@@ -973,7 +1054,7 @@ namespace QPerfMon
         }
         private void disableCounterOnErrorToolStripMenuItem_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.DisableCounterOnError = disableCounterOnErrorToolStripMenuItem.Checked;
+            Properties.Settings.Default.DisableCounterOnError = disablePerformanceCountersOnErrorToolStripMenuItem.Checked;
         }
         #endregion        
 
@@ -1046,8 +1127,8 @@ namespace QPerfMon
                         this.Size = qPerfMonFile.MainWindowSize;
                         this.Location = qPerfMonFile.MainWindowLocation;                        
                     }
-                    rememberSizePositionToolStripMenuItem.Checked = qPerfMonFile.RememberMainWindowSizeLocation;
-                    Properties.Settings.Default.RememberSizeLocationOnSaveLoad = rememberSizePositionToolStripMenuItem.Checked;
+                    rememberWindowsSizeLocationSaveLoadToolStripMenuItem.Checked = qPerfMonFile.RememberMainWindowSizeLocation;
+                    Properties.Settings.Default.RememberSizeLocationOnSaveLoad = rememberWindowsSizeLocationSaveLoadToolStripMenuItem.Checked;
                 }
                 catch { }
 
@@ -1082,7 +1163,13 @@ namespace QPerfMon
                     int colorIndex = lvwCounters.Items.Count % lineColors.Count;
                     string scale = "1";
                     if (pcMonInstance.Scale < 1)
-                        scale = pcMonInstance.Scale.ToString("0.########");
+                    {
+                        if (pcMonInstance.Scale >= 0.0001)
+                            scale = pcMonInstance.Scale.ToString("0.####");
+                        else
+                            scale = pcMonInstance.Scale.ToString("G1");
+                        //scale = pcMonInstance.Scale.ToString("0.##########");
+                    }
                     else
                         scale = pcMonInstance.Scale.ToString("0");
 
@@ -1172,6 +1259,7 @@ namespace QPerfMon
                     isSetUp = true;
             }
             startLoggingToolStripMenuItem.Enabled = isSetUp;
+            
         }
         private void StartStopLogging(bool forceStop)
         {
@@ -1356,20 +1444,86 @@ namespace QPerfMon
                 paused = oldPause;
             }
         }
-        private Color GetNextLineColor()
+        private Color GetNextLineColor(int startIndex = -1)
         {
-            Color nextColor = lineColors[(lvwCounters.Items.Count + 1) % lineColors.Count];
-            if (lvwCounters.Items.Count > 0)
+            if (startIndex == -1)
+                startIndex = lvwCounters.Items.Count;
+            Color nextColor = lineColors[(startIndex + 1) % lineColors.Count];
+            if (startIndex > 0)
             {
-                PCMonInstance lastItem = (PCMonInstance)lvwCounters.Items[lvwCounters.Items.Count - 1].Tag;
+                PCMonInstance lastItem = (PCMonInstance)lvwCounters.Items[startIndex - 1].Tag;
                 if (nextColor.ToArgb() == lastItem.PlotColor.ToArgb())
                 {
-                    nextColor = lineColors[(lvwCounters.Items.Count + 2) % lineColors.Count];
+                    nextColor = lineColors[(startIndex + 2) % lineColors.Count];
                 }
             }
             return nextColor;
-        } 
+        }
+
+        private void SelectPreviousLine()
+        {
+            if (lvwCounters.Items.Count > 0)
+            {
+                int changeIndex = 0;
+                if (lvwCounters.SelectedItems.Count == 0)
+                {
+                    changeIndex = 0;
+                }
+                else if (lvwCounters.SelectedItems.Count == 1)
+                {
+                    changeIndex = lvwCounters.SelectedItems[0].Index;
+                    if (changeIndex == 0)
+                    {
+                        changeIndex = lvwCounters.Items.Count - 1;
+                    }
+                    else
+                    {
+                        changeIndex--;
+                    }                    
+                }
+                else
+                {
+                    changeIndex = lvwCounters.SelectedItems[0].Index;
+                    
+                }
+                lvwCounters.SelectedItems.Clear();
+                lvwCounters.Items[changeIndex].Selected = true;
+                lvwCounters.Items[changeIndex].EnsureVisible();
+            }
+        }
+        private void SelectNextLine()
+        {
+            if (lvwCounters.Items.Count > 0)
+            {
+                int changeIndex = 0;
+                if (lvwCounters.SelectedItems.Count == 0)
+                {
+                    changeIndex = 0;
+                }
+                else if (lvwCounters.SelectedItems.Count == 1)
+                {
+                    changeIndex = lvwCounters.SelectedItems[0].Index;
+                    if (changeIndex >= lvwCounters.Items.Count - 1)
+                    {
+                        changeIndex = 0;
+                    }
+                    else
+                    {
+                        changeIndex++;
+                    }                    
+                }
+                else
+                {
+                    changeIndex = lvwCounters.SelectedItems[lvwCounters.SelectedItems.Count - 1].Index;
+                }
+                lvwCounters.SelectedItems.Clear();
+                lvwCounters.Items[changeIndex].Selected = true;
+                lvwCounters.Items[changeIndex].EnsureVisible();
+            }
+        }
         #endregion
+
+
 
     }
 }

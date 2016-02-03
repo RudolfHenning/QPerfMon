@@ -44,10 +44,14 @@ namespace QPerfMon
             set { dashStyle = value; }
         }
 
+        public bool MultiItemFormat { get; set; }
+
         private void Formatting_Load(object sender, EventArgs e)
         {
             pictureBoxColor.BackColor = color;
 
+            cboScale.Items.Add("100000000");
+            cboScale.Items.Add("10000000");
             cboScale.Items.Add("1000000");
             cboScale.Items.Add("100000");
             cboScale.Items.Add("10000");
@@ -63,6 +67,8 @@ namespace QPerfMon
             cboScale.Items.Add(String.Format("{0:F5}", 0.00001));
             cboScale.Items.Add(String.Format("{0:F6}", 0.000001));
             cboScale.Items.Add(String.Format("{0:F7}", 0.0000001));
+            cboScale.Items.Add(String.Format("{0:F8}", 0.00000001));
+            cboScale.Items.Add(String.Format("{0:F9}", 0.000000001));
   
             for (int i = 0; i < cboScale.Items.Count ; i++)
             {
@@ -113,6 +119,11 @@ namespace QPerfMon
                 default:
                     cboDashStyle.SelectedIndex = 0;
                     break;
+            }
+            if (MultiItemFormat)
+            {
+                pictureBoxColor.Enabled = false;
+                cmdSelectColor.Enabled = false;
             }
         }
 

@@ -191,6 +191,10 @@
     <None Include="Resources\stop.png" />
     <None Include="Resources\add.png" />
     <None Include="Resources\AddEx.png" />
+    <None Include="Resources\folder_doc.png" />
+    <None Include="Resources\save.png" />
+    <None Include="Resources\Old2New.ico" />
+    <None Include="Resources\doc_edit.png" />
     <Content Include="ToDo.txt" />
   </ItemGroup>
   <ItemGroup>

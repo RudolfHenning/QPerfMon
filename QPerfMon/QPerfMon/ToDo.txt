@@ -1,6 +1,8 @@
 ﻿To Do
  Control logging options from command line paramters
- 
+ Recent file list
+
+
 Done
  Logging
   Sample rate: Only capture every x updates of the graph - Done

@@ -28,6 +28,8 @@ namespace QPerfMon
         #region Form events
         private void AddCounter_Load(object sender, EventArgs e)
         {
+            cboScale.Items.Add("100000000");
+            cboScale.Items.Add("10000000");
             cboScale.Items.Add("1000000");
             cboScale.Items.Add("100000");
             cboScale.Items.Add("10000");
@@ -43,6 +45,8 @@ namespace QPerfMon
             cboScale.Items.Add(String.Format("{0:F5}", 0.00001));
             cboScale.Items.Add(String.Format("{0:F6}", 0.000001));
             cboScale.Items.Add(String.Format("{0:F7}", 0.0000001));
+            cboScale.Items.Add(String.Format("{0:F8}", 0.00000001));
+            cboScale.Items.Add(String.Format("{0:F9}", 0.000000001));
 
             txtComputer.Text = InitialMachine;
             if (txtComputer.Text.Length > 0)
