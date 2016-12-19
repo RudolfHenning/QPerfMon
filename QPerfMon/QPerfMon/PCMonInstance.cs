@@ -92,12 +92,16 @@ namespace QPerfMon
             else
             {
                 string[] parts = key.Split('\\');
-                if (parts.Length >= 4)
+                if (parts.Length >= 3)
+                //
                 {
                     machine = GetParsedElement(0, parts);
                     category = GetParsedElement(1, parts);
                     counter = GetParsedElement(2, parts);
-                    instance = GetParsedElement(3, parts);
+                    if (parts.Length >= 4)
+                        instance = GetParsedElement(3, parts);
+                    else
+                        instance = "";
                     string scaleStr = GetParsedElement(4, parts);
                     if (scaleStr.Length > 0)
                         scale = double.Parse(scaleStr);
